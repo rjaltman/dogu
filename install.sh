@@ -1,4 +1,8 @@
 set -e
+if [ ! -f secrets ] then
+    gpg secrets.sh.gpg
+fi
+
 source secrets.sh
 echo "I hope you installed postgres first!"
 sudo -u postgres createdb dogu
