@@ -5,8 +5,7 @@ import psycopg2
 app = Flask(__name__, static_folder="dogu/build")
 
 if environ.get("FLASK_ENV", None) == "development":
-    password = environ["UNIVERSAL_PASSWORD"]
-    conn = psycopg2.connect("host=localhost dbname=dogu user=dogu password={}".format(password))
+    conn = psycopg2.connect("host=localhost dbname=dogu user=dogu")
 else:
     conn = psycopg2.connect(environ["DATABASE_URL"], sslmode="require")
 
