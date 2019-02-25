@@ -1,17 +1,30 @@
-from flask import Flask
+from flask import Flask, jsonify
 import json
-from os import environ
+from os import environ, path
 import psycopg2
-app = Flask(__name__)
+app = Flask(__name__, static_folder="dogu/build")
 
-password = environ["UNIVERSAL_PASSWORD"]
-conn = psycopg2.connect("dbname=dogu user=dogu password={}".format(password))
+if environ.get("FLASK_ENV", None) == "development":
+    password = environ["UNIVERSAL_PASSWORD"]
+    conn = psycopg2.connect("host=localhost dbname=dogu user=dogu password={}".format(password))
+else:
+    conn = psycopg2.connect(environ["DATABASE_URL"], sslmode="require")
+
+@app.route('/')
+def reactIndex():
+    # DON'T CHANGE THIS
+    return app.send_static_file("index.html")
+
+@app.route("/static/<path:subpath>")
+def reactStatic(subpath):
+    # OR THIS
+    return app.send_static_file(path.join("static", subpath))
 
 @app.route('/api/')
 def hello_world():
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM people")
-    return json.dumps({name: age for (name, age) in cursor})
+    return jsonify({name: age for (name, age) in cursor})
 
 @app.route('/api/insert')
 def add_stuff():
