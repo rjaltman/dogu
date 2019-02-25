@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 import json
 from os import environ, path
 import psycopg2
-app = Flask(__name__, static_folder="dogu/build")
+app = Flask(__name__, static_folder="frontend/build")
 
 if environ.get("FLASK_ENV", None) == "development":
     conn = psycopg2.connect("host=localhost dbname=dogu user=dogu")

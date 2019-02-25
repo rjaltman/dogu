@@ -6,4 +6,4 @@ export FLASK_ENV=development
 export PGHOST="localhost"
 export PGPASSWORD="password"
 flask run &
-cd dogu && npm start
+cd frontend && npm start

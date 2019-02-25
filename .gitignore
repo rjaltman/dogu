@@ -28,21 +28,19 @@ venv
 *.pyc
 build
 
-secrets.sh
-
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-dogu/node_modules
-dogu/.pnp
+frontend/node_modules
+frontend/.pnp
 dogu.pnp.js
 
 # testing
-dogu/coverage
+frontend/coverage
 
 # production
-dogu/build
+frontend/build
 
 # misc
 */.DS_Store
