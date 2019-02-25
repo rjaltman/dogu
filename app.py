@@ -7,13 +7,13 @@ app = Flask(__name__)
 password = environ["UNIVERSAL_PASSWORD"]
 conn = psycopg2.connect("dbname=dogu user=dogu password={}".format(password))
 
-@app.route('/')
+@app.route('/api/')
 def hello_world():
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM people")
     return json.dumps({name: age for (name, age) in cursor})
 
-@app.route('/insert')
+@app.route('/api/insert')
 def add_stuff():
     cursor = conn.cursor()
     cursor.execute("INSERT INTO people (name, age) VALUES ('Melvyn', 35)")
