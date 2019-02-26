@@ -21,14 +21,13 @@ def reactStatic(subpath):
 
 @app.route('/api/')
 def hello_world():
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM people")
-    cursor.close()
-    return jsonify({name: age for (name, age) in cursor})
+    with conn.cursor() as c:
+        c.execute("SELECT * FROM people")
+        return jsonify({name: age for (name, age) in c})
 
 @app.route('/api/insert')
 def add_stuff():
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO people (name, age) VALUES ('Melvyn', 35)")
-    cursor.execute("COMMIT")
-    return "DONE"
+    with conn.cursor as c:
+        cursor.execute("INSERT INTO people (name, age) VALUES ('Melvyn', 35)")
+        cursor.commit()
+        return "DONE"
