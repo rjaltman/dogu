@@ -4,10 +4,10 @@ from os import environ, path
 import psycopg2
 app = Flask(__name__, static_folder="frontend/build")
 
-if environ.get("FLASK_ENV", None) == "development":
-    conn = psycopg2.connect("host=localhost dbname=dogu user=dogu")
-else:
+if "DATABASE_URL" in environ:
     conn = psycopg2.connect(environ["DATABASE_URL"], sslmode="require")
+else:
+    conn = psycopg2.connect("host=localhost dbname=dogu user=dogu password=password")
 
 @app.route('/')
 def reactIndex():
