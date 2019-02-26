@@ -23,6 +23,7 @@ def reactStatic(subpath):
 def hello_world():
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM people")
+    cursor.close()
     return jsonify({name: age for (name, age) in cursor})
 
 @app.route('/api/insert')
