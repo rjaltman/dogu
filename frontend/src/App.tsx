@@ -4,9 +4,9 @@ import './App.css';
 
 type State = Readonly<{people: Array<[string, number]>}>;
 type AppProps = Readonly<{}>;
-const initialState = {people: []};
+const initialState: State = {people: []};
 class App extends Component {
-    readonly state: State = initialState;
+    state: State = initialState;
     constructor(props: AppProps) {
         super(props);
         fetch("/api/")
@@ -17,10 +17,10 @@ class App extends Component {
     }
   render() {
       let peoplePart: React.ReactElement[] | null;
-      if(this.state["people"].size === 0) {
+      if(this.state["people"].length === 0) {
           peoplePart = null; ;
       } else {
-          peoplePart = this.state["people"].map(([k, v]) => <p key={k}>{k}: {v}</p>);
+          peoplePart = this.state.people.map(([k, v]) => <p key={k}>{k}: {v}</p>);
       }
     return (
       <div className="App">

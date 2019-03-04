@@ -23,7 +23,7 @@ def reactStatic(subpath):
 def hello_world():
     with conn.cursor() as c:
         c.execute("SELECT * FROM people")
-        out = jsonify({name: age for (name, age) in c})
+        out = jsonify([(name, age) for (name, age) in c])
         conn.commit()
     return out
 
