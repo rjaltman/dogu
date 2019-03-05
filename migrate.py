@@ -19,9 +19,9 @@ def searchFile(path, s):
         return any(s.upper() in l.upper() for l in f)
 
 def ensureMigrationsTableExists():
-    c = conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS {} (time timestamp)".format(TABLE_NAME))
-    c.execute("COMMIT")
+    with conn.cursor() as c:
+        c.execute("CREATE TABLE IF NOT EXISTS {} (time timestamp)".format(TABLE_NAME))
+        conn.commit()
 
 def printHelp():
     print("To create new migration, run")
@@ -40,32 +40,28 @@ def dateFromPath(pathStr):
 
 def runMigration(path):
     d = dateFromPath(path)
-    c = conn.cursor()
-    c.execute("BEGIN TRANSACTION")
-    c.execute("INSERT INTO {} VALUES (%s)".format(TABLE_NAME), (d, ))
-    with open(path) as f:
-        try:
+    with conn.cursor() as c:
+        c.execute("INSERT INTO {} VALUES (%s)".format(TABLE_NAME), (d, ))
+        with open(path) as f:
             c.execute(f.read())
-        except:
-            c.execute("ROLLBACK")
-            raise
-    c.execute("COMMIT")
+        conn.commit()
 
 
 def runMigrations():
     ensureMigrationsTableExists()
-    c = conn.cursor()
-    c.execute("SELECT time FROM {}".format(TABLE_NAME))
-    previousMigrations = frozenset(chain.from_iterable(c))
-    migrationsToDo = sorted((dent.path for dent in scandir(DIRECTORY_NAME) if '.sql' in dent.name and dateFromPath(dent.path) not in previousMigrations))
+    with conn.cursor() as c:
+        c.execute("SELECT time FROM {}".format(TABLE_NAME))
+        previousMigrations = frozenset(chain.from_iterable(c))
+
+    migrationsToDo = sorted((dent.path for dent in scandir(DIRECTORY_NAME) if dent.name.endswith('.sql') and dateFromPath(dent.path) not in previousMigrations))
     if any(searchFile(path, "commit") or searchFile(path, "transaction") for path in migrationsToDo):
         print("Don't include any transactions in your migrations. Each one will automatically be run in a transaction.")
         return
-    
+        
     for path in migrationsToDo:
         print("Running {}".format(path))
         runMigration(path)
-
+    
     print("Ran {} migrations successfully".format(len(migrationsToDo)))
 
 
