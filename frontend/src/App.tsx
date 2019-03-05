@@ -2,25 +2,25 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-type State = Readonly<typeof initialState>
+type State = Readonly<{people: Array<[string, number]>}>;
 type AppProps = Readonly<{}>;
-const initialState = {people: new Map<string, number>()};
+const initialState: State = {people: []};
 class App extends Component {
-    readonly state: State = initialState;
+    state: State = initialState;
     constructor(props: AppProps) {
         super(props);
         fetch("/api/")
             .then((resp) => resp.json())
-            .then((jsonObj: Object) => {
-                this.setState({people: new Map(Object.entries(jsonObj))});
+            .then((jsonObj: Array<[string, number]>) => {
+                this.setState({people: jsonObj});
             });
     }
   render() {
       let peoplePart: React.ReactElement[] | null;
-      if(this.state["people"].size === 0) {
+      if(this.state["people"].length === 0) {
           peoplePart = null; ;
       } else {
-          peoplePart = this.mapOverMap(this.state["people"], (k, v) => <p key={k}>{k}: {v}</p>);
+          peoplePart = this.state.people.map(([k, v]) => <p key={k}>{k}: {v}</p>);
       }
     return (
       <div className="App">

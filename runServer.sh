@@ -9,5 +9,6 @@ trap "kill 0" EXIT
 export FLASK_ENV=development
 export PGHOST="localhost"
 export PGPASSWORD="password"
+export BROWSER="none"
 flask run &
 cd frontend && npm start
