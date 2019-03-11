@@ -25,7 +25,7 @@ def ensureMigrationsTableExists():
 
 def printHelp():
     print("To create new migration, run")
-    print("\tpython migrate.py new <migration_message>")
+    print("\tpython3 migrate.py new <migration_message>")
     print("To run migrations, run")
     print("\tpython3 migrate.py migrate")
 
