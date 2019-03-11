@@ -53,8 +53,8 @@ class App extends Component {
   refreshPeople() {
       fetch("/api/")
         .then((resp) => resp.json())
-        .then((jsonObj: Array<[string, number]>) => {
-            this.setState({people: jsonObj});
+        .then((jsonObj: {data: Array<[string, number]>}) => {
+            this.setState({people: jsonObj.data});
         });
   }
 
