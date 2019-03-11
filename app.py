@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import json
 from os import environ, path
 import psycopg2
@@ -27,9 +27,19 @@ def hello_world():
         conn.commit()
     return out
 
-@app.route('/api/insert')
+@app.route('/api/insert', methods=["POST"])
 def add_stuff():
     with conn.cursor() as c:
-        c.execute("INSERT INTO people (name, age) VALUES ('Melvyn', 35)")
+        name = request.json["name"]
+        age = request.json["age"]
+        c.execute("INSERT INTO people (name, age) VALUES (%s, %s)", (name, age))
         conn.commit()
-    return "DONE"
+    return jsonify({"status":"success"})
+
+@app.route('/api/delete', methods=["POST"])
+def delete_thing():
+    with conn.cursor() as c:
+        name = request.json["name"]
+        c.execute("DELETE FROM people WHERE name = %s", (name, ))
+        conn.commit()
+    return jsonify({"status":"success"})
