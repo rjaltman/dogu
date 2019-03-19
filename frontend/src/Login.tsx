@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import { post, get } from './utils';
-type LoginProps = Readonly<{username? : string, password?: string, onAuth?: (username: string) => void}>;
+interface LoginProps {
+    username? : string,
+    password?: string,
+    onAuth?: (username: string) => void
+};
 type State = Readonly<{usernameVal: string, passwordVal: string, error: string, registering: boolean}>;
 
-class Login extends Component {
+class Login extends Component<LoginProps, any> {
     readonly state: State;
     constructor(props: LoginProps) {
         super(props);
+
         let defaultUsername: string = "";
         let defaultPassword: string = "";
         const cb = props.onAuth;
@@ -85,7 +90,9 @@ class Login extends Component {
   async login(username: string, pw: string) {
       let res: any = await post("api/auth/login", {username, password: pw});
       if(res["success"]) {
-          console.log("CALLED ONAUTH");
+          if(this.props.onAuth !== undefined)
+              this.props.onAuth(username);
+
           this.setState({error: ""});
       } else {
           this.setState({error: res["error"]});
