@@ -43,3 +43,10 @@ def delete_thing():
         c.execute("DELETE FROM people WHERE name = %s", (name, ))
         conn.commit()
     return jsonify({"status":"success"})
+
+@app.route('/api/auth/login', methods=["POST"])
+def login():
+    if request.json.get("username", "") == "rick" and request.json.get("password", "") == "morty":
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False, "error": "Eeyore didn't like that response"})
