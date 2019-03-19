@@ -5,7 +5,17 @@ interface LoginProps {
     password?: string,
     onAuth?: (username: string) => void
 };
-type State = Readonly<{usernameVal: string, passwordVal: string, error: string, registering: boolean}>;
+
+type State = Readonly<{
+    usernameVal: string,
+    passwordVal: string,
+    passwordVal2: string,
+    positionVal: "Instructor" | "Student" | "Organizer",
+    deptVal: string,
+    emailVal: string,
+    error: string,
+    registering: boolean,
+}>;
 
 class Login extends Component<LoginProps, any> {
     readonly state: State;
@@ -20,23 +30,21 @@ class Login extends Component<LoginProps, any> {
         if(props.password !== undefined)
             defaultPassword = props.password;
 
-        this.state = {usernameVal: defaultUsername, passwordVal: defaultPassword, error: "", registering: false};
+        this.state = {usernameVal: defaultUsername,
+            passwordVal: defaultPassword,
+            error: "",
+            registering: false,
+            passwordVal2: "",
+            positionVal: "Student",
+            deptVal: "",
+            emailVal: ""};
         this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.handleKeydown = this.handleKeydown.bind(this);
     }
 
     render() {
-      let gridStyle: (row: number, column: number) => React.CSSProperties = (row, column) => ({
-          gridColumnStart: column,
-          gridColumnEnd: "span 1",
-          gridRowStart: row,
-          gridRowEnd: "span 1",
-      });
-      
-        let somePadding: React.CSSProperties = {
-            margin: 2,
-        };
+        let somePadding: React.CSSProperties = { margin: 2 };
 
         let errorStyle: React.CSSProperties = {
             color: "red",
@@ -44,30 +52,75 @@ class Login extends Component<LoginProps, any> {
             fontSize: "1.2em",
         };
 
-        let tabStyles: React.CSSProperties = {display: "inline-block", border: "1px solid darkgrey", width: "40%", borderRadius: "5px", margin: 2, padding: 2};
+        let rowFlex: React.CSSProperties = {
+            display: "flex",
+            flexDirection: "row"
+        }
+
+        let columnFlex: React.CSSProperties = {
+            display: "flex",
+            flexDirection: "column"
+        };
+
+        let tabStyles: React.CSSProperties = {display: "inline-block", border: "1px solid darkgrey", borderRadius: "5px", margin: 5, padding: 5, paddingLeft: 20, paddingRight: 20};
         let setRegistering = (registering: boolean) => {
             return () => {
-                this.setState({registering});
+                this.setState({error: "", registering});
             }
         };
         let getColor = (which: boolean) => this.state.registering === which ? "rgb(192,192,192)" : "rgb(247,247,247)";
+
         let loginTab = <div style={Object.assign({}, tabStyles, {backgroundColor: getColor(false)})} onClick={setRegistering(false)}> Login </div>;
         let registerTab = <div style={Object.assign({}, tabStyles, {backgroundColor: getColor(true)})} onClick={setRegistering(true)}> Register </div>;
 
-        let tabDiv = <div style={{gridColumnStart: 1, gridColumnEnd: "span 2", gridRowStart: 1, gridRowEnd: "span 1"}} >
+        let tabDiv = <div style={rowFlex} >
             {loginTab}
             {registerTab}
         </div>;
 
+        let buttonStyle: React.CSSProperties = Object.assign({}, somePadding, {display: "inline-block", width: "max-content"});
 
-      return <div onKeyDown={this.handleKeydown} style={{display: "inline-grid", gridTemplateRows: "repeat(5, auto)", gridTemplateColumns: "repeat(2, auto)", alignItems: "center", width: "auto"}}>
+        let loginForm = <>
+        <div style={rowFlex}>
+        <div style={somePadding}>Username:</div>
+          <input name="usernameVal" style={somePadding} onChange={this.handleChange} />
+      </div>
+        <div style={rowFlex}>
+          <div style={somePadding}>Password:</div>
+          <input name="passwordVal" type="password" style={somePadding} onChange={this.handleChange} />
+      </div>
+          <button style={buttonStyle} onClick={this.onSubmit} >Log in</button>
+        </>;
+
+        let registerForm = <>
+        <div style={rowFlex}>
+          <div style={somePadding}>Username:</div>
+          <input name="usernameVal" style={somePadding} onChange={this.handleChange} />
+      </div>
+
+        <div style={rowFlex}>
+          <div style={somePadding}>Password:</div>
+          <input name="passwordVal" type="password" style={somePadding} onChange={this.handleChange} />
+      </div>
+
+        <div style={rowFlex}>
+          <div style={somePadding}>Confirm:</div>
+          <input name="passwordVal2" type="password" style={somePadding} onChange={this.handleChange} />
+      </div>
+
+        <div style={rowFlex}>
+          <div style={somePadding}>Email:</div>
+          <input name="emailVal" type="password" style={somePadding} onChange={this.handleChange} />
+      </div>
+
+          <button onClick={this.onSubmit} style={buttonStyle}>Register</button>
+        </>;
+
+
+      return <div onKeyDown={this.handleKeydown} style={columnFlex}>
           {tabDiv}
-          <div style={Object.assign(gridStyle(2,1), somePadding)}>Username:</div>
-          <input name="usernameVal" style={Object.assign(gridStyle(2,2), somePadding)} onChange={this.handleChange} />
-          <div style={Object.assign(gridStyle(3,1), somePadding)}>Password:</div>
-          <input name="passwordVal" type="password" style={Object.assign(gridStyle(3,2), somePadding)} onChange={this.handleChange} />
-          <button onClick={this.onSubmit} style={gridStyle(4, 2)} >{ this.state.registering ? "Register" : "Log in" }</button>
-          <div style={Object.assign(gridStyle(5, 1), errorStyle, {gridColumnEnd: "span 2"})}>{this.state.error}</div>
+          <div style={errorStyle}>{this.state.error}</div>
+          {this.state.registering ? registerForm : loginForm}
       </div>;
     }
 
@@ -79,11 +132,18 @@ class Login extends Component<LoginProps, any> {
 
   async onSubmit() {
       const username = this.state.usernameVal;
-      const pw = this.state.passwordVal;
+      const password = this.state.passwordVal;
       if(this.state.registering) {
-          await this.register(username, pw);
+          let data = {username, password, email: this.state.emailVal};
+          if(this.state.passwordVal2 !== password) {
+              this.setState({error: "Your passwords don't match"});
+          } else if (data.email === "") {
+              this.setState({error: "You must give an email address"});
+          } else { 
+              await this.register(data);
+          }
       } else {
-          await this.login(username, pw);
+          await this.login(username, password);
       }
   }
 
@@ -99,7 +159,7 @@ class Login extends Component<LoginProps, any> {
       }
   }
 
-  async register(username: string, pw: string) {
+  async register({password, username, email}: {username: string, password: string, email: string}) {
   }
 
   handleKeydown<El>(e: React.KeyboardEvent<El>) {

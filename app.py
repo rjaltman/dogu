@@ -9,6 +9,8 @@ if "DATABASE_URL" in environ:
 else:
     conn = psycopg2.connect("host=localhost dbname=dogu user=dogu password=password")
 
+Flask.secret_key = environ["SECRET_KEY"]
+
 @app.route('/')
 def reactIndex():
     # DON'T CHANGE THIS
@@ -50,3 +52,7 @@ def login():
         return jsonify({"success": True})
     else:
         return jsonify({"success": False, "error": "Eeyore didn't like that response"})
+
+@app.route("/api/auth/register", methods=["POST"])
+def register():
+    return jsonify({"success": request.json.get("username", None) and request.json.get("password", None)})
