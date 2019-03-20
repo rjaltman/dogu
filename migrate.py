@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+import re
 from sys import argv
 from os import path, environ, scandir
 import psycopg2
@@ -39,11 +40,12 @@ def dateFromPath(pathStr):
     return datetime.strptime(date, DATE_FORMAT_STRING)
 
 def runMigration(path):
+    SQL_COMMENT = re.compile(r"--.*?\n|\/\*.*?\*\/", re.DOTALL)
     d = dateFromPath(path)
     with conn.cursor() as c:
         c.execute("INSERT INTO {} VALUES (%s)".format(TABLE_NAME), (d, ))
         with open(path) as f:
-            c.execute(f.read())
+            c.execute(re.sub(SQL_COMMENT, "", f.read()))
         conn.commit()
 
 
