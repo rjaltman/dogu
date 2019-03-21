@@ -69,6 +69,14 @@ def register():
         conn.commit()
     return out
 
+@app.route("/api/search", methods=["GET"])
+def search():
+    searchTerms = request.query.getlist('q')
+    username = request.session.get('username', None)
+    if not u:
+        # This person is a looky-loo; I guess they get to see everything?
+        pass
+
 # These functions should probably be moved into a separate file...
 def generateSalt():
     """
