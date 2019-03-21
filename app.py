@@ -35,7 +35,7 @@ def login():
         c.execute("SELECT username, password FROM account WHERE username = %s", (username, ))
         result = c.fetchone()
         if not result:
-            out = jsonify({"success": False, "error": "There is no account by that username"})
+            return jsonify({"success": False, "error": "There is no account by that username"})
 
         if checkPasswordCorrect(result[1], password):
             # This sets the cookie that keeps the user logged in for the rest of the session
