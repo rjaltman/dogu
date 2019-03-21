@@ -37,7 +37,7 @@ def login():
         if not result:
             return jsonify({"success": False, "error": "There is no account by that username"})
 
-        if checkPasswordCorrect(result[1], password):
+        if checkPasswordCorrect(password, result[1]):
             # This sets the cookie that keeps the user logged in for the rest of the session
             # You can read the username out of this session variable whenever you want
             session["username"] = username
@@ -109,5 +109,4 @@ def checkPasswordCorrect(testPassword, hashedPassword):
     This is safe against timing attacks.
     """
     salt = hashedPassword[:2]
-    pwHash = hashedPassword[2:]
-    return secrets.compare_digest(hPassword, hashPassword(password, salt))
+    return secrets.compare_digest(hashedPassword, hashPassword(testPassword, salt))
