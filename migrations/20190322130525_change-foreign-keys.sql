@@ -1,0 +1,43 @@
+ALTER TABLE course DROP COLUMN university_id;
+ALTER TABLE course ADD COLUMN university_id INT REFERENCES university(id) ON DELETE RESTRICT NOT NULL;
+
+ALTER TABLE project_group DROP COLUMN course_id;
+ALTER TABLE project_group ADD COLUMN course_id INT REFERENCES course(id) ON DELETE RESTRICT NOT NULL;
+
+ALTER TABLE review DROP COLUMN project_group_id;
+ALTER TABLE review ADD COLUMN project_group_id INT REFERENCES project_group(id) ON DELETE RESTRICT NOT NULL;
+
+ALTER TABLE project_tags DROP COLUMN project_id;
+ALTER TABLE project_tags ADD COLUMN project_id INT REFERENCES project(id) ON DELETE RESTRICT NOT NULL;
+
+ALTER TABLE approved DROP COLUMN project_id;
+ALTER TABLE approved ADD COLUMN project_id INT REFERENCES project(id) ON DELETE RESTRICT NOT NULL;
+ALTER TABLE approved DROP COLUMN course_id;
+ALTER TABLE approved ADD COLUMN course_id INT REFERENCES course(id) ON DELETE RESTRICT NOT NULL;
+
+ALTER TABLE enroll DROP COLUMN account_id;
+ALTER TABLE enroll ADD COLUMN account_id INT REFERENCES account(id) ON DELETE RESTRICT NOT NULL;
+ALTER TABLE enroll DROP COLUMN course_id;
+ALTER TABLE enroll ADD COLUMN course_id INT REFERENCES course(id) ON DELETE RESTRICT NOT NULL;
+ALTER TABLE enroll DROP COLUMN university_id;
+ALTER TABLE enroll ADD COLUMN university_id INT REFERENCES university(id) ON DELETE RESTRICT NOT NULL;
+
+ALTER TABLE member DROP COLUMN account_id;
+ALTER TABLE member ADD COLUMN account_id INT REFERENCES account(id) ON DELETE RESTRICT NOT NULL;
+ALTER TABLE member DROP COLUMN project_group_id;
+ALTER TABLE member ADD COLUMN project_group_id INT REFERENCES project_group(id) ON DELETE RESTRICT NOT NULL;
+
+ALTER TABLE instructor DROP COLUMN account_id;
+ALTER TABLE instructor ADD COLUMN account_id INT REFERENCES account(id) ON DELETE RESTRICT NOT NULL;
+ALTER TABLE instructor DROP COLUMN course_id;
+ALTER TABLE instructor ADD COLUMN course_id INT REFERENCES course(id) ON DELETE RESTRICT NOT NULL;
+
+ALTER TABLE rep DROP COLUMN account_id;
+ALTER TABLE rep ADD COLUMN account_id INT REFERENCES account(id) ON DELETE RESTRICT NOT NULL;
+ALTER TABLE rep DROP COLUMN organization_id;
+ALTER TABLE rep ADD COLUMN organization_id INT REFERENCES organization(id) ON DELETE RESTRICT NOT NULL;
+
+ALTER TABLE preference DROP COLUMN account_id;
+ALTER TABLE preference ADD COLUMN account_id INT REFERENCES account(id) ON DELETE RESTRICT NOT NULL;
+ALTER TABLE preference DROP COLUMN project_id;
+ALTER TABLE preference ADD COLUMN project_id INT REFERENCES project(id) ON DELETE RESTRICT NOT NULL;
