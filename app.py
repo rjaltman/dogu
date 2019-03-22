@@ -1,16 +1,13 @@
 from flask import Flask, jsonify, request, session
+from backend.models.project import Project 
+from backend.database import conn
 from binascii import hexlify
 from hashlib import scrypt
 import secrets
 import json
 from os import environ, path
-import psycopg2
 app = Flask(__name__, static_folder="frontend/build")
 
-if "DATABASE_URL" in environ:
-    conn = psycopg2.connect(environ["DATABASE_URL"], sslmode="require")
-else:
-    conn = psycopg2.connect("host=localhost dbname=dogu user=dogu password=password")
 
 Flask.secret_key = environ["SECRET_KEY"]
 
@@ -71,11 +68,20 @@ def register():
 
 @app.route("/api/search", methods=["GET"])
 def search():
-    searchTerms = request.query.getlist('q')
-    username = request.session.get('username', None)
-    if not u:
-        # This person is a looky-loo; I guess they get to see everything?
-        pass
+    searchTerms = request.args.getlist('q')
+    username = session.get('username', None)
+    with conn.cursor() as c:
+        if not username:
+            # This person is a looky-loo; I guess they get to see everything?
+            projectsToShow = Project.getAll()
+        else:
+            c.execute('SELECT university_id FROM account WHERE id = %s', (username, ))
+            res = c.fetchone()
+            if not res:
+                raise Exception("You have a cookie from a user who doesn't exist!")
+            projectsToShow = Project.getByUniversity(res[0])
+
+    return jsonify({"success": True, "projects": list(projectsToShow)})
 
 # These functions should probably be moved into a separate file...
 def generateSalt():
