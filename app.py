@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, session
-from backend.models.project import Project 
 from backend.database import conn
+from psycopg2.extras import RealDictCursor
 from binascii import hexlify
 from hashlib import scrypt
 import secrets
@@ -69,19 +69,24 @@ def register():
 @app.route("/api/search", methods=["GET"])
 def search():
     searchTerms = request.args.getlist('q')
+    searchRe = '%(' + "|".join(searchTerms) + ')%' if searchTerms else '%'
     username = session.get('username', None)
-    with conn.cursor() as c:
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
         if not username:
             # This person is a looky-loo; I guess they get to see everything?
-            projectsToShow = Project.getAll()
+            c.execute(("SELECT * FROM project p WHERE concat_ws(' ', p.name, p.description) SIMILAR TO %(re)s "
+                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = p.id AND pt.tag SIMILAR TO %(re)s)"), {"re": searchRe})
+            projectsToShow = list(c)
         else:
-            c.execute('SELECT university_id FROM account WHERE id = %s', (username, ))
-            res = c.fetchone()
             if not res:
                 raise Exception("You have a cookie from a user who doesn't exist!")
-            projectsToShow = Project.getByUniversity(res[0])
+            c.execute(("SELECT p.* FROM project p "
+                       "INNER JOIN account a ON a.university_id = p.university_id "
+                       "WHERE a.username = %(username)s AND (concat_ws(' ', p.name, p.description) SIMILAR TO %(re)s "
+                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = p.id AND pt.tag SIMILAR TO %(re)s)"), {"username": username, "re": search_re})
+            projectsToShow = list(c)
 
-    return jsonify({"success": True, "projects": list(projectsToShow)})
+    return jsonify({"success": True, "projects": projectsToShow})
 
 # These functions should probably be moved into a separate file...
 def generateSalt():

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { post, get } from './utils';
+import { post, get, handleChange } from './utils';
 interface LoginProps {
     username? : string,
     password?: string,
@@ -30,6 +30,7 @@ type State = Readonly<{
  */
 class Login extends Component<LoginProps, any> {
     readonly state: State;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     constructor(props: LoginProps) {
         super(props);
 
@@ -50,8 +51,7 @@ class Login extends Component<LoginProps, any> {
             deptVal: "",
             emailVal: ""
         };
-        // Javascript is very bad, kids. Never do Javascript.
-        this.handleChange = this.handleChange.bind(this);
+        this.handleChange = handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.handleKeydown = this.handleKeydown.bind(this);
     }
@@ -145,18 +145,6 @@ class Login extends Component<LoginProps, any> {
       </div>;
     }
 
-    /*
-     * This is a sneaky trick using the `name` property
-     * of HTML `input` elements to tell React what they control 
-     * without having to do any work. Very handy. Just set
-     * the name of your `input`, set this as it's onChange listener,
-     * and you're set.
-     */
-    handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-      const name: string = e.target.name;
-      const value: string = e.target.value;
-      this.setState({[name]: value});
-  }
 
   async onSubmit() {
       const username = this.state.usernameVal;
