@@ -68,7 +68,17 @@ def register():
 
 @app.route("/api/createproject", methods=["POST"])
 def() createproject():
-    
+    name = request.json.get("name", None)
+    description = request.json.get("description", None)
+
+    if not (name and description):
+        return jsonify({"success": False, "error": "You must give a name and a description"})
+
+    with conn.cursor() as c:
+        c.execute("INSERT INTO project (name, description) VALUES (%s, %s)", (name, description))
+        out = jsonify({"success": True})
+        conn.commit()
+    return out
 
 @app.route("/api/search", methods=["GET"])
 def search():
