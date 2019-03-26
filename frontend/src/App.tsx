@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Login from './Login';
+import Search from './Search';
 
 type State = Readonly<{}>;
 type AppProps = Readonly<{}>;
@@ -10,15 +11,7 @@ class App extends Component {
         super(props);
     }
   render() {
-      return <Login />;
-  }
-
-  refreshPeople() {
-      fetch("/api/")
-        .then((resp) => resp.json())
-        .then((jsonObj: {data: Array<[string, number]>}) => {
-            this.setState({people: jsonObj.data});
-        });
+      return <Search />;
   }
 
 }

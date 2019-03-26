@@ -1,3 +1,4 @@
+import { Component } from 'react';
 export function mapOverMap<K, V, O>(m: Map<K, V>, f: (key: K, value: V) => O): O[] {
     let out: O[] = [];
     for(let pair of m) {
@@ -21,3 +22,15 @@ export async function get(url: string): Promise<any> {
     return jsonObj;
 }
 
+/*
+ * This is a sneaky trick using the `name` property
+ * of HTML `input` elements to tell React what they control 
+ * without having to do any work. Very handy. Just set
+ * the name of your `input`, set this as it's onChange listener,
+ * and you're set.
+ */
+export function handleChange(this: Component, e: React.ChangeEvent<HTMLInputElement>) {
+    const name: string = e.target.name;
+    const value: string = e.target.value;
+    this.setState({[name]: value});
+}

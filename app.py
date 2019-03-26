@@ -1,16 +1,13 @@
 from flask import Flask, jsonify, request, session
+from backend.database import conn
+from psycopg2.extras import RealDictCursor
 from binascii import hexlify
 from hashlib import scrypt
 import secrets
 import json
 from os import environ, path
-import psycopg2
 app = Flask(__name__, static_folder="frontend/build")
 
-if "DATABASE_URL" in environ:
-    conn = psycopg2.connect(environ["DATABASE_URL"], sslmode="require")
-else:
-    conn = psycopg2.connect("host=localhost dbname=dogu user=dogu password=password")
 
 Flask.secret_key = environ["SECRET_KEY"]
 
@@ -68,6 +65,28 @@ def register():
         out = jsonify({"success": True})
         conn.commit()
     return out
+
+@app.route("/api/search", methods=["GET"])
+def search():
+    searchTerms = request.args.getlist('q')
+    searchRe = '%(' + "|".join(searchTerms) + ')%' if searchTerms else '%'
+    username = session.get('username', None)
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        if not username:
+            # This person is a looky-loo; I guess they get to see everything?
+            c.execute(("SELECT * FROM project p WHERE concat_ws(' ', p.name, p.description) SIMILAR TO %(re)s "
+                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = p.id AND pt.tag SIMILAR TO %(re)s)"), {"re": searchRe})
+            projectsToShow = list(c)
+        else:
+            if not res:
+                raise Exception("You have a cookie from a user who doesn't exist!")
+            c.execute(("SELECT p.* FROM project p "
+                       "INNER JOIN account a ON a.university_id = p.university_id "
+                       "WHERE a.username = %(username)s AND (concat_ws(' ', p.name, p.description) SIMILAR TO %(re)s "
+                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = p.id AND pt.tag SIMILAR TO %(re)s)"), {"username": username, "re": search_re})
+            projectsToShow = list(c)
+
+    return jsonify({"success": True, "projects": projectsToShow})
 
 # These functions should probably be moved into a separate file...
 def generateSalt():
