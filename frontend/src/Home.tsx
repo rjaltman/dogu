@@ -28,12 +28,12 @@ type State = Readonly<{
  * state of the caller so as to go to the next logical state of the
  * application.
  */
-class Home extends Component {
+class Home extends Component<HomeProps, any> {
   constructor(props: HomeProps) {
       super(props);
   }
   render() {
-      return <div id="no_id">Hello, world!</div>;
+      return <div id="no_id">Hello, {this.props.username}!</div>;
   }
 }
 

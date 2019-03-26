@@ -22,10 +22,10 @@ class App extends Component {
       };
       this.loginHandler = this.loginHandler.bind(this);
   }
-  loginHandler() {
+  loginHandler(username: string) {
     this.setState({
       loggedIn: true,
-      uname: "DOGU User"
+      uname: username
     });
   }
   render() {
@@ -33,7 +33,7 @@ class App extends Component {
         return <Login onLogin = {this.loginHandler} />;
       }
       else {
-        return <Home />
+        return <Home username = {this.state.uname} />
       }
   }
 }

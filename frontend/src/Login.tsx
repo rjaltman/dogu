@@ -5,7 +5,7 @@ interface LoginProps {
     username? : string,
     password?: string,
     onAuth?: (username: string) => void,
-    onLogin?: () => void
+    onLogin?: (username: string) => void
 };
 
 type State = Readonly<{
@@ -172,7 +172,7 @@ class Login extends Component<LoginProps, any> {
           this.setState({error: ""});
           // TODO modify to render new page
           if (this.props.onLogin !== undefined)
-            this.props.onLogin();
+            this.props.onLogin(username);
 
       } else {
           this.setState({error: res["error"]});
