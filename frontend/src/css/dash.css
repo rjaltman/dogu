@@ -1,0 +1,91 @@
+#dash_container {
+  padding:20px;
+}
+
+#dash_welcome {
+  font-size: 28px;
+  color: #b06ea7;
+  display: block;
+  margin-bottom: 4vw;
+}
+
+#dash_welcome img {
+  border-radius: 100px;
+  max-height: 100px;
+  height: 7.5vw;
+  box-shadow: 0px 1px 3px silver;
+  float: left;
+  margin-right: 30px;
+}
+
+#dash_welcome span {
+  padding-top: 1.25vw;
+  display: inline-block;
+}
+
+#dash_search {
+  background-color: #fdf6f6;
+  margin-left:-20px;
+  padding-left:20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+}
+
+#dash_search_left {
+  height:10vw;
+  width: 50%;
+  border-right-style: solid;
+  border-color: #e8e8e8;
+  border-right-width:1.5px;
+  float:left;
+}
+
+#dash_search_right {
+  width: 50%;
+  float: right;
+}
+
+#dash_search .material-icons {
+  color: #eb7b7842;
+  font-size: 10vw;
+  float: left;
+}
+
+#dash_search .highlight {
+  color: #eb7b78;
+}
+
+#dash_search .dash_headline {
+  font-size: 2.5vw;
+  display: inline-block;
+  padding-top: 1vw;
+}
+
+#dash_search .searchbox {
+  display: block;
+  padding: 0.7vw;
+  width: 25vw;
+  margin-top: 1vw;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px #e8e8e8;
+  border-color: #e8e8e8;
+  border-style: solid;
+  border-width: 1px;
+}
+
+#dash_container button {
+  padding: 1.5vw;
+  background-color: #b06ea7;
+  color: white;
+  border-radius: 4px;
+  float: right;
+  box-shadow: 0px 1px 3px #c8c8c8;
+  border-style: none;
+  font-size: 18px;
+}
+
+#dash_container button .material-icons {
+  vertical-align: bottom;
+  margin-right:5px;
+}

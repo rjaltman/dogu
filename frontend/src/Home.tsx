@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { post, get, handleChange } from './utils';
+import './css/dash.css';
+
 interface HomeProps {
     username? : string,
     password?: string,
@@ -33,9 +35,20 @@ class Home extends Component<HomeProps, any> {
       super(props);
   }
   render() {
-      var welcome = <div id="no_id">Hello, {this.props.username}!</div>;
+      var welcome_img = <img src="https://www.gravatar.com/avatar/?default=mm&size=160" />
+      var welcome_btn = <button><i className="material-icons">&#xe147;</i>Create New Project</button>
+      var welcome = <div id="dash_welcome">{welcome_img} <span>Welcome back, {this.props.username}!</span> {welcome_btn}</div>;
 
-      return welcome;
+      var dash_search_icon = <i className="material-icons">&#xe8b6;</i>;
+
+      var dash_search_headline = <span className="highlight dash_headline">Find your next project.</span>;
+      let dash_search_textBox = <input className="searchbox" name="searchBox" />
+      var dash_search_leftside = <div id="dash_search_left">{dash_search_headline} {dash_search_textBox}</div>
+
+
+      var dash_search = <div id="dash_search">{dash_search_icon} {dash_search_leftside}</div>
+
+      return <div id="dash_container">{welcome} {dash_search}</div>;
   }
 }
 

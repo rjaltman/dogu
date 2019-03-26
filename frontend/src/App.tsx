@@ -9,6 +9,7 @@ import Header from './Header';
 type State = Readonly<{
   loggedIn: boolean,
   uname: string,
+  page: string
 }>;
 type AppProps = Readonly<{}>;
 
@@ -19,14 +20,16 @@ class App extends Component {
       super(props);
       this.state = {
         loggedIn: false,
-        uname: ""
+        uname: "",
+        page: ""
       };
       this.loginHandler = this.loginHandler.bind(this);
   }
   loginHandler(username: string) {
     this.setState({
       loggedIn: true,
-      uname: username
+      uname: username,
+      page: "dashboard_authenticated"
     });
   }
   render() {
