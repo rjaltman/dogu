@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 from flask import Flask, jsonify, request, session
 from backend.database import conn
 from psycopg2.extras import RealDictCursor
