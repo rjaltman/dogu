@@ -1,0 +1,15 @@
+#header {
+  background-color: #fff;
+  padding: 15px;
+  padding-left: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0px 2px 3px #b06ea7;
+  color: #b06ea7;
+  font-variant-caps: petite-caps;
+  letter-spacing: 2px;
+}
+
+.material-icons {
+  vertical-align: bottom;
+  padding-right:5px;
+}

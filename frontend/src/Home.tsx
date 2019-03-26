@@ -33,7 +33,9 @@ class Home extends Component<HomeProps, any> {
       super(props);
   }
   render() {
-      return <div id="no_id">Hello, {this.props.username}!</div>;
+      var welcome = <div id="no_id">Hello, {this.props.username}!</div>;
+
+      return welcome;
   }
 }
 

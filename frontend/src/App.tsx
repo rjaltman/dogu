@@ -4,6 +4,7 @@ import './App.css';
 import Login from './Login';
 import Home from './Home';
 import Search from './Search';
+import Header from './Header';
 
 type State = Readonly<{
   loggedIn: boolean,
@@ -30,10 +31,13 @@ class App extends Component {
   }
   render() {
       if (!this.state.loggedIn) {
-        return <Login onLogin = {this.loginHandler} />;
+        return <div>
+          <Header />
+          <Login onLogin = {this.loginHandler} />
+          </div>;
       }
       else {
-        return <Home username = {this.state.uname} />
+        return <div><Header /><Home username = {this.state.uname} /></div>
       }
   }
 }

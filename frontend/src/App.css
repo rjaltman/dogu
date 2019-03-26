@@ -1,3 +1,8 @@
+body {
+  background-color: #fff;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
 .App {
   text-align: center;
 }
