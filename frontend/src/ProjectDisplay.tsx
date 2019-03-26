@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './ProjectDisplay.css';
 import { get, post, handleChange } from './utils';
 
-interface Props {id?: number};
+interface Props {id: number};
 type State = Readonly<typeof initialState>;
 type Project = {
     description: string, 
@@ -22,6 +22,7 @@ const initialState = {tags: null as string[] | null,
 class ProjectDisplay extends Component<Props, any> {
     readonly state: State = initialState;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    newTagBox: React.RefObject<HTMLInputElement> = React.createRef();
     constructor(props: Props) {
         super(props);
         this.handleChange = handleChange.bind(this);
@@ -32,6 +33,12 @@ class ProjectDisplay extends Component<Props, any> {
         } else {
             this.getProject(this.props.id);
         }
+    }
+    componentDidUpdate(prevProps: Props, prevState: State) {
+        if(this.state.makingNewTag && !prevState.makingNewTag && this.newTagBox.current !== null)
+            this.newTagBox.current.focus();
+        if(prevProps.id !== this.props.id)
+            this.getProject(this.props.id);
     }
   render() {
       if(this.state.project === null || this.state.tags === null) { 
@@ -45,10 +52,10 @@ class ProjectDisplay extends Component<Props, any> {
       let deleteButton = <div className="deleteButton">x</div>;
       let tags = this.state.tags.map((t) => <div key={t} onClick={deleteFunction(t)} className="tag">{t}{deleteButton}</div>);
       if(this.state.makingNewTag) {
-          let tagBox = <div className="tag"><input name="newTag" value={this.state.newTag} onKeyDown={this.checkEnterKey.bind(this)} onChange={this.handleChange} /></div>;
+          let tagBox = <div key="55" className="tag"><input name="newTag" value={this.state.newTag} ref={this.newTagBox} onKeyDown={this.checkEnterKey.bind(this)} onChange={this.handleChange} /></div>;
           tags.push(tagBox);
       } else {
-          let plusButton = <div onClick={() => this.setState({makingNewTag: true})} className="plusButton"> + </div>;
+          let plusButton = <div key="56" onClick={() => this.setState({makingNewTag: true})} className="plusButton"> + </div>;
           tags.push(plusButton);
       }
       let tagDiv = <div className="tagDiv">{tags}</div>;
@@ -57,8 +64,8 @@ class ProjectDisplay extends Component<Props, any> {
           <p>Name: {p.name}</p>
           <p>Description: {p.description}</p>
           <p>Status: {p.status}</p>
-          <p>Tags: <br />
-          {tagDiv}</p>
+          <div>Tags: <br />
+          {tagDiv}</div>
           </div>;
       return out;
   }
@@ -83,6 +90,10 @@ class ProjectDisplay extends Component<Props, any> {
       console.assert(index !== -1);
       tags.splice(index, 1);
       this.setState({tags});
+      let res = await post("api/project/deleteTag", {id: this.props.id, tag});
+      await this.getProject(this.props.id)
+      if(!res["success"])
+          console.error(res["error"]);
   }
 
   async addTag(tag: string) {
@@ -96,6 +107,11 @@ class ProjectDisplay extends Component<Props, any> {
       }
       tags.push(tag);
       this.setState({tags});
+
+      let res = await post("api/project/addTag", {id: this.props.id, tag});
+      await this.getProject(this.props.id)
+      if(!res["success"])
+          console.error(res["error"]);
   }
   
   checkEnterKey(e: React.KeyboardEvent<HTMLInputElement>) {

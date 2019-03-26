@@ -10,6 +10,7 @@ class App extends Component {
         super(props);
     }
   render() {
+
       return <ProjectDisplay id={2} />;
   }
 
