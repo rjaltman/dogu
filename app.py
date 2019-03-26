@@ -88,6 +88,18 @@ def search():
 
     return jsonify({"success": True, "projects": projectsToShow})
 
+@app.route("/api/project/<int:id>", methods=["GET"])
+def getProject(id):
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute("SELECT * FROM project WHERE id = %s", (id, ))
+        project = c.fetchone()
+        if not project:
+            return jsonify({"success": False, "error": "There was no project with that id"})
+        c.execute("SELECT tag FROM project_tags WHERE project_id = %s", (id, ))
+        tags = [t["tag"] for t in c]
+        ret = {"tags": tags, "project": project, "success": True}
+        return jsonify(ret)
+
 # These functions should probably be moved into a separate file...
 def generateSalt():
     """
