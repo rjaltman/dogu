@@ -5,11 +5,11 @@ import { get, post, handleChange } from './utils';
 interface Props {id: number};
 type State = Readonly<typeof initialState>;
 type Project = {
-    description: string, 
-    id: number, 
-    name: string, 
+    description: string,
+    id: number,
+    name: string,
     organization_id: number,
-    startdate: Date, 
+    startdate: Date,
     status: string,
     university_id: number
 
@@ -41,9 +41,9 @@ class ProjectDisplay extends Component<Props, any> {
             this.getProject(this.props.id);
     }
   render() {
-      if(this.state.project === null || this.state.tags === null) { 
+      if(this.state.project === null || this.state.tags === null) {
           return <img src="https://media.giphy.com/media/3ornk9OsgudyjgjS8M/giphy.gif" />
-      } 
+      }
       let deleteFunction = (name: string) => {
           return (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
               this.removeTag(name);
@@ -64,6 +64,7 @@ class ProjectDisplay extends Component<Props, any> {
           <p>Name: {p.name}</p>
           <p>Description: {p.description}</p>
           <p>Status: {p.status}</p>
+          <button onClick={this.deleteProject.bind(this)}>Delete Project</button>
           <div>Tags: <br />
           {tagDiv}</div>
           </div>;
@@ -113,7 +114,18 @@ class ProjectDisplay extends Component<Props, any> {
       if(!res["success"])
           console.error(res["error"]);
   }
-  
+
+  async deleteProject() {
+    let res: any = await post("api/deleteproject", {id: this.props.id});
+
+    if(res["success"]) {
+        console.log("Project deleted");
+        this.setState({project: null});
+    } else {
+        console.error(res["error"]);
+    }
+  }
+
   checkEnterKey(e: React.KeyboardEvent<HTMLInputElement>) {
       const ENTER_KEY: number = 13;
       if(e.which === ENTER_KEY) {
