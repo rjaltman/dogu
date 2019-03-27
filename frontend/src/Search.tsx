@@ -5,7 +5,7 @@ type State = Readonly<typeof initialState>;
 type Props = Readonly<{}>;
 type Project = {
       description: string,
-      id: string,
+      id: number,
       name: string,
       organization_id: number,
       startdate: string,
@@ -20,7 +20,7 @@ class Search extends Component<Props, any> {
         this.handleChange = this.handleChange.bind(this);
     }
   render() {
-      let projectList = this.state.showingProjects.map(p => <p>{p.name}: {p.description}</p>);
+      let projectList = this.state.showingProjects.map(p => <p key={p.id}>{p.name}: {p.description}</p>);
       let textBox = <input onChange={this.handleChange} name="searchBox" />
       return <div>{textBox}<br /> {projectList}</div>;
   }
