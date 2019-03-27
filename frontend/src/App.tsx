@@ -5,6 +5,8 @@ import Login from './Login';
 import Home from './Home';
 import Search from './Search';
 import Header from './Header';
+import CreateProject from './CreateProject';
+import ProjectDisplay from './ProjectDisplay';
 
 type State = Readonly<{
   loggedIn: boolean,
@@ -42,6 +44,8 @@ class App extends Component {
       else {
         return <div><Header /><Home username = {this.state.uname} /></div>
       }
+      // For when we want to re-add the project display
+      // return <ProjectDisplay id={2} />;
   }
 }
 
