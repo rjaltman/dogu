@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { post, get, handleChange } from './utils';
+import Home from './Home';
 interface LoginProps {
     username? : string,
     password?: string,
-    onAuth?: (username: string) => void
+    onAuth?: (username: string) => void,
+    onLogin?: (username: string) => void
 };
 
 type State = Readonly<{
@@ -18,13 +20,13 @@ type State = Readonly<{
 }>;
 
 /*
- * This is the Component that handles logging into 
- * the app. For the time being, it also handles registration, 
- * but that should probably change soon. (cf. #7). 
+ * This is the Component that handles logging into
+ * the app. For the time being, it also handles registration,
+ * but that should probably change soon. (cf. #7).
  * It's prop inputs are the default username, the default
- * password (which I suspect will never be used), and a function 
- * taking the username as its input that will be called when the user 
- * successfully logs in. Presumably, this function will change the 
+ * password (which I suspect will never be used), and a function
+ * taking the username as its input that will be called when the user
+ * successfully logs in. Presumably, this function will change the
  * state of the caller so as to go to the next logical state of the
  * application.
  */
@@ -78,7 +80,7 @@ class Login extends Component<LoginProps, any> {
         const tabStyles: React.CSSProperties = {
             display: "inline-block",
             border: "1px solid darkgrey",
-            borderRadius: "5px", 
+            borderRadius: "5px",
             margin: 5,
             padding: 5,
             paddingLeft: 20,
@@ -86,8 +88,8 @@ class Login extends Component<LoginProps, any> {
         };
 
         // This function returns a callback function that you can give to the onClick
-        // attribute of a component. See the example of its use below. If there is 
-        // no example, delete it, because it's confusing and bad. 
+        // attribute of a component. See the example of its use below. If there is
+        // no example, delete it, because it's confusing and bad.
         const setRegistering = (registering: boolean) => {
             return () => {
                 this.setState({error: "", registering});
@@ -153,7 +155,7 @@ class Login extends Component<LoginProps, any> {
           let data = {username, password, email: this.state.emailVal};
           if(this.state.passwordVal2 !== password) {
               this.setState({error: "Your passwords don't match"});
-          } else { 
+          } else {
               await this.register(data);
           }
       } else {
@@ -168,6 +170,10 @@ class Login extends Component<LoginProps, any> {
               this.props.onAuth(username);
 
           this.setState({error: ""});
+          // TODO modify to render new page
+          if (this.props.onLogin !== undefined)
+            this.props.onLogin(username);
+
       } else {
           this.setState({error: res["error"]});
       }
@@ -184,7 +190,7 @@ class Login extends Component<LoginProps, any> {
   }
 
   /*
-   * All this does is make the form respond to the 
+   * All this does is make the form respond to the
    * enter key being pressed by submitting the form
    */
   handleKeydown<El>(e: React.KeyboardEvent<El>) {
