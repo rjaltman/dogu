@@ -26,27 +26,41 @@ class CreateProject extends Component {
   }
 
   render() {
-    let gridStyle: (row: number, column: number) => React.CSSProperties = (row, column) => ({
-          gridColumnStart: column,
-          grodColumnEnd: "span 1",
-          gridRowStart: row,
-          gridRowEnd: "span 1",
-    });
+    const somePadding: React.CSSProperties = { margin: 2 };
 
-    return (
+    const errorStyle: React.CSSProperties = {
+      color: "red",
+      textDecoration: "italic",
+      fontSize: "1.2em",
+    };
+
+    const rowFlex: React.CSSProperties = {
+      display: "flex",
+      flexDirection: "row"
+    };
+
+    const columnFlex: React.CSSProperties = {
+      display: "flex",
+      flexDirection: "column"
+    };
+
+    const buttonStyle: React.CSSProperties = Object.assign({}, somePadding, {display: "inline-block", width: "max-content"});
+
+      return (
       <div className="App">
-        <div style={{display: "inline-grid", gridTemplateRows: "repeat(3, auto)", gridTemplateColumns: "repeat(2,auto)", width: "auto"}}>
-        <input style={gridStyle(1,2)} value={this.state.nameVal} onChange={(e) => this.setState({nameVal: e.target.value})} />
-
-        <br />
-
-        <input style={gridStyle(2,2)} value={this.state.descriptionVal} onChange={(e) => this.setState({descriptionVal: e.target.value})} />
-          <div onClick={this.onSubmit.bind(this)}>
-              Submit Project
-          </div>
+        <div style={rowFlex}>
+          <div style={somePadding}>Project Name:</div>
+          <input name="nameVal" style={somePadding} onChange={this.handleChange} />
         </div>
+
+        <div style={rowFlex}>
+          <div style={somePadding}>Project Description:</div>
+          <input name="descriptionVal" style={somePadding} onChange={this.handleChange} />
+        </div>
+
+        <button onClick={this.onSubmit} style={buttonStyle}>Submit Project</button>
       </div>
-    );
+      );
   }
 
   async onSubmit() {
