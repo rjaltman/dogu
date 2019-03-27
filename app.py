@@ -75,7 +75,7 @@ def createproject():
         return jsonify({"success": False, "error": "You must give a name and a description"})
 
     with conn.cursor() as c:
-        c.execute("INSERT INTO project (name, description) VALUES (%s, %s)", (name, description))
+        c.execute("INSERT INTO project (name, description, university_id) VALUES (%s, %s, (SELECT id FROM university WHERE name = 'NOT REAL SCHOOL'))", (name, description))
         out = jsonify({"success": True})
         conn.commit()
     return out
