@@ -4,6 +4,7 @@ import './App.css';
 import Login from './Login';
 import Search from './Search';
 import CreateProject from './CreateProject';
+import ProjectDisplay from './ProjectDisplay';
 
 type State = Readonly<{}>;
 type AppProps = Readonly<{}>;
@@ -12,7 +13,7 @@ class App extends Component {
         super(props);
     }
   render() {
-      return <CreateProject />;
+      return <ProjectDisplay id={2} />;
   }
 
 }

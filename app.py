@@ -97,10 +97,68 @@ def search():
             c.execute(("SELECT p.* FROM project p "
                        "INNER JOIN account a ON a.university_id = p.university_id "
                        "WHERE a.username = %(username)s AND (concat_ws(' ', p.name, p.description) SIMILAR TO %(re)s "
-                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = p.id AND pt.tag SIMILAR TO %(re)s)"), {"username": username, "re": search_re})
+                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = p.id AND pt.tag SIMILAR TO %(re)s)"),
+                      {"username": username, "re": search_re})
             projectsToShow = list(c)
 
     return jsonify({"success": True, "projects": projectsToShow})
+
+@app.route("/api/project/<int:id>", methods=["GET"])
+def getProject(id):
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute("SELECT * FROM project WHERE id = %s", (id, ))
+        project = c.fetchone()
+        if not project:
+            return jsonify({"success": False, "error": "There was no project with that id"})
+        c.execute("SELECT tag FROM project_tags WHERE project_id = %s", (id, ))
+        tags = [t["tag"] for t in c]
+        ret = {"tags": tags, "project": project, "success": True}
+        return jsonify(ret)
+
+@app.route("/api/project/deleteTag", methods=["POST"])
+def deleteTag():
+    projectId = request.json.get("id", None)
+    if projectId == None:
+        return jsonify({"success": False, "error": "You didn't pass an id!"})
+
+    tag = request.json.get("tag", None)
+    if tag == None:
+        return jsonify({"success": False, "error": "You didn't pass a tag!"})
+    
+    with conn.cursor() as c:
+        c.execute("SELECT EXISTS (SELECT 1 FROM project WHERE id = %s)", (projectId, ))
+        if not c.fetchone()[0]:
+            return jsonify({"success": False, "error": "There was no project with that id"})
+        c.execute("SELECT EXISTS (SELECT 1 FROM project_tags WHERE tag = %s AND project_id = %s)", (tag, projectId, ))
+        if not c.fetchone()[0]:
+            return jsonify({"success": False, "error": "That project doesn't have that tag!"})
+
+        c.execute("DELETE FROM project_tags WHERE project_id = %s AND tag = %s", (projectId, tag))
+        conn.commit()
+        return jsonify({"success": True})
+
+@app.route("/api/project/addTag", methods=["POST"])
+def addTag():
+    projectId = request.json.get("id", None)
+    if projectId == None:
+        return jsonify({"success": False, "error": "You didn't pass an id!"})
+
+    tag = request.json.get("tag", None)
+    if tag == None:
+        return jsonify({"success": False, "error": "You didn't pass a tag!"})
+    
+    with conn.cursor() as c:
+        c.execute("SELECT EXISTS (SELECT 1 FROM project WHERE id = %s)", (projectId, ))
+        if not c.fetchone()[0]:
+            return jsonify({"success": False, "error": "There was no project with that id"})
+        c.execute("SELECT EXISTS (SELECT 1 FROM project_tags WHERE tag = %s AND project_id = %s)", (tag, projectId, ))
+        if c.fetchone()[0]:
+            return jsonify({"success": False, "error": "That project already has that tag!"})
+
+        c.execute("INSERT INTO project_tags (project_id, tag) VALUES (%s, %s)", (projectId, tag))
+        conn.commit()
+        return jsonify({"success": True})
+
 
 # These functions should probably be moved into a separate file...
 def generateSalt():
