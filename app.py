@@ -75,7 +75,7 @@ def createproject():
         return jsonify({"success": False, "error": "You must give a name and a description"})
 
     with conn.cursor() as c:
-        c.execute("INSERT INTO project (name, description, university_id) VALUES (%s, %s, (SELECT id FROM university WHERE name = 'NOT REAL SCHOOL'))", (name, description))
+        c.execute("INSERT INTO project (name, description) VALUES (%s, %s)", (name, description))
         out = jsonify({"success": True})
         conn.commit()
     return out
@@ -95,10 +95,12 @@ def search():
             c.execute("SELECT EXISTS (SELECT 1 FROM account WHERE username = %s)", (username, ))
             if not all(c.fetchone().values()):
                 raise Exception("You have a cookie from a user who doesn't exist!")
-            c.execute(("SELECT p.* FROM project p "
-                       "INNER JOIN account a ON a.university_id = p.university_id "
-                       "WHERE a.username = %(username)s AND (concat_ws(' ', p.name, p.description) SIMILAR TO %(re)s "
-                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = p.id AND pt.tag SIMILAR TO %(re)s))"),
+            c.execute(("WITH myUniversityId AS ("
+                       "SELECT university_id FROM account "
+                       "WHERE username = %(username)s) " 
+                       "SELECT * FROM project "
+                       "WHERE (university_id IS NULL OR (SELECT * FROM myUniversityId) IS NULL OR university_id = (select * from myUniversityId)) AND (concat_ws(' ', name, description) SIMILAR TO %(re)s "
+                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = id AND pt.tag SIMILAR TO %(re)s))"),
                       {"username": username, "re": searchRe})
             projectsToShow = list(c)
 
