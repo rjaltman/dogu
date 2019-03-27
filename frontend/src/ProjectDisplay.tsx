@@ -17,7 +17,9 @@ type Project = {
 const initialState = {tags: null as string[] | null,
     project: null as Project | null,
     newTag: "",
-    makingNewTag: false
+    makingNewTag: false,
+    editingProject: false,
+    descriptionVal: ""
 };
 class ProjectDisplay extends Component<Props, any> {
     readonly state: State = initialState;
@@ -60,14 +62,29 @@ class ProjectDisplay extends Component<Props, any> {
       }
       let tagDiv = <div className="tagDiv">{tags}</div>;
       let p = this.state.project;
+
       let out = <div>
           <p>Name: {p.name}</p>
           <p>Description: {p.description}</p>
           <p>Status: {p.status}</p>
           <button onClick={this.deleteProject.bind(this)}>Delete Project</button>
+          <button onClick={() => this.setState({editingProject: true})}>Edit Project</button>
           <div>Tags: <br />
           {tagDiv}</div>
           </div>;
+
+      // if edit is expanded, this should maybe be its own component
+      if (this.state.editingProject) {
+        let out = <div>
+            <p>Name: {p.name}</p>
+            <input name="descriptionVal" onChange={this.handleChange} />
+            <p>Status: {p.status}</p>
+            <button onClick={this.submitEdit}>Submit Edits</button>
+            <div>Tags: <br />
+            {tagDiv}</div>
+            </div>;
+      }
+
       return out;
   }
 
@@ -77,7 +94,7 @@ class ProjectDisplay extends Component<Props, any> {
           console.error(res["error"])
           return;
       }
-      this.setState({tags: res["tags"], project: res["project"]});
+      this.setState({tags: res["tags"], project: res["project"], descriptionVal: res["description"]});
   }
 
   async removeTag(tag: string) {
@@ -123,6 +140,29 @@ class ProjectDisplay extends Component<Props, any> {
         this.setState({project: null});
     } else {
         console.error(res["error"]);
+    }
+  }
+
+  async submitEdit() {
+    if (this.state.descriptionVal === "") {
+      this.setState({error: "You must have a description"});
+    } else {
+      const description = this.state.descriptionVal;
+      const id = this.props.id;
+      let data = {id, description};
+
+      await this.editProject(data);
+    }
+  }
+
+  async editProject({id, description}: {id: number, description: string}) {
+    let res: any = await post("api/editproject", {id, description});
+
+    if(res["success"]) {
+        console.log("Project edited");
+        this.setState({editingProject: false});
+    } else {
+        this.setState({error: res["error"]});
     }
   }
 
