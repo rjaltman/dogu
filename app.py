@@ -67,7 +67,7 @@ def register():
     return out
 
 @app.route("/api/createproject", methods=["POST"])
-def() createproject():
+def createproject():
     name = request.json.get("name", None)
     description = request.json.get("description", None)
 
