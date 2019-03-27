@@ -35,7 +35,7 @@ class CreateProject extends Component {
 
     return (
       <div className="App">
-        <div onKeyPress={this.handleKeypress.bind(this)} style={{display: "inline-grid", gridTemplateRows: "repeat(3, auto)", gridTemplateColumns: "repeat(2,auto)", width: "auto"}}>
+        <div style={{display: "inline-grid", gridTemplateRows: "repeat(3, auto)", gridTemplateColumns: "repeat(2,auto)", width: "auto"}}>
         <input style={gridStyle(1,2)} value={this.state.nameVal} onChange={(e) => this.setState({nameVal: e.target.value})} />
 
         <br />
@@ -71,14 +71,6 @@ class CreateProject extends Component {
     } else {
         this.setState({error: res["error"]});
     }
-  }
-
-  handleKeypress<El>(e: React.KeyboardEvent<El>) {
-      const ENTER_KEY = 13;
-      let keyCode: number = e.which;
-      if(keyCode == ENTER_KEY) {
-          this.onSubmit();
-      }
   }
 }
 
