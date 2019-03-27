@@ -11,7 +11,8 @@ import ProjectDisplay from './ProjectDisplay';
 type State = Readonly<{
   loggedIn: boolean,
   uname: string,
-  page: string
+  page: string,
+  pid: number
 }>;
 type AppProps = Readonly<{}>;
 
@@ -23,15 +24,23 @@ class App extends Component {
       this.state = {
         loggedIn: false,
         uname: "",
-        page: ""
+        page: "",
+        pid: 0
       };
       this.loginHandler = this.loginHandler.bind(this);
+      this.pageViewHandler = this.pageViewHandler.bind(this);
   }
   loginHandler(username: string) {
     this.setState({
       loggedIn: true,
       uname: username,
       page: "dashboard_authenticated"
+    });
+  }
+  pageViewHandler(page: string, pid: number) {
+    this.setState({
+      page: page,
+      pid: pid
     });
   }
   render() {
@@ -42,7 +51,20 @@ class App extends Component {
           </div>;
       }
       else {
-        return <div><Header /><Home username = {this.state.uname} /></div>
+        switch(this.state.page) {
+         case "create_project": {
+            return <div><Header /><CreateProject /></div>
+         }
+         case "search_project": {
+            return <div><Header /><Search /></div>
+         }
+         case "display_project": {
+            return <div><Header />return <ProjectDisplay id={this.state.pid} />;</div>
+         }
+         default: {
+           return <div><Header /><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></div>;
+         }
+        }
       }
       // For when we want to re-add the project display
       // return <ProjectDisplay id={2} />;

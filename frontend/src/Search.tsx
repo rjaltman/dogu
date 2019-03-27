@@ -4,12 +4,12 @@ import { post, get, handleChange } from './utils';
 type State = Readonly<typeof initialState>;
 type Props = Readonly<{}>;
 type Project = {
-      description: string, 
-      id: string, 
-      name: string, 
+      description: string,
+      id: string,
+      name: string,
       organization_id: number,
-      startdate: string, 
-      status: string, 
+      startdate: string,
+      status: string,
       university_id: number
     };
 const initialState = {searchBox: "", showingProjects: [] as Project[]}
