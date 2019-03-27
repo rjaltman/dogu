@@ -97,8 +97,8 @@ def search():
                 raise Exception("You have a cookie from a user who doesn't exist!")
             c.execute(("SELECT p.* FROM project p "
                        "INNER JOIN account a ON a.university_id = p.university_id "
-                       "WHERE a.username = %(username)s AND (concat_ws(' ', p.name, p.description)) SIMILAR TO %(re)s "
-                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = p.id AND pt.tag SIMILAR TO %(re)s)"),
+                       "WHERE a.username = %(username)s AND (concat_ws(' ', p.name, p.description) SIMILAR TO %(re)s "
+                       "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = p.id AND pt.tag SIMILAR TO %(re)s))"),
                       {"username": username, "re": searchRe})
             projectsToShow = list(c)
 
