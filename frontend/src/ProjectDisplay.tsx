@@ -84,12 +84,30 @@ class ProjectDisplay extends Component<Props, any> {
           <div id="project_body">
             <p>Description: {p.description}</p>
             <p>Status: {p.status}</p>
-            <button onClick={this.deleteProject.bind(this)}>Delete Project</button>
-            <button onClick={this.onEditProject}>Edit Project</button>
             <div>Tags: <br />
             {tagDiv}</div>
             </div>
+            <div id="project_actions">
+              <div id="intro_tile">
+                <i className="material-icons project_actions_title_icon">&#xe90e;</i>
+                <span className="project_actions_title">Take action</span>
+              </div>
+              <div id="edit_project_tile">
+                <i className="material-icons">&#xe3c9;</i>
+                <span className="title">Edit this project</span>
+                <span className="subtitle">Modify the description associated with this project. (To change tags, use the tool above.)</span>
+                <button onClick={this.onEditProject}>Edit Project</button>
+              </div>
+              <div id="delete_project_tile">
+                <i className="material-icons">&#xe92b;</i>
+                <span className="title">Delete this project</span>
+                <span className="subtitle">Note that this removes all records attributed to the project. Only do this if you are not closing the project or testing functionality.</span>
+                <button onClick={this.deleteProject.bind(this)}>Delete Project</button>
+              </div>
+
+            </div>
           </div>
+
       return out;
   }
 

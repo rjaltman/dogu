@@ -13,6 +13,84 @@
   display: inline-block;
 }
 
+#project_actions {
+  padding: 1.5em;
+  margin-top: 4vw;
+  box-shadow: 0px -2px 2px silver;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#project_actions #intro_tile {
+  padding-bottom: 2em;
+  width: 100%;
+  display: flex;
+  flex: 0 0 100%;
+}
+
+#project_actions .title {
+  font-size: 1.2em;
+  display: block;
+  padding-bottom: 1em;
+}
+
+#edit_project_tile {
+  box-shadow: 0px 1px 3px #b8b8b8;
+  border-left: 4px solid #7b7a42;
+  padding: 1em;
+  color: #7b7a42;
+  margin-right: 2em;
+  flex: 0 0 40%;
+}
+
+#edit_project_tile .material-icons {
+  float: left;
+}
+
+#edit_project_tile .subtitle {
+  color: #353535;
+  display: block;
+  padding-bottom: 1em;
+}
+
+#delete_project_tile {
+  box-shadow: 0px 1px 3px #b8b8b8;
+  border-left: 4px solid #a00;
+  padding: 1em;
+  color: #a00;
+  flex: 0 0 40%;
+}
+
+#delete_project_tile .material-icons {
+  float: left;
+}
+
+#delete_project_tile .subtitle {
+  color: #353535;
+  display: block;
+  padding-bottom: 1em;
+}
+
+#project_actions button {
+  font-size:1em;
+  display: block;
+  padding: 10px 20px;
+  background-color: #e8e8e8;
+  border-style: none;
+  box-shadow: 0px 1px 3px silver;
+  border-radius: 5px;
+  color:#fff;
+  font-family: 'Istok Web', 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+#edit_project_tile button {
+  color: #7b7a42;
+}
+
+#delete_project_tile button {
+  color: #a00;
+}
+
 .tagDiv {
     display: flex;
 }
@@ -56,4 +134,18 @@
   border-radius: 10px;
   padding: 20px;
   color: #808080;
+}
+
+.project_actions_title_icon {
+  font-size: 3em;
+  color: #768437;
+  float: left;
+  padding-right:0.3em;
+}
+
+.project_actions_title {
+  padding: 0.3em;
+  font-size: 1.5em;
+  display: block;
+  color: #768437;
 }
