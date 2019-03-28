@@ -25,7 +25,7 @@ class App extends Component {
         loggedIn: false,
         uname: "",
         page: "",
-        pid: 1
+        pid: 0
       };
       this.loginHandler = this.loginHandler.bind(this);
       this.pageViewHandler = this.pageViewHandler.bind(this);

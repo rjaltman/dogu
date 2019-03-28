@@ -26,13 +26,18 @@ class CreateProject extends Component<Props, any> {
         error: ""
     }
 
-    if (this.props.id != 0) {
-      this.setState({newProject: false});
-      this.getProject(this.props.id);
-    }
-
     this.handleChange = handleChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.props.id != 0) {
+      this.setState({newProject: false});
+      console.log("new project is false");
+      this.getProject(this.props.id);
+    }
+    console.log("id is:");
+    console.log(this.props.id);
   }
 
   render() {
@@ -82,6 +87,8 @@ class CreateProject extends Component<Props, any> {
       }
 
       this.setState({nameVal: res["name"], descriptionVal: res["description"]});
+      console.log(res["name"]);
+      console.log(this.state.nameVal);
   }
 
   async onSubmit() {
