@@ -22,10 +22,10 @@ class App extends Component {
   constructor(props: AppProps) {
       super(props);
       this.state = {
-        loggedIn: false,
+        loggedIn: true,
         uname: "",
-        page: "",
-        pid: 0
+        page: "display_project",
+        pid: 1
       };
       this.loginHandler = this.loginHandler.bind(this);
       this.pageViewHandler = this.pageViewHandler.bind(this);
@@ -53,7 +53,7 @@ class App extends Component {
       else {
         switch(this.state.page) {
          case "create_project": {
-            return <div><Header /><CreateProject /></div>
+            return <div><Header /><CreateProject id={this.state.pid} /></div>
          }
          case "search_project": {
             return <div><Header /><Search /></div>
@@ -67,7 +67,7 @@ class App extends Component {
         }
       }
       // For when we want to re-add the project display
-      // return <ProjectDisplay id={2} />;
+      // return <ProjectDisplay id={1} />;
   }
 }
 

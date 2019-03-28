@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
 import { post, get, handleChange } from './utils';
 
+interface Props {
+  id: number
+}
+
 type State = Readonly<{
   nameVal: string,
   descriptionVal: string,
+  newProject: boolean,
   error: string,
 }>;
-type Props = Readonly<{}>;
 
-class CreateProject extends Component {
+class CreateProject extends Component<Props, any> {
   readonly state: State;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 
@@ -16,9 +20,15 @@ class CreateProject extends Component {
     super(props);
 
     this.state = {
-      nameVal: "",
-      descriptionVal: "",
-      error: ""
+        nameVal: "",
+        descriptionVal: "",
+        newProject: true,
+        error: ""
+    }
+
+    if (this.props.id != 0) {
+      this.setState({newProject: false});
+      this.getProject(this.props.id);
     }
 
     this.handleChange = handleChange.bind(this);
@@ -58,9 +68,20 @@ class CreateProject extends Component {
           <input name="descriptionVal" style={somePadding} onChange={this.handleChange} />
         </div>
 
-        <button onClick={this.onSubmit} style={buttonStyle}>Submit Project</button>
+        <button onClick={this.onSubmit} style={buttonStyle}>Submit</button>
       </div>
       );
+  }
+
+  async getProject(id: number) {
+      let res = await get(`api/project/${id}`);
+
+      if(!res["success"]) {
+          console.error(res["error"])
+          return;
+      }
+
+      this.setState({nameVal: res["name"], descriptionVal: res["description"]});
   }
 
   async onSubmit() {
@@ -69,10 +90,15 @@ class CreateProject extends Component {
     } else {
       const name = this.state.nameVal;
       const description = this.state.descriptionVal;
+      const id = this.props.id;
 
-      let data = {name, description};
-
-      await this.addProject(data);
+      if (this.state.newProject) {
+        let data = {name, description};
+        await this.addProject(data);
+      } else {
+        let data = {id, description};
+        await this.editProject(data);
+      }
     }
   }
 
@@ -82,6 +108,17 @@ class CreateProject extends Component {
     if(res["success"]) {
         this.setState({error: ""});
         console.log("Project added");
+    } else {
+        this.setState({error: res["error"]});
+    }
+  }
+
+  async editProject({id, description}: {id: number, description: string}) {
+    let res: any = await post("api/editproject", {id, description});
+
+    if(res["success"]) {
+        console.log("Project edited");
+        this.setState({editingProject: false});
     } else {
         this.setState({error: res["error"]});
     }
