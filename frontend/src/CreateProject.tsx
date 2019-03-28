@@ -65,12 +65,12 @@ class CreateProject extends Component<Props, any> {
       <div className="App">
         <div style={rowFlex}>
           <div style={somePadding}>Project Name:</div>
-          <input name="nameVal" style={somePadding} onChange={this.handleChange} />
+          <input name="nameVal" value={this.state.nameVal} style={somePadding} onChange={this.handleChange} />
         </div>
 
         <div style={rowFlex}>
           <div style={somePadding}>Project Description:</div>
-          <input name="descriptionVal" style={somePadding} onChange={this.handleChange} />
+          <input name="descriptionVal" value={this.state.descriptionVal} style={somePadding} onChange={this.handleChange} />
         </div>
 
         <button onClick={this.onSubmit} style={buttonStyle}>Submit</button>
@@ -86,9 +86,10 @@ class CreateProject extends Component<Props, any> {
           return;
       }
 
-      this.setState({nameVal: res["name"], descriptionVal: res["description"]});
-      console.log(res["name"]);
+      this.setState({nameVal: res["project"]["name"], descriptionVal: res["project"]["description"]});
+      console.log(res["project"]["name"]);
       console.log(this.state.nameVal);
+      
   }
 
   async onSubmit() {
