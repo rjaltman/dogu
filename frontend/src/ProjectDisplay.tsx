@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import './ProjectDisplay.css';
+// import './ProjectDisplay.css';
+import './css/project.css';
 import { get, post, handleChange } from './utils';
 
 interface Props {
-  id: number
+  id: number,
   pageHandler?: (page: string, pid: number) => void
 };
 type State = Readonly<typeof initialState>;
@@ -75,17 +76,20 @@ class ProjectDisplay extends Component<Props, any> {
 
       let tagDiv = <div className="tagDiv">{tags}</div>;
       let p = this.state.project;
-
-      let out = <div>
-          <p>Name: {p.name}</p>
-          <p>Description: {p.description}</p>
-          <p>Status: {p.status}</p>
-          <button onClick={this.deleteProject.bind(this)}>Delete Project</button>
-          <button onClick={this.onEditProject}>Edit Project</button>
-          <div>Tags: <br />
-          {tagDiv}</div>
-          </div>;
-
+      let out = <div id="project_container">
+          <div id="project_top">
+            <i className="material-icons project_icon">&#xe54b;</i>
+            <span id="project_title">{p.name}</span>
+          </div>
+          <div id="project_body">
+            <p>Description: {p.description}</p>
+            <p>Status: {p.status}</p>
+            <button onClick={this.deleteProject.bind(this)}>Delete Project</button>
+            <button onClick={this.onEditProject}>Edit Project</button>
+            <div>Tags: <br />
+            {tagDiv}</div>
+            </div>
+          </div>
       return out;
   }
 

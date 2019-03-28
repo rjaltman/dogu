@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { post, get, handleChange } from './utils';
+import './css/dash.css';
 
 type State = Readonly<typeof initialState>;
-type Props = Readonly<{}>;
+interface Props {
+  pageHandler?: (page: string, pid: number) => void
+};
 type Project = {
       description: string,
       id: number,
@@ -18,13 +21,18 @@ class Search extends Component<Props, any> {
     constructor(props: Props) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
+        this.projectClick = this.projectClick.bind(this);
     }
   render() {
-      let projectList = this.state.showingProjects.map(p => <p key={p.id}>{p.name}: {p.description}</p>);
-      let textBox = <input onChange={this.handleChange} name="searchBox" />
+      // Arrow function from blank with the help of StackOverflow, see: https://stackoverflow.com/questions/29810914/react-js-onclick-cant-pass-value-to-method
+      let projectList = this.state.showingProjects.map(p => <p key={p.id} onClick={() => this.projectClick(p.id)}>{p.name}: {p.description}</p>);
+      let textBox = <input className="searchbox" onChange={this.handleChange} name="searchBox" />
       return <div>{textBox}<br /> {projectList}</div>;
   }
-
+  projectClick(id: number) {
+    if (this.props.pageHandler !== undefined)
+      this.props.pageHandler("display_project",id);
+  }
   componentDidMount() {
       this.loadNewProjects();
   }
