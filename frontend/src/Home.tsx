@@ -62,7 +62,13 @@ class Home extends Component<HomeProps, any> {
 
       var dash_search = <div id="dash_search">{dash_search_icon} {dash_search_leftside} {dash_search_rightside}</div>
 
-      return <div id="dash_container">{welcome} {dash_search}</div>;
+      var dash_staytuned_icon = <i className="material-icons large_icon">&#xe03e;</i>;
+      var dash_staytuned_subtitle = <span className="dash_staytuned_subtitle">This section will soon list your current projects, and allow you to jump back in to what you worked on last. Thanks for being patient!</span>;
+      var dash_staytuned_text = <div id="dash_staytuned_text"><span className="dash_staytuned_title dash_headline">Stay tuned.</span> {dash_staytuned_subtitle}</div>;
+      var dash_staytuned = <div id="dash_staytuned">{dash_staytuned_icon} {dash_staytuned_text}</div>
+
+
+      return <div id="dash_container">{welcome} {dash_search} {dash_staytuned}</div>;
   }
 }
 

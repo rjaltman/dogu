@@ -110,3 +110,35 @@
   vertical-align: bottom;
   margin-right:5px;
 }
+
+#dash_staytuned {
+  padding-top: 3em;
+  padding-left: 1vw;
+  width:100%;
+}
+
+#dash_staytuned .material-icons {
+  color: #fff;
+  font-size: 6em;
+  padding: 0.4em;
+  float: left;
+  text-shadow: 0px 1px 3px #cacaca;
+  background-color: #b5ca53;
+}
+
+#dash_staytuned_text {
+  float: left;
+  padding: 2em;
+  width: calc(100% - 15em);
+}
+.dash_staytuned_title {
+  color: #b5ca53;
+  font-size: 2.5em;
+  display: block;
+  padding-top:5px;
+}
+
+.dash_staytuned_subtitle {
+  color: #444;
+  font-size: 1.2em;
+}
