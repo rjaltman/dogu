@@ -91,6 +91,36 @@
   color: #a00;
 }
 
+#no_project_container {
+  text-align: center;
+  align-content: center;
+  justify-content: center;
+}
+
+#no_project_container button {
+  font-size:1em;
+  display: block;
+  padding: 10px 20px;
+  background-color: #e8e8e8;
+  border-style: none;
+  box-shadow: 0px 1px 3px silver;
+  border-radius: 5px;
+  color:#555;
+  font-family: 'Istok Web', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  margin: 1em auto;
+}
+
+#no_project_container .delete_icon {
+  background-color: #e8e8e8;
+  color: #a22;
+  font-size: 6em;
+  padding: 0.5em;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  border-radius: 2em;
+  box-shadow: 1px 1px 6px #a22a;
+}
+
 .tagDiv {
     display: flex;
 }
@@ -148,4 +178,19 @@
   font-size: 1.5em;
   display: block;
   color: #768437;
+}
+
+.no_project_title {
+  font-size: 1.5em;
+  color: #a22;
+  display: block;
+  padding: 1em;
+}
+
+.no_project_subtitle {
+  font-size: 1.2em;
+  color: #333;
+  display: block;
+  padding: 1em;
+  padding-top: 0.5em;
 }
