@@ -41,7 +41,10 @@ class CreateProject extends Component<Props, any> {
   }
 
   render() {
-    const somePadding: React.CSSProperties = { margin: 2 };
+    const somePadding: React.CSSProperties = { margin: "2px",
+    padding: "0.6em 0",
+    flex: "0 100%",
+    paddingRight: "20px" };
 
     const errorStyle: React.CSSProperties = {
       color: "red",
@@ -51,7 +54,10 @@ class CreateProject extends Component<Props, any> {
 
     const rowFlex: React.CSSProperties = {
       display: "flex",
-      flexDirection: "row"
+      flexDirection: "row",
+      flexWrap: "wrap",
+      paddingBottom: "1em",
+      textAlign: "left"
     };
 
     const columnFlex: React.CSSProperties = {
@@ -59,21 +65,42 @@ class CreateProject extends Component<Props, any> {
       flexDirection: "column"
     };
 
-    const buttonStyle: React.CSSProperties = Object.assign({}, somePadding, {display: "inline-block", width: "max-content"});
+    const buttonStyle: React.CSSProperties = Object.assign({}, somePadding, {width: "max-content"});
+
+    var create_project_leadin = <div></div>
+    if (this.state.newProject) {
+      create_project_leadin = <div id="create_project_leadin">
+                                <i className="material-icons">&#xe3e4;</i>
+                                <span className="title">Let's start something new.</span>
+                              </div>;
+    }
+    else {
+      create_project_leadin = <div id="create_project_leadin">
+                                <i className="material-icons">&#xe3c9;</i>
+                                <span className="title">Editing project <i>{this.state.nameVal}</i></span>
+                              </div>;
+    }
 
       return (
       <div className="App">
-        <div style={rowFlex}>
-          <div style={somePadding}>Project Name:</div>
-          <input name="nameVal" value={this.state.nameVal} style={somePadding} onChange={this.handleChange} />
+        <div id="create_project_background">
+          <i className="material-icons">&#xeb3f;</i>
         </div>
+        <div id="create_project_container">
+          {create_project_leadin}
+          <div id="create_project_form">
+            <div style={rowFlex}>
+              <div style={somePadding}>Project Name:</div>
+              <input className="name" name="nameVal" value={this.state.nameVal} onChange={this.handleChange} />
+            </div>
 
-        <div style={rowFlex}>
-          <div style={somePadding}>Project Description:</div>
-          <input name="descriptionVal" value={this.state.descriptionVal} style={somePadding} onChange={this.handleChange} />
+            <div style={rowFlex}>
+              <div style={somePadding}>Project Description:</div>
+              <input className="description" name="descriptionVal" value={this.state.descriptionVal} onChange={this.handleChange} />
+            </div>
+            <button onClick={this.onSubmit}>Submit</button>
+          </div>
         </div>
-
-        <button onClick={this.onSubmit} style={buttonStyle}>Submit</button>
       </div>
       );
   }
@@ -89,7 +116,7 @@ class CreateProject extends Component<Props, any> {
       this.setState({nameVal: res["project"]["name"], descriptionVal: res["project"]["description"]});
       console.log(res["project"]["name"]);
       console.log(this.state.nameVal);
-      
+
   }
 
   async onSubmit() {
