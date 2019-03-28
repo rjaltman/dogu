@@ -53,7 +53,7 @@ class Home extends Component<HomeProps, any> {
       var dash_search_icon = <i className="material-icons large_icon">&#xe8b6;</i>;
 
       var dash_search_headline = <span className="highlight dash_headline">Find your next project.</span>;
-      var dash_search_textBox = <input className="searchbox" name="searchBox" />
+      var dash_search_textBox = <input className="searchbox" name="searchBox" value="This textbox is a placeholder. Please use the Search page." />
       var dash_search_leftside = <div id="dash_search_left">{dash_search_headline} {dash_search_textBox}</div>
 
       var dash_search_rhs_headline = <span className="highlight dash_headline">Or, try our full Search tool:</span>;
