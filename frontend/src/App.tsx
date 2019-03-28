@@ -56,7 +56,7 @@ class App extends Component {
             return <div><Header /><CreateProject /></div>
          }
          case "search_project": {
-            return <div><Header /><Search /></div>
+            return <div><Header /><Search pageHandler = {this.pageViewHandler} /></div>
          }
          case "display_project": {
             return <div><Header />return <ProjectDisplay id={this.state.pid} />;</div>
