@@ -80,6 +80,38 @@ def createproject():
         conn.commit()
     return out
 
+@app.route("/api/editproject", methods=["POST"])
+def editproject():
+    id = request.json.get("id", None)
+    description = request.json.get("description", None)
+
+    if not (id):
+        return jsonify({"success": False, "error": "You must specify project id"})
+
+    if not (description):
+        return jsonify({"success": False, "error": "You must give a new description"})
+
+    with conn.cursor() as c:
+        c.execute("UPDATE project SET description = %s WHERE id = %s", (description, id))
+        out = jsonify({"success": True})
+        conn.commit()
+    return out
+
+#this should probably do something is this project is a foreign key for something other than tags...
+@app.route("/api/deleteproject", methods=["POST"])
+def deleteproject():
+    id = request.json.get("id", None)
+
+    if not (id):
+        return jsonify({"success": False, "error": "You must specify project id"})
+
+    with conn.cursor() as c:
+        c.execute("DELETE FROM project_tags WHERE project_id = %s", (id, ))
+        c.execute("DELETE FROM project WHERE id = %s", (id, ))
+        out = jsonify({"success": True})
+        conn.commit()
+    return out
+
 @app.route("/api/search", methods=["GET"])
 def search():
     searchTerms = request.args.getlist('q')
@@ -97,7 +129,7 @@ def search():
                 raise Exception("You have a cookie from a user who doesn't exist!")
             c.execute(("WITH myUniversityId AS ("
                        "SELECT university_id FROM account "
-                       "WHERE username = %(username)s) " 
+                       "WHERE username = %(username)s) "
                        "SELECT * FROM project "
                        "WHERE (university_id IS NULL OR (SELECT * FROM myUniversityId) IS NULL OR university_id = (select * from myUniversityId)) AND (concat_ws(' ', name, description) SIMILAR TO %(re)s "
                        "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = id AND pt.tag SIMILAR TO %(re)s))"),
@@ -127,7 +159,7 @@ def deleteTag():
     tag = request.json.get("tag", None)
     if tag == None:
         return jsonify({"success": False, "error": "You didn't pass a tag!"})
-    
+
     with conn.cursor() as c:
         c.execute("SELECT EXISTS (SELECT 1 FROM project WHERE id = %s)", (projectId, ))
         if not c.fetchone()[0]:
@@ -149,7 +181,7 @@ def addTag():
     tag = request.json.get("tag", None)
     if tag == None:
         return jsonify({"success": False, "error": "You didn't pass a tag!"})
-    
+
     with conn.cursor() as c:
         c.execute("SELECT EXISTS (SELECT 1 FROM project WHERE id = %s)", (projectId, ))
         if not c.fetchone()[0]:

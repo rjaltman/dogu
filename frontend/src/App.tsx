@@ -53,13 +53,13 @@ class App extends Component {
       else {
         switch(this.state.page) {
          case "create_project": {
-            return <div><Header pageHandler = {this.pageViewHandler} /><CreateProject /></div>
+            return <div><Header pageHandler = {this.pageViewHandler} /><CreateProject id={this.state.pid}/></div>
          }
          case "search_project": {
             return <div><Header pageHandler = {this.pageViewHandler} /><Search pageHandler = {this.pageViewHandler} /></div>
          }
          case "display_project": {
-            return <div><Header pageHandler = {this.pageViewHandler} /><ProjectDisplay id={this.state.pid} /></div>
+            return <div><Header pageHandler = {this.pageViewHandler} /><ProjectDisplay id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
          }
          default: {
            return <div><Header pageHandler = {this.pageViewHandler} /><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></div>;
@@ -67,7 +67,7 @@ class App extends Component {
         }
       }
       // For when we want to re-add the project display
-      // return <ProjectDisplay id={2} />;
+      // return <ProjectDisplay id={1} />;
   }
 }
 
