@@ -91,6 +91,109 @@
   color: #a00;
 }
 
+#no_project_container {
+  text-align: center;
+  align-content: center;
+  justify-content: center;
+}
+
+#no_project_container button {
+  font-size:1em;
+  display: block;
+  padding: 10px 20px;
+  background-color: #e8e8e8;
+  border-style: none;
+  box-shadow: 0px 1px 3px silver;
+  border-radius: 5px;
+  color:#555;
+  font-family: 'Istok Web', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  margin: 1em auto;
+}
+
+#no_project_container .delete_icon {
+  background-color: #e8e8e8;
+  color: #a22;
+  font-size: 6em;
+  padding: 0.5em;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  border-radius: 2em;
+  box-shadow: 1px 1px 6px #a22a;
+}
+
+#create_project_background .material-icons {
+  font-size: 50vw;
+  color: #e0e0e0;
+}
+
+#create_project_background {
+  width: 100%;
+  height: 100%;
+  left: 40vw;
+  bottom: -30%;
+  position: fixed;
+  z-index: -100;
+  text-shadow: 2vw 1vw 3vw #e8e8e8;
+  vertical-align: bottom;
+}
+
+#create_project_container {
+  padding: 1.5em;
+  margin: 1em;
+  border-left: 2px solid #139413;
+}
+
+#create_project_leadin {
+  color: #139413;
+  display:flex;
+  padding-bottom: 2em;
+}
+
+#create_project_leadin .material-icons {
+  font-size: 3.5em;
+  float: left;
+  padding-right: 0.5em;
+}
+
+#create_project_leadin .title {
+  font-size: 1.5em;
+  display: block;
+  float: left;
+  margin-top: 0.5em;
+}
+
+#create_project_form .name {
+  margin: 2px;
+  padding: 0.6em 20px 0.6em 0.6em;
+  flex: 0 40%;
+  border: none;
+  background: #f2f2f2;
+  box-shadow: 0px 1px 3px silver;
+}
+
+#create_project_form .description {
+  margin: 2px;
+  padding: 0.6em 20px 0.6em 0.6em;
+  flex: 0 60%;
+  border: none;
+  background: #f2f2f2;
+  box-shadow: 0px 1px 3px silver;
+}
+
+#create_project_form button {
+  font-size: 1em;
+  display: block;
+  padding: 10px 20px;
+  background-color: #139413;
+  border-style: none;
+  box-shadow: 0px 1px 3px silver;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: 500;
+  font-family: 'Istok Web', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  margin: 1em 0;
+}
+
 .tagDiv {
     display: flex;
 }
@@ -148,4 +251,19 @@
   font-size: 1.5em;
   display: block;
   color: #768437;
+}
+
+.no_project_title {
+  font-size: 1.5em;
+  color: #a22;
+  display: block;
+  padding: 1em;
+}
+
+.no_project_subtitle {
+  font-size: 1.2em;
+  color: #333;
+  display: block;
+  padding: 1em;
+  padding-top: 0.5em;
 }

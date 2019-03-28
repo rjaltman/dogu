@@ -25,9 +25,15 @@ class Search extends Component<Props, any> {
     }
   render() {
       // Arrow function from blank with the help of StackOverflow, see: https://stackoverflow.com/questions/29810914/react-js-onclick-cant-pass-value-to-method
-      let projectList = this.state.showingProjects.map(p => <p key={p.id} onClick={() => this.projectClick(p.id)}>{p.name}: {p.description}</p>);
-      let textBox = <input className="searchbox" onChange={this.handleChange} name="searchBox" />
-      return <div>{textBox}<br /> {projectList}</div>;
+      let searchTitle = <div id="search_leadin">
+                          <i className="material-icons">&#xe8b6;</i>
+                          <span className="title">Full Text Search</span>
+                          <span className="subtitle">Enter keywords contained in a project's title or subtitle to filter results. Searches are <b>case-sensitive.</b></span>
+                        </div>
+      let projectList = this.state.showingProjects.map(p => <div className="search_tile" key={p.id} onClick={() => this.projectClick(p.id)}>
+                                                            <span className="title">{p.name}</span> <span className="subtitle">{p.description}</span></div>);
+      let textBox = <div id="search_textbox_container"><input placeholder="Enter your keywords here." className="searchbox" onChange={this.handleChange} name="searchBox" /></div>
+      return <div id="search_container">{searchTitle} {textBox}<br /> <div id="search_results">{projectList}</div></div>;
   }
   projectClick(id: number) {
     if (this.props.pageHandler !== undefined)

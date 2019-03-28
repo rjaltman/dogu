@@ -35,6 +35,7 @@ class ProjectDisplay extends Component<Props, any> {
         super(props);
         this.handleChange = handleChange.bind(this);
         this.onEditProject = this.onEditProject.bind(this);
+        this.onBackToSearch = this.onBackToSearch.bind(this);
     }
 
     componentDidMount() {
@@ -54,7 +55,13 @@ class ProjectDisplay extends Component<Props, any> {
 
     render() {
       if(this.state.project === null || this.state.tags === null) {
-          return <img src="https://media.giphy.com/media/3ornk9OsgudyjgjS8M/giphy.gif" />
+          let no_project_out = <div id="no_project_container">
+              <i className="material-icons delete_icon">&#xe92b;</i>
+              <span className="no_project_title">This project has been deleted.</span>
+              <span className="no_project_subtitle">If you believe you reached this page in error, <a href="mailto:rjaltman04@gmail.com">let one of our developers know</a>.</span>
+              <button onClick={this.onBackToSearch}>Back to Search</button>
+            </div>;
+          return no_project_out;
       }
 
       let deleteFunction = (name: string) => {
@@ -123,6 +130,12 @@ class ProjectDisplay extends Component<Props, any> {
   onEditProject() {
     if (this.props.pageHandler !== undefined) {
       this.props.pageHandler("create_project", this.props.id);
+    }
+  }
+
+  onBackToSearch() {
+    if (this.props.pageHandler !== undefined) {
+      this.props.pageHandler("search_project", 0);
     }
   }
 

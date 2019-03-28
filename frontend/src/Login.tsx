@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { post, get, handleChange } from './utils';
 import Home from './Home';
+import './css/main.css';
+
 interface LoginProps {
     username? : string,
     password?: string,
@@ -69,7 +71,8 @@ class Login extends Component<LoginProps, any> {
 
         const rowFlex: React.CSSProperties = {
             display: "flex",
-            flexDirection: "row"
+            flexDirection: "row",
+            paddingBottom: "1em"
         }
 
         const columnFlex: React.CSSProperties = {
@@ -139,11 +142,21 @@ class Login extends Component<LoginProps, any> {
         <button onClick={this.onSubmit} style={buttonStyle}>Register</button>
         </>;
 
+        let welcomeImage = <div id="homepage_welcome_image"></div>
 
-      return <div onKeyDown={this.handleKeydown} style={columnFlex}>
+      return <div id="home_container">
+        {welcomeImage}
+
+        <div id="dogu_description">
+          <span className="title">Real-world class projects from real-world sources.</span>
+          <span className="subtitle">DOGU is a site where students and organizations can add technical project ideas, in hopes of finding class project teams
+          to work on them. Through DOGU, students can find projects to work on from these real-world ideas, and form teams to work with for class assignments.</span>
+        </div>
+        <div id="dogu_login" onKeyDown={this.handleKeydown} style={columnFlex}>
           {tabDiv}
           <div style={errorStyle}>{this.state.error}</div>
           {this.state.registering ? registerForm : loginForm}
+        </div>
       </div>;
     }
 
