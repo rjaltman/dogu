@@ -1,0 +1,67 @@
+#homepage_welcome_image {
+  z-index: -2;
+  left: 50%;
+  right: 0px;
+  position: fixed;
+  top: 0px;
+  height: 100%;
+  background: url(http://champaignil.gov/wp-content/uploads/2015/10/Boneyard-Basin-Homepage-6-2018.jpg) #a8a8;
+  background-size: cover;
+  background-blend-mode: lighten;
+  background-position: center;
+  box-shadow: 0px -1px 10px inset silver;
+}
+
+#dogu_description {
+  padding: 2em;
+  width: calc(50% - 4em);
+  border-bottom: 2px solid #e8e8e8aa;
+}
+
+#dogu_description .title {
+  color: #b06ea7;
+  font-size: 2em;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  display: block;
+  padding-bottom: 1em;
+  max-width: 500px;
+}
+
+#dogu_description .subtitle {
+  letter-spacing: 0.05em;
+  font-size: 1.1em;
+  color:#333;
+  display: block;
+}
+
+#dogu_login {
+  padding: 2em;
+  width: calc(50% - 4em);
+}
+
+input {
+  display: block;
+  padding: 0.4em;
+  width: 25vw;
+  margin-top: 1vw;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px #e8e8e8;
+  border-color: #e8e8e8;
+  border-style: solid;
+  border-width: 1px;
+  font-family: 'Istok Web', 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+button {
+  font-family: 'Istok Web', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  font-size:1.1em;
+  display: block;
+  padding: 0.3em 1em;
+  background-color: #e57c76;
+  border-style: none;
+  box-shadow: 0px 1px 3px silver;
+  border-radius: 5px;
+  color:#fff;
+  margin-top: 1.0em;
+}
