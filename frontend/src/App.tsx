@@ -59,7 +59,7 @@ class App extends Component {
             return <div><Header /><Search pageHandler = {this.pageViewHandler} /></div>
          }
          case "display_project": {
-            return <div><Header />return <ProjectDisplay id={this.state.pid} />;</div>
+            return <div><Header /><ProjectDisplay id={this.state.pid} /></div>
          }
          default: {
            return <div><Header /><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></div>;

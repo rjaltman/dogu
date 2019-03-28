@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
-import './ProjectDisplay.css';
+// import './ProjectDisplay.css';
+import './css/project.css';
 import { get, post, handleChange } from './utils';
 
 interface Props {id: number};
 type State = Readonly<typeof initialState>;
 type Project = {
-    description: string, 
-    id: number, 
-    name: string, 
+    description: string,
+    id: number,
+    name: string,
     organization_id: number,
-    startdate: Date, 
+    startdate: Date,
     status: string,
     university_id: number
 
@@ -41,9 +42,9 @@ class ProjectDisplay extends Component<Props, any> {
             this.getProject(this.props.id);
     }
   render() {
-      if(this.state.project === null || this.state.tags === null) { 
+      if(this.state.project === null || this.state.tags === null) {
           return <img src="https://media.giphy.com/media/3ornk9OsgudyjgjS8M/giphy.gif" />
-      } 
+      }
       let deleteFunction = (name: string) => {
           return (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
               this.removeTag(name);
@@ -60,13 +61,18 @@ class ProjectDisplay extends Component<Props, any> {
       }
       let tagDiv = <div className="tagDiv">{tags}</div>;
       let p = this.state.project;
-      let out = <div>
-          <p>Name: {p.name}</p>
-          <p>Description: {p.description}</p>
-          <p>Status: {p.status}</p>
-          <div>Tags: <br />
-          {tagDiv}</div>
-          </div>;
+      let out = <div id="project_container">
+          <div id="project_top">
+            <i className="material-icons project_icon">&#xe54b;</i>
+            <span id="project_title">{p.name}</span>
+          </div>
+          <div id="project_body">
+            <p>Description: {p.description}</p>
+            <p>Status: {p.status}</p>
+            <div>Tags: <br />
+            {tagDiv}</div>
+            </div>
+          </div>
       return out;
   }
 
@@ -113,7 +119,7 @@ class ProjectDisplay extends Component<Props, any> {
       if(!res["success"])
           console.error(res["error"]);
   }
-  
+
   checkEnterKey(e: React.KeyboardEvent<HTMLInputElement>) {
       const ENTER_KEY: number = 13;
       if(e.which === ENTER_KEY) {
