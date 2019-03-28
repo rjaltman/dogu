@@ -130,8 +130,9 @@ def search():
             c.execute(("WITH myUniversityId AS ("
                        "SELECT university_id FROM account "
                        "WHERE username = %(username)s) "
-                       "SELECT * FROM project "
-                       "WHERE (university_id IS NULL OR (SELECT * FROM myUniversityId) IS NULL OR university_id = (select * from myUniversityId)) AND (concat_ws(' ', name, description) SIMILAR TO %(re)s "
+                       "SELECT * FROM project WHERE "
+                       # "(university_id IS NULL OR (SELECT * FROM myUniversityId) IS NULL OR university_id = (select * from myUniversityId)) AND "
+                       "(concat_ws(' ', name, description) SIMILAR TO %(re)s "
                        "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = id AND pt.tag SIMILAR TO %(re)s))"),
                       {"username": username, "re": searchRe})
             projectsToShow = list(c)
