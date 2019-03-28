@@ -2,9 +2,6 @@ DELETE FROM project_tags WHERE project_id = (SELECT id FROM project WHERE name =
 DELETE FROM project_tags WHERE project_id = (SELECT id FROM project WHERE name = 'Fake project 2');
 DELETE FROM project WHERE organization_id = (SELECT id FROM organization WHERE name = 'A FAKE ORGANIZATION');
 
-DELETE FROM university WHERE name = 'NOT REAL SCHOOL';
-DELETE FROM organization WHERE name = 'A FAKE ORGANIZATION';
-
 INSERT INTO university (name, location, created, site) VALUES ('University of Illinois (Urbana-Champaign)', 'Urbana-Champaign, Illinois', '2019-03-28', 'https://illinois.edu/');
 
 INSERT INTO project (name, description, status, university_id)
@@ -26,7 +23,6 @@ INSERT INTO project_tags (project_id, tag) VALUES
 ((SELECT id FROM project WHERE name = 'Woof n Meow'), 'Animals'),
 ((SELECT id FROM project WHERE name = 'Vet Tracker'), 'Animals');
 
-DELETE FROM account;
 INSERT INTO account (username, password, name, position, university_id) VALUES ('john', '1234', 'John Doe', 'Student', (SELECT id FROM university WHERE name = 'University of Illinois (Urbana-Champaign)'));
 INSERT INTO preference (ranking, account_id, project_id)
 VALUES
