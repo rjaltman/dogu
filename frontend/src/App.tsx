@@ -53,7 +53,7 @@ class App extends Component {
       else {
         switch(this.state.page) {
          case "create_project": {
-            return <div><Header pageHandler = {this.pageViewHandler} /><CreateProject id={this.state.pid}/></div>
+            return <div><Header pageHandler = {this.pageViewHandler} /><CreateProject id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
          }
          case "search_project": {
             return <div><Header pageHandler = {this.pageViewHandler} /><Search pageHandler = {this.pageViewHandler} /></div>

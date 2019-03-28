@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { post, get, handleChange } from './utils';
 
 interface Props {
-  id: number
+  id: number,
+  pageHandler?: (page: string, pid: number) => void
 }
 
 type State = Readonly<{
@@ -143,6 +144,8 @@ class CreateProject extends Component<Props, any> {
     if(res["success"]) {
         this.setState({error: ""});
         console.log("Project added");
+        if (this.props.pageHandler !== undefined)
+          this.props.pageHandler("search_project",0);
     } else {
         this.setState({error: res["error"]});
     }
@@ -154,6 +157,8 @@ class CreateProject extends Component<Props, any> {
     if(res["success"]) {
         console.log("Project edited");
         this.setState({editingProject: false});
+        if (this.props.pageHandler !== undefined)
+          this.props.pageHandler("display_project",id);
     } else {
         this.setState({error: res["error"]});
     }
