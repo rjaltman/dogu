@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-// import './ProjectDisplay.css';
 import './css/project.css';
-import { get, post, handleChange } from './utils';
+import { get, post } from './utils';
+import TagEditor from './TagEditor';
 
 interface Props {
   id: number,
   pageHandler?: (page: string, pid: number) => void
 };
+
 type State = Readonly<typeof initialState>;
 
 type Project = {
@@ -16,26 +17,21 @@ type Project = {
     organization_id: number,
     startdate: Date,
     status: string,
-    university_id: number
-
+    university_id: number, 
+    tags: string[]
 };
 
-const initialState = {tags: null as string[] | null,
+const initialState = {
     project: null as Project | null,
-    newTag: "",
-    makingNewTag: false,
 };
 
 class ProjectDisplay extends Component<Props, any> {
     readonly state: State = initialState;
-    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    newTagBox: React.RefObject<HTMLInputElement> = React.createRef();
-
     constructor(props: Props) {
         super(props);
-        this.handleChange = handleChange.bind(this);
         this.onEditProject = this.onEditProject.bind(this);
         this.onBackToSearch = this.onBackToSearch.bind(this);
+        this.onTagChange = this.onTagChange.bind(this);
     }
 
     componentDidMount() {
@@ -47,14 +43,12 @@ class ProjectDisplay extends Component<Props, any> {
     }
 
     componentDidUpdate(prevProps: Props, prevState: State) {
-        if(this.state.makingNewTag && !prevState.makingNewTag && this.newTagBox.current !== null)
-            this.newTagBox.current.focus();
         if(prevProps.id !== this.props.id)
             this.getProject(this.props.id);
     }
 
     render() {
-      if(this.state.project === null || this.state.tags === null) {
+      if(this.state.project === null) {
           let no_project_out = <div id="no_project_container">
               <i className="material-icons delete_icon">&#xe92b;</i>
               <span className="no_project_title">This project has been deleted.</span>
@@ -64,24 +58,6 @@ class ProjectDisplay extends Component<Props, any> {
           return no_project_out;
       }
 
-      let deleteFunction = (name: string) => {
-          return (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-              this.removeTag(name);
-          };
-      };
-
-      let deleteButton = <div className="deleteButton">x</div>;
-      let tags = this.state.tags.map((t) => <div key={t} onClick={deleteFunction(t)} className="tag">{t}{deleteButton}</div>);
-
-      if (this.state.makingNewTag) {
-          let tagBox = <div key="55" className="tag"><input name="newTag" value={this.state.newTag} ref={this.newTagBox} onKeyDown={this.checkEnterKey.bind(this)} onChange={this.handleChange} /></div>;
-          tags.push(tagBox);
-      } else {
-          let plusButton = <div key="56" onClick={() => this.setState({makingNewTag: true})} className="plusButton"> + </div>;
-          tags.push(plusButton);
-      }
-
-      let tagDiv = <div className="tagDiv">{tags}</div>;
       let p = this.state.project;
       let out = <div id="project_container">
           <div id="project_top">
@@ -92,7 +68,7 @@ class ProjectDisplay extends Component<Props, any> {
             <p>Description: {p.description}</p>
             <p>Status: {p.status}</p>
             <div>Tags: <br />
-            {tagDiv}</div>
+            <TagEditor tags={this.state.project.tags} onTagChange={this.onTagChange} /></div>
             </div>
             <div id="project_actions">
               <div id="intro_tile">
@@ -139,39 +115,14 @@ class ProjectDisplay extends Component<Props, any> {
     }
   }
 
-  async removeTag(tag: string) {
-      console.log(`Removed ${tag}`);
-      let tags = this.state.tags;
-      if(tags === null) {
-          console.error("God help us all");
-          return;
+  onTagChange(tags: string[]) {
+      let project = this.state.project;
+      if(project !== null) {
+          project.tags = tags;
+          this.setState({project});
+      } else {
+          console.error("I have no idea how this happened");
       }
-      let index = tags.indexOf(tag)
-      console.assert(index !== -1);
-      tags.splice(index, 1);
-      this.setState({tags});
-      let res = await post("api/project/deleteTag", {id: this.props.id, tag});
-      await this.getProject(this.props.id)
-      if(!res["success"])
-          console.error(res["error"]);
-  }
-
-  async addTag(tag: string) {
-      let tags = this.state.tags;
-      if(tags === null) {
-          console.error("God help us all again");
-          return;
-      }
-      if(tags.indexOf(tag) !== -1) {
-          return;
-      }
-      tags.push(tag);
-      this.setState({tags});
-
-      let res = await post("api/project/addTag", {id: this.props.id, tag});
-      await this.getProject(this.props.id)
-      if(!res["success"])
-          console.error(res["error"]);
   }
 
   async deleteProject() {
@@ -185,14 +136,6 @@ class ProjectDisplay extends Component<Props, any> {
     }
   }
 
-  checkEnterKey(e: React.KeyboardEvent<HTMLInputElement>) {
-      const ENTER_KEY: number = 13;
-      if(e.which === ENTER_KEY) {
-          let newTag = this.state.newTag;
-          this.addTag(newTag);
-          this.setState({newTag: "", makingNewTag: false});
-      }
-  }
 }
 
 export default ProjectDisplay;

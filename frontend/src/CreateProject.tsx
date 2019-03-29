@@ -152,7 +152,7 @@ class CreateProject extends Component<Props, any> {
   }
 
   async editProject({id, description}: {id: number, description: string}) {
-    let res: any = await post("api/editproject", {id, description});
+    let res: any = await post("api/editDescription", {id, description});
 
     if(res["success"]) {
         console.log("Project edited");

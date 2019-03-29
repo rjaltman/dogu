@@ -80,8 +80,8 @@ def createproject():
         conn.commit()
     return out
 
-@app.route("/api/editproject", methods=["POST"])
-def editproject():
+@app.route("/api/editDescription", methods=["POST"])
+def editDescription():
     id = request.json.get("id", None)
     description = request.json.get("description", None)
 
@@ -148,7 +148,8 @@ def getProject(id):
             return jsonify({"success": False, "error": "There was no project with that id"})
         c.execute("SELECT tag FROM project_tags WHERE project_id = %s", (id, ))
         tags = [t["tag"] for t in c]
-        ret = {"tags": tags, "project": project, "success": True}
+        project["tags"] = tags
+        ret = {"project": project, "success": True}
         return jsonify(ret)
 
 @app.route("/api/project/deleteTag", methods=["POST"])
