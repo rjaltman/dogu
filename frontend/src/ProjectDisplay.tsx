@@ -115,11 +115,18 @@ class ProjectDisplay extends Component<Props, any> {
     }
   }
 
-  onTagChange(tags: string[]) {
+  async onTagChange(tags: string[]) {
       let project = this.state.project;
       if(project !== null) {
           project.tags = tags;
           this.setState({project});
+          let res = await post("api/project/setTags", {id: (this.state.project as Project).id, tags});
+          if(!res["success"]) {
+              console.log("Something bad happened");
+              console.error(res["error"]);
+          } else {
+              this.getProject((this.state.project as Project).id);
+          }
       } else {
           console.error("I have no idea how this happened");
       }

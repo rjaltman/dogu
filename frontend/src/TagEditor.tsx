@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './css/project.css';
+import './css/tagEditor.css';
 import { handleChange } from './utils';
 
 interface Props {
