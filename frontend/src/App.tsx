@@ -7,6 +7,7 @@ import Search from './Search';
 import Header from './Header';
 import CreateProject from './CreateProject';
 import ProjectDisplay from './ProjectDisplay';
+import Register from './Register';
 
 type State = Readonly<{
   loggedIn: boolean,
@@ -45,10 +46,15 @@ class App extends Component {
   }
   render() {
       if (!this.state.loggedIn) {
-        return <div>
-          <Header />
-          <Login onLogin = {this.loginHandler} />
-          </div>;
+        if (this.state.page == "register") {
+          return <div><Header pageHandler = {this.pageViewHandler} /><Register pageHandler = {this.pageViewHandler} /></div>;
+        }
+        else {
+          return <div>
+            <Header pageHandler = {this.pageViewHandler} />
+            <Login onLogin = {this.loginHandler} />
+            </div>;
+        }
       }
       else {
         switch(this.state.page) {
