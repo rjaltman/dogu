@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { post, get, handleChange } from './utils';
+import TagEditor from './TagEditor';
 
 interface Props {
   id: number,
@@ -9,6 +10,7 @@ interface Props {
 type State = Readonly<{
   nameVal: string,
   descriptionVal: string,
+  tags: string[],
   newProject: boolean,
   error: string,
 }>;
@@ -24,11 +26,13 @@ class CreateProject extends Component<Props, any> {
         nameVal: "",
         descriptionVal: "",
         newProject: true,
+        tags: [],
         error: ""
     }
 
     this.handleChange = handleChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onTagChange = this.onTagChange.bind(this);
   }
 
   componentDidMount() {
@@ -99,6 +103,10 @@ class CreateProject extends Component<Props, any> {
               <div style={somePadding}>Project Description:</div>
               <input className="description" name="descriptionVal" value={this.state.descriptionVal} onChange={this.handleChange} />
             </div>
+            <div style={rowFlex}>
+                <p style={{paddingRight: 10}}>Tags: </p>
+                <TagEditor tags={this.state.tags} onTagChange={this.onTagChange} />
+            </div>
             <button onClick={this.onSubmit}>Submit</button>
           </div>
         </div>
@@ -126,20 +134,21 @@ class CreateProject extends Component<Props, any> {
     } else {
       const name = this.state.nameVal;
       const description = this.state.descriptionVal;
+      const tags = this.state.tags;
       const id = this.props.id;
 
       if (this.state.newProject) {
-        let data = {name, description};
+        let data = {name, description, tags};
         await this.addProject(data);
       } else {
-        let data = {id, description};
+        let data = {id, name, description, tags};
         await this.editProject(data);
       }
     }
   }
 
-  async addProject({name, description}: {name: string, description: string}) {
-    let res: any = await post("api/createproject", {name, description});
+  async addProject({name, description, tags}: {name: string, description: string, tags: string[]}) {
+    let res: any = await post("api/createproject", {name, description, tags});
 
     if(res["success"]) {
         this.setState({error: ""});
@@ -151,8 +160,8 @@ class CreateProject extends Component<Props, any> {
     }
   }
 
-  async editProject({id, description}: {id: number, description: string}) {
-    let res: any = await post("api/editproject", {id, description});
+  async editProject({id, description, tags}: {id: number, description: string, tags: string[]}) {
+    let res: any = await post("api/editProject", {id, description, tags});
 
     if(res["success"]) {
         console.log("Project edited");
@@ -162,6 +171,10 @@ class CreateProject extends Component<Props, any> {
     } else {
         this.setState({error: res["error"]});
     }
+  }
+
+  async onTagChange(tags: string[]) {
+      this.setState({tags});
   }
 }
 

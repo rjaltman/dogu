@@ -1,0 +1,37 @@
+.deleteButton {
+    display: inline-block;
+    margin-left: 5px;
+    visibility: hidden;
+}
+
+.tagDiv {
+    display: flex;
+}
+
+.tag {
+    display: inline-block;
+    margin: 10px;
+    background-color: #E1ECF4;
+    padding: 5px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.tag:hover {
+    background-color: #cee0ed;
+}
+
+.tag:hover .deleteButton {
+    visibility: visible;
+}
+
+.plusButton {
+    font-size: 2.1em;
+    color: lightgrey;
+    cursor: pointer;
+}
+
+.plusButton:hover {
+    color: grey;
+}
+
