@@ -50,7 +50,7 @@ class Register extends Component<RegisterProps, any> {
       this.setDefaultImage = this.setDefaultImage.bind(this);
 
       // Borrowed from the old login code here
-      let defaultUsername: string = "User Name";
+      let defaultUsername: string = "";
       let defaultPassword: string = "";
 
       this.state = {
@@ -63,10 +63,10 @@ class Register extends Component<RegisterProps, any> {
           deptVal: "",
           emailVal: "",
           profilePictureVal: "URL to a profile picture",
-          firstVal: "First Name",
-          middleVal: "Middle Name",
-          lastVal: "Last Name",
-          universityVal: "What university do you attend?"
+          firstVal: "",
+          middleVal: "",
+          lastVal: "",
+          universityVal: ""
       };
   }
   setDefaultImage() {
@@ -89,17 +89,17 @@ class Register extends Component<RegisterProps, any> {
     var top_text = <div id="top_text"><span className="title">Sounds good!</span><span className="subtitle">Let's get you signed up.</span></div>
     var profile_picture = <img src={this.state.profilePictureVal} onError={this.setDefaultImage} />
 
-    var first = <div className="register_form_field"><input name="firstVal" value={this.state.firstVal} onChange={this.handleChange} /></div>
-    var middle = <div className="register_form_field"><input name="middleVal" value={this.state.middleVal} onChange={this.handleChange} /></div>
-    var last = <div className="register_form_field"><input name="lastVal" value={this.state.lastVal} onChange={this.handleChange} /></div>
-    var uname = <div className="register_form_field"><input name="usernameVal" value={this.state.usernameVal} onChange={this.handleChange} /></div>
-    var email = <div className="register_form_field"><input name="emailVal" value={this.state.emailVal} onChange={this.handleChange} /></div>
-    var pwd = <div className="register_form_field"><input name="passwordVal" type="password" value={this.state.passwordVal} onChange={this.handleChange} /></div>
-    var university = <div className="register_form_field"><input name="universityVal" value={this.state.passwordVal} onChange={this.handleChange} /></div>
+    var first = <div className="register_form_field"><input name="firstVal" value={this.state.firstVal} placeholder="First Name" onChange={this.handleChange} /></div>
+    var middle = <div className="register_form_field"><input name="middleVal" value={this.state.middleVal} placeholder="Middle Name" onChange={this.handleChange} /></div>
+    var last = <div className="register_form_field"><input name="lastVal" value={this.state.lastVal} placeholder="Last Name" onChange={this.handleChange} /></div>
+    var uname = <div className="register_form_field"><input name="usernameVal" value={this.state.usernameVal} placeholder="University User Name" onChange={this.handleChange} /></div>
+    var email = <div className="register_form_field"><input name="emailVal" value={this.state.emailVal} placeholder="Account Email Address" onChange={this.handleChange} /></div>
+    var pwd = <div className="register_form_field"><input name="passwordVal" type="password" value={this.state.passwordVal} placeholder="Account Password" onChange={this.handleChange} /></div>
+    var university = <div className="register_form_field"><input name="universityVal" value={this.state.passwordVal} placeholder="What university do you attend?" onChange={this.handleChange} /></div>
     var img = <div className="register_form_field"><input name="profilePictureVal" value={this.state.profilePictureVal} onChange={this.handleChange} /></div>
 
     var register_form = <div id="register_form">{profile_picture}{first}{middle}{last}{uname}{email}{pwd}{university}{img}</div>
-    var register_container = <div id="register_container">{top_text}{register_form}</div>
+    var register_container = <div id="register_container"><div id="register_backdrop"/> {top_text}{register_form}</div>
 
     // let registerForm = <>
     // <div style={rowFlex}>
