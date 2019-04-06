@@ -154,7 +154,7 @@ class CreateProject extends Component<Props, any> {
         this.setState({error: ""});
         console.log("Project added");
         if (this.props.pageHandler !== undefined)
-          this.props.pageHandler("search_project",0);
+          this.props.pageHandler("display_project", res["project"]["id"]);
     } else {
         this.setState({error: res["error"]});
     }

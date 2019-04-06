@@ -75,11 +75,14 @@ def createproject():
     if not (name and description and isinstance(tags, list)):
         return jsonify({"success": False, "error": "You must give a name, a description, and a list of tags"})
 
-    with conn.cursor() as c:
-        c.execute("INSERT INTO project (name, description) VALUES (%s, %s) RETURNING id", (name, description))
-        (id, ) = c.fetchone()
-        c.executemany("INSERT INTO project_tags (tag, project_id) VALUES (%s, %s)", [(t, id) for t in tags])
-        out = jsonify({"success": True})
+
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("INSERT INTO project (name, description) VALUES (%s, %s) "
+                   "RETURNING *"), (name, description))
+        newProject = c.fetchone()
+        if not newProject:
+            raise Exception("Well I have no idea what to do with this")
+        out = jsonify({"success": True, "project": newProject})
         conn.commit()
     return out
 
