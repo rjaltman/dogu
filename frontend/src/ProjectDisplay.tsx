@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './css/project.css';
 import { get, post } from './utils';
 import TagEditor from './TagEditor';
+import PreferenceEditor from './PreferenceEditor';
 
 interface Props {
   id: number,
@@ -10,7 +11,7 @@ interface Props {
 
 type State = Readonly<typeof initialState>;
 
-type Project = {
+export type Project = {
     description: string,
     id: number,
     name: string,
@@ -18,11 +19,13 @@ type Project = {
     startdate: Date,
     status: string,
     university_id: number, 
-    tags: string[]
+    tags: string[], 
+    ranking: null | number
 };
 
 const initialState = {
     project: null as Project | null,
+    changingPreferences: false
 };
 
 class ProjectDisplay extends Component<Props, any> {
@@ -32,6 +35,8 @@ class ProjectDisplay extends Component<Props, any> {
         this.onEditProject = this.onEditProject.bind(this);
         this.onBackToSearch = this.onBackToSearch.bind(this);
         this.onTagChange = this.onTagChange.bind(this);
+        this.changePreferences = this.changePreferences.bind(this);
+        this.removePreference = this.removePreference.bind(this);
     }
 
     componentDidMount() {
@@ -57,6 +62,33 @@ class ProjectDisplay extends Component<Props, any> {
             </div>;
           return no_project_out;
       }
+        let preferenceDisplay;
+        if(this.state.project.ranking === null) {
+            preferenceDisplay = <div className="setPrefButton" onClick={() => this.addPreference()}>
+                You didn't give anything
+                </div>
+        } else if(this.state.changingPreferences) {
+            let projectId = this.state.project.id;
+            preferenceDisplay = <div>
+            <PreferenceEditor />
+            <button onClick={() => this.setState({changingPreferences: false}, () => this.getProject(projectId))}>
+                Done
+                </button>
+            </div>
+        } else {
+            preferenceDisplay = <div className="prefDisplay">
+                You ranked this at {this.state.project.ranking}
+                <div className="prefActions">
+                <div onClick={this.changePreferences}>
+                Change preferences
+                </div>
+
+                <div onClick={this.removePreference}>
+                Remove preference
+                </div>
+                </div>
+                </div>
+        }
 
       let p = this.state.project;
       let out = <div id="project_container">
@@ -69,6 +101,7 @@ class ProjectDisplay extends Component<Props, any> {
             <p>Status: {p.status}</p>
             <div>Tags: <br />
             <TagEditor tags={this.state.project.tags} onTagChange={this.onTagChange} /></div>
+            { preferenceDisplay }
             </div>
             <div id="project_actions">
               <div id="intro_tile">
@@ -141,6 +174,48 @@ class ProjectDisplay extends Component<Props, any> {
     } else {
         console.error(res["error"]);
     }
+  }
+
+  async addPreference(rank?: number) {
+      if(this.state.project !== null) {
+          let data: any = {id: this.state.project.id};
+          if(rank !== undefined && rank > 0) {
+              data.rank = rank;
+          } else if(rank !== undefined && rank <= 0) {
+              console.error("You can't give a negative ranking");
+              return;
+          }
+          let res: any = await post("api/project/preference/set", data);
+          if(res["success"]) {
+              let newProject = Object.assign({}, this.state.project);
+              newProject.ranking =  res["newRank"];
+              this.setState({project: newProject}, () => this.getProject(newProject.id));
+          } else if(!res["success"]) {
+              console.log(res["error"]);
+          }
+      } else {
+          console.error("The project is null? I'm confused.");
+      }
+  }
+
+  changePreferences() {
+      this.setState({changingPreferences: true});
+  }
+
+  async removePreference() {
+      if(this.state.project !== null) {
+          let data: any = {id: this.state.project.id};
+          let res: any = await post("api/project/preference/delete", data);
+          if(res["success"]) {
+              let newProject = Object.assign({}, this.state.project);
+              newProject.ranking = null;
+              this.setState({project: newProject}, () => this.getProject(newProject.id));
+          } else if(!res["success"]) {
+              console.log(res["error"]);
+          }
+      } else {
+          console.error("The project is null? I'm confused.");
+      }
   }
 
 }

@@ -230,3 +230,22 @@
   padding: 1em;
   padding-top: 0.5em;
 }
+
+.prefActions {
+    display: flex;
+}
+
+.prefActions > div {
+    background-color: #e8e8e8;
+    padding: 9px;
+    border-radius: 10px;
+    margin: 5px;
+    transition: background-color 0.1s;
+    cursor: pointer;
+}
+
+.prefActions > div:hover {
+    background-color: #d6d6d6;
+    transition: background-color 0.1s
+}
+
