@@ -190,6 +190,21 @@ def getRecommendations():
                         "WHERE preference.account_id IN my_account_id))"),
                 {"username": username})
             projectsToShow = list(c)
+            if not(projectsToShow):
+                c.execute("WITH proj_pref_ct AS ("
+                        "SELECT project_id, count(*) AS ct"
+                        "FROM preferences"
+                        "GROUP BY project_id"
+                        "ORDER BY ct DESC"
+                        "LIMIT 20"
+                    ")"
+                    "SELECT *"
+                    "FROM project"
+                    "WHERE id IN ("
+                        "SELECT project_id"
+                        "FROM proj_pref_ct"
+                    ")")
+                projectsToShow = list(c)
 
     return jsonify({"success": True, "projects": projectsToShow})
 
