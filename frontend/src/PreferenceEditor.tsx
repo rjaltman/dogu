@@ -26,8 +26,14 @@ export default class PreferenceEditor extends Component<Props, any> {
         } else {
             let projectDivs = this.state.projects.map((p, idx) => 
                 <div style={{display: "flex", alignItems: "center"}} key={idx}>
-                    <div style={{margin: "10px"}}>{ p.name }</div> <div style={{display: "flex-vertical"}}> <div onClick={this.increaseRank.bind(this, idx)}>&#11165;</div><div onClick={this.decreaseRank.bind(this, idx)}>&#11167;</div> </div>
-                    </div>
+                    <div style={{margin: "10px"}}>
+                            { p.name }
+                </div>
+                <div style={{display: "flex-vertical"}}> 
+                    <div onClick={this.increaseRank.bind(this, idx)}>&#11165;</div>
+                    <div onClick={this.decreaseRank.bind(this, idx)}>&#11167;</div> 
+                </div>
+                </div>
             );
             return projectDivs;
         }
@@ -46,6 +52,7 @@ export default class PreferenceEditor extends Component<Props, any> {
             if(index === 0)
                 return;
             let newProjects = this.state.projects.slice();
+            // Swap the project at index with the one above it
             let temp = newProjects[index];
             newProjects[index] = newProjects[index - 1];
             newProjects[index - 1] = temp;
@@ -70,6 +77,7 @@ export default class PreferenceEditor extends Component<Props, any> {
             if(index === this.state.projects.length - 1)
                 return;
             let newProjects = this.state.projects.slice();
+            // Swap the project at index with the project below it
             let temp = newProjects[index];
             newProjects[index] = newProjects[index + 1];
             newProjects[index + 1] = temp;

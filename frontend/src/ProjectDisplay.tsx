@@ -25,6 +25,7 @@ export type Project = {
 
 const initialState = {
     project: null as Project | null,
+    // Whether the preference editor should appear
     changingPreferences: false
 };
 
@@ -64,6 +65,7 @@ class ProjectDisplay extends Component<Props, any> {
       }
         let preferenceDisplay;
         if(this.state.project.ranking === null) {
+            // TODO: This could use some design...
             preferenceDisplay = <div className="setPrefButton" onClick={() => this.addPreference()}>
                 You didn't give anything
                 </div>
