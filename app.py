@@ -60,9 +60,7 @@ def register():
             return jsonify({"success": False, "error": "That username is already taken"})
 
         hashedPassword = hashPassword(password)
-        # TODO: When you change the registration form to actually ask for the university, you had better change this, otherwise things will
-        # act very strange. Also you should remove the fake university I added in migrations/20190319231235_make_fake_university_for_testing_purposes.sql.
-        c.execute("INSERT INTO account (username, password, university_id) VALUES (%s, %s, (SELECT id FROM university LIMIT 1))", (username, hashedPassword))
+        c.execute("INSERT INTO account (username, password, university_id) VALUES (%s, %s, (SELECT id FROM university WHERE name = 'University of Illinois (Urbana-Champaign)'))", (username, hashedPassword))
         out = jsonify({"success": True})
         conn.commit()
     return out
@@ -145,7 +143,7 @@ def search():
                        "SELECT university_id FROM account "
                        "WHERE username = %(username)s) "
                        "SELECT * FROM project WHERE "
-                       # "(university_id IS NULL OR (SELECT * FROM myUniversityId) IS NULL OR university_id = (select * from myUniversityId)) AND "
+                       "(university_id IS NULL OR (SELECT * FROM myUniversityId) IS NULL OR university_id = (select * from myUniversityId)) AND "
                        "(concat_ws(' ', name, description) SIMILAR TO %(re)s "
                        "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = id AND pt.tag SIMILAR TO %(re)s))"),
                       {"username": username, "re": searchRe})
