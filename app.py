@@ -83,6 +83,8 @@ def createproject():
         newProject = c.fetchone()
         if not newProject:
             raise Exception("Well I have no idea what to do with this")
+        newProjectId = newProject["id"]
+        c.executemany("INSERT INTO project_tags (tag, project_id) VALUES (%s, %s)", [(t, newProjectId) for t in tags])
         out = jsonify({"success": True, "project": newProject})
         conn.commit()
     return out
