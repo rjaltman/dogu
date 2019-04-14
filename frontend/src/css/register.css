@@ -1,5 +1,4 @@
 #register_container {
-  text-align: center;
   background-color: #fffffff7;
   padding-left: 2em;
   padding-right: 2em;
@@ -28,13 +27,14 @@
 
 #top_text {
   color: #245c7f;
-  padding-top: 2em;
+  padding-top: 1.5em;
 }
 
 #top_text .title {
   display: block;
   font-size: 1.8em;
   padding: 0.5em;
+  padding-top: 0.2em;
   padding-bottom:0.3em;
 }
 
@@ -44,7 +44,19 @@
   font-size:1.2em;
 }
 
+#top_text .material-icons {
+  float: left;
+  font-size: 3em;
+  padding: 0.5em;
+  margin-right: 0.5em;
+  background-color: #245c7f;
+  color: #fff;
+  border-radius:4em;
+  box-shadow: 0px 1px 3px #a8a8a8;
+}
+
 #register_form {
+  margin-top: 0.5em;
   border-top: 2px solid silver;
   padding-top: 2em;
 }

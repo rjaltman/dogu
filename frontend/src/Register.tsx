@@ -86,7 +86,8 @@ class Register extends Component<RegisterProps, any> {
     return getStarted;
   }
   getStudentRender() {
-    var top_text = <div id="top_text"><span className="title">Sounds good!</span><span className="subtitle">Let's get you signed up.</span></div>
+    var top_icon = <i className="material-icons large_icon">&#xe7fe;</i>;
+    var top_text = <div id="top_text">{top_icon} <span className="title">Sounds good!</span><span className="subtitle">Let's get you signed up as a student.</span></div>
     var profile_picture = <img src={this.state.profilePictureVal} onError={this.setDefaultImage} />
 
     var first = <div className="register_form_field"><input name="firstVal" value={this.state.firstVal} placeholder="First Name" onChange={this.handleChange} /></div>
@@ -98,7 +99,9 @@ class Register extends Component<RegisterProps, any> {
     var university = <div className="register_form_field"><input name="universityVal" value={this.state.passwordVal} placeholder="What university do you attend?" onChange={this.handleChange} /></div>
     var img = <div className="register_form_field"><input name="profilePictureVal" value={this.state.profilePictureVal} onChange={this.handleChange} /></div>
 
-    var register_form = <div id="register_form">{profile_picture}{first}{middle}{last}{uname}{email}{pwd}{university}{img}</div>
+    var register_lhs = <div id="register_lhs">{profile_picture}</div>
+
+    var register_form = <div id="register_form">{register_lhs}{first}{middle}{last}{uname}{email}{pwd}{university}{img}</div>
     var register_container = <div id="register_container"><div id="register_backdrop"/> {top_text}{register_form}</div>
 
     // let registerForm = <>
