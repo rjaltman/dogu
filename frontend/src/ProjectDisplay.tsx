@@ -18,8 +18,8 @@ export type Project = {
     organization_id: number,
     startdate: Date,
     status: string,
-    university_id: number, 
-    tags: string[], 
+    university_id: number,
+    tags: string[],
     ranking: null | number
 };
 
@@ -72,10 +72,13 @@ class ProjectDisplay extends Component<Props, any> {
         } else if(this.state.changingPreferences) {
             let projectId = this.state.project.id;
             preferenceDisplay = <div>
+            <div id="overlay_black"> </div>
+            <div id="preference_overlay">
             <PreferenceEditor />
             <button onClick={() => this.setState({changingPreferences: false}, () => this.getProject(projectId))}>
                 Done
                 </button>
+            </div>
             </div>
         } else {
             preferenceDisplay = <div className="prefDisplay">

@@ -24,14 +24,14 @@ export default class PreferenceEditor extends Component<Props, any> {
         if(this.state.projects === null) {
             return <img width="100" src="https://media.giphy.com/media/3o7bu8sRnYpTOG1p8k/source.gif" />
         } else {
-            let projectDivs = this.state.projects.map((p, idx) => 
+            let projectDivs = this.state.projects.map((p, idx) =>
                 <div style={{display: "flex", alignItems: "center"}} key={idx}>
                     <div style={{margin: "10px"}}>
                             { p.name }
                 </div>
-                <div style={{display: "flex-vertical"}}> 
-                    <div onClick={this.increaseRank.bind(this, idx)}>&#11165;</div>
-                    <div onClick={this.decreaseRank.bind(this, idx)}>&#11167;</div> 
+                <div style={{display: "flex-vertical"}}>
+                    <div onClick={this.increaseRank.bind(this, idx)}>&#x25B2;</div>
+                    <div onClick={this.decreaseRank.bind(this, idx)}>&#x25BC;</div>
                 </div>
                 </div>
             );
@@ -71,7 +71,7 @@ export default class PreferenceEditor extends Component<Props, any> {
             console.error("WELP");
         }
     }
-    
+
     async decreaseRank(index: number) {
         if(this.state.projects !== null) {
             if(index === this.state.projects.length - 1)

@@ -1,0 +1,18 @@
+#overlay_black {
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  background-color: #00000063;
+  position: fixed;
+}
+
+#preference_overlay {
+  margin: 0 auto;
+  padding: 2em;
+  background-color: #f8f8f8;
+  border-radius: 0.1em;
+  box-shadow: 0px 2px 6px #585858;
+  z-index: 10;
+  position: absolute;
+}
