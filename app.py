@@ -155,6 +155,77 @@ def search():
 
     return jsonify({"success": True, "projects": projectsToShow})
 
+@app.route("/api/recommendations", methods=["GET"])
+def getRecommendations():
+    username = session.get('username', None)
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        if not username:
+            c.execute("WITH proj_pref_ct AS ("
+                        "SELECT project_id, count(*) AS ct "
+                        "FROM preferences "
+                        "GROUP BY project_id "
+                        "ORDER BY ct DESC "
+                        "LIMIT 20"
+                    ") "
+                    "SELECT * "
+                    "FROM project "
+                    "WHERE id IN ( "
+                        "SELECT project_id "
+                        "FROM proj_pref_ct "
+                    ")")
+            projectsToShow = list(c)
+        else:
+            #c.execute("SELECT EXISTS (SELECT 1 FROM account WHERE username = %s)", (username, ))
+            #if not all(c.fetchone().values()):
+            #    raise Exception("You have a cookie from a user who doesn't exist!")
+            c.execute(("WITH my_account_id AS ("
+                "SELECT account.id "
+                "FROM account "
+                "WHERE username = %(username)s"
+                "), my_preferences AS ("
+                "SELECT project_id "
+                "FROM preference "
+                "WHERE preference.account_id IN (SELECT * FROM my_account_id)"
+                "), related_tags AS ("
+                "SELECT project_tags.tag "
+                "FROM my_preferences, preference "
+                "INNER JOIN project_tags ON preference.project_id=project_tags.project_id"
+                "), projects_same_tag AS ("
+                "SELECT project_id "
+                "FROM project_tags "
+                "WHERE project_tags.tag IN (SELECT tag FROM related_tags) "
+                "ORDER BY RANDOM() "
+                "LIMIT 20"
+                ")"
+                "SELECT * "
+                "FROM project "
+                "WHERE (status='New') AND id IN ("
+                    "SELECT project_id "
+                    "FROM projects_same_tag "
+                    "EXCEPT "
+                        "(SELECT project_id "  
+                        "FROM preference "
+                        "WHERE preference.account_id IN (SELECT * FROM my_account_id)))"),
+                {"username": username})
+            projectsToShow = list(c)
+            if not(projectsToShow):
+                c.execute("WITH proj_pref_ct AS ("
+                        "SELECT project_id, count(*) AS ct "
+                        "FROM preference "
+                        "GROUP BY project_id "
+                        "ORDER BY ct DESC "
+                        "LIMIT 20"
+                    ") "
+                    "SELECT * "
+                    "FROM project "
+                    "WHERE id IN ( "
+                        "SELECT project_id "
+                        "FROM proj_pref_ct "
+                    ")")
+                projectsToShow = list(c)
+
+    return jsonify({"success": True, "projects": projectsToShow})
+
 @app.route("/api/project/<int:id>", methods=["GET"])
 def getProject(id):
     return jsonify({"project": getProjectById(id), "success": True})
