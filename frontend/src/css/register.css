@@ -72,3 +72,26 @@
 #register_form input {
   display: inline-block;
 }
+
+#register_lhs {
+  padding: 4em;
+  padding-right: 5em;
+  padding-top: 7em;
+  float: left;
+}
+
+button {
+  width: 100%;
+}
+
+button .material-icons {
+  padding-right: 0.5em;
+}
+
+.studentBtn {
+  background-color: #245c7f;
+}
+
+.studentBtn:hover {
+  background-color: #345c7f;
+}

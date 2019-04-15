@@ -98,10 +98,11 @@ class Register extends Component<RegisterProps, any> {
     var pwd = <div className="register_form_field"><input name="passwordVal" type="password" value={this.state.passwordVal} placeholder="Account Password" onChange={this.handleChange} /></div>
     var university = <div className="register_form_field"><input name="universityVal" value={this.state.passwordVal} placeholder="What university do you attend?" onChange={this.handleChange} /></div>
     var img = <div className="register_form_field"><input name="profilePictureVal" value={this.state.profilePictureVal} onChange={this.handleChange} /></div>
+    var finish = <button onClick={this.setDefaultImage} className="studentBtn"><i className="material-icons">&#xe147;</i>Sign Up as Student</button>
 
     var register_lhs = <div id="register_lhs">{profile_picture}</div>
 
-    var register_form = <div id="register_form">{register_lhs}{first}{middle}{last}{uname}{email}{pwd}{university}{img}</div>
+    var register_form = <div id="register_form">{register_lhs}{first}{middle}{last}{uname}{email}{pwd}{university}{img}{finish}</div>
     var register_container = <div id="register_container"><div id="register_backdrop"/> {top_text}{register_form}</div>
 
     // let registerForm = <>
