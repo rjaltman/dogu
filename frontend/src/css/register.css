@@ -97,6 +97,19 @@ button .material-icons {
   padding-right: 0.5em;
 }
 
+select {
+  padding: 0.4em;
+  width: 25vw;
+  margin-top: 1vw;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px #e8e8e8;
+  border-color: #e8e8e8;
+  border-style: solid;
+  border-width: 1px;
+  font-family: 'Istok Web', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  background: #f8f8f8;
+}
+
 .studentBtn {
   background-color: #245c7f;
 }
