@@ -89,7 +89,6 @@ class Register extends Component<RegisterProps, any> {
     var top_icon = <i className="material-icons large_icon">&#xe7fe;</i>;
     var top_text = <div id="top_text">{top_icon} <span className="title">Sounds good!</span><span className="subtitle">Let's get you signed up as a student.</span></div>
     var profile_picture = <img src={this.state.profilePictureVal} onError={this.setDefaultImage} />
-
     var first = <div className="register_form_field"><input name="firstVal" value={this.state.firstVal} placeholder="First Name" onChange={this.handleChange} /></div>
     var middle = <div className="register_form_field"><input name="middleVal" value={this.state.middleVal} placeholder="Middle Name" onChange={this.handleChange} /></div>
     var last = <div className="register_form_field"><input name="lastVal" value={this.state.lastVal} placeholder="Last Name" onChange={this.handleChange} /></div>
@@ -102,7 +101,17 @@ class Register extends Component<RegisterProps, any> {
 
     var register_lhs = <div id="register_lhs">{profile_picture}</div>
 
-    var register_form = <div id="register_form">{register_lhs}{first}{middle}{last}{uname}{email}{pwd}{university}{img}{finish}</div>
+    var intro_name = <div id="register_student_name_intro"><i className="material-icons">&#xe85e;</i><span className="register_student_name_intro title">What is your name?</span></div>
+    var intro_account = <div id="register_student_name_intro"><i className="material-icons">&#xe2c9;</i><span className="register_student_name_intro title">Next, we need some account information.</span></div>
+    var intro_university = <div id="register_student_name_intro"><i className="material-icons">&#xe80c;</i><span className="register_student_name_intro title">What school do you attend?</span></div>
+    var intro_img = <div id="register_student_name_intro"><i className="material-icons">&#xe439;</i><span className="register_student_name_intro title">Finally, a URL to a profile photo.</span></div>
+
+    var your_name = <div id="register_student_name">{intro_name}<div className="register_student_name_ind">{first}{middle}{last}</div></div>
+    var your_acc = <div id="register_student_acc">{intro_account}<div className="register_student_name_ind">{uname}{email}{pwd}</div></div>
+    var your_university = <div id="register_student_university">{intro_university}{university}</div>
+    var your_img = <div id="register_student_university">{intro_img}{img}</div>
+
+    var register_form = <div id="register_form_parent">{register_lhs}<div id="register_form">{your_name}{your_acc}{your_university}{your_img}{finish}</div></div>
     var register_container = <div id="register_container"><div id="register_backdrop"/> {top_text}{register_form}</div>
 
     // let registerForm = <>

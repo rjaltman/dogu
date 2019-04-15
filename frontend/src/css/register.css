@@ -28,6 +28,8 @@
 #top_text {
   color: #245c7f;
   padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  border-bottom: 2px solid silver;
 }
 
 #top_text .title {
@@ -57,8 +59,9 @@
 
 #register_form {
   margin-top: 0.5em;
-  border-top: 2px solid silver;
-  padding-top: 2em;
+  display:flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 #register_form img {
@@ -71,13 +74,19 @@
 
 #register_form input {
   display: inline-block;
+  float: left;
 }
 
 #register_lhs {
   padding: 4em;
-  padding-right: 5em;
-  padding-top: 7em;
-  float: left;
+  margin: auto 0;
+}
+
+#register_lhs img {
+    border-radius: 2em;
+    width: 10em;
+    height: 10em;
+    box-shadow: 0px 1px 3px grey;
 }
 
 button {
@@ -94,4 +103,21 @@ button .material-icons {
 
 .studentBtn:hover {
   background-color: #345c7f;
+}
+
+.register_student_name_ind input {
+  max-width: 12em;
+  margin-right: 1em;
+}
+
+#register_student_name_intro .title {
+  margin-left: 1em;
+}
+
+#register_student_name_intro {
+  padding-top: 2em;
+}
+
+#register_form_parent {
+  display: flex;
 }
