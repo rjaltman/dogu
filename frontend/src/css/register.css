@@ -83,10 +83,10 @@
 }
 
 #register_lhs img {
-    border-radius: 2em;
-    width: 10em;
-    height: 10em;
-    box-shadow: 0px 1px 3px grey;
+  border-radius: 2em;
+  width: 10em;
+  height: 10em;
+  box-shadow: 0px 1px 3px grey;
 }
 
 button {

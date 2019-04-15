@@ -122,6 +122,19 @@ def deleteproject():
         conn.commit()
     return out
 
+@app.route("/api/listUniversities", methods=["GET"])
+def listUniversities():
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        # This person is a looky-loo; I guess they get to see everything?
+        c.execute("SELECT * FROM university")
+        key_val = {}
+        projectsToShow = list(c)
+        for i in projectsToShow:
+            key_val[i['id']] = i['name']
+        print(key_val)
+
+    return jsonify({"success": True, "universities": key_val})
+
 @app.route("/api/search", methods=["GET"])
 def search():
     searchTerms = request.args.getlist('q')
