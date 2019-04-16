@@ -59,7 +59,7 @@ class Home extends Component<HomeProps, any> {
     if (this.props.pageHandler !== undefined)
       this.props.pageHandler("search_project",0);
   }
-  
+
   render() {
       var welcome_img = <img src="https://www.gravatar.com/avatar/?default=mm&size=160" />
       var welcome_btn = <button onClick={this.onCreateProject} className="welcomeBtn"><i className="material-icons">&#xe147;</i>Create New Project</button>

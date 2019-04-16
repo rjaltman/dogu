@@ -7,7 +7,9 @@ interface LoginProps {
     username? : string,
     password?: string,
     onAuth?: (username: string) => void,
-    onLogin?: (username: string) => void
+    onLogin?: (username: string) => void,
+    pageHandler?: (page: string, pid: number) => void
+    userTypeHandler?: (usertype: "Instructor" | "Student" | "Organizer" | "") => void
 };
 
 type State = Readonly<{
@@ -61,6 +63,7 @@ class Login extends Component<LoginProps, any> {
         this.onSubmit = this.onSubmit.bind(this);
         this.handleKeydown = this.handleKeydown.bind(this);
         this.loginToggle = this.loginToggle.bind(this);
+        this.userRegistration = this.userRegistration.bind(this);
     }
 
     loginToggle() {
@@ -82,6 +85,15 @@ class Login extends Component<LoginProps, any> {
             overlay: true
           })
         }
+      }
+    }
+
+    userRegistration(userType: "Instructor" | "Student" | "Organizer" | "") {
+      if (this.props.pageHandler !== undefined) {
+        this.props.pageHandler("register",0);
+      }
+      if (this.props.userTypeHandler !== undefined) {
+        this.props.userTypeHandler(userType);
       }
     }
 
@@ -184,9 +196,9 @@ class Login extends Component<LoginProps, any> {
         </div>
 
         <div id="home_register_links">
-          <div className="home_register_wedge home_register_wedge_student"><span className="home_register_wedge_text">Create and join projects as a student</span></div>
-          <div className="home_register_wedge home_register_wedge_organizer"><span className="home_register_wedge_text">Pitch a project as an organization</span></div>
-          <div className="home_register_wedge home_register_wedge_instructor"><span className="home_register_wedge_text">Mentor and make teams as an instructor</span></div>
+          <div className="home_register_wedge home_register_wedge_student" onClick={() => this.userRegistration("Student")}><span className="home_register_wedge_text">Create and join projects as a student</span></div>
+          <div className="home_register_wedge home_register_wedge_organizer" onClick={() => this.userRegistration("Organizer")}><span className="home_register_wedge_text">Pitch a project as an organization</span></div>
+          <div className="home_register_wedge home_register_wedge_instructor" onClick={() => this.userRegistration("Instructor")}><span className="home_register_wedge_text">Mentor and make teams as an instructor</span></div>
           <div className="home_login_wedge" onClick={this.loginToggle}><span className="home_register_wedge_text">Log In to DOGU</span></div>
         </div>
 

@@ -34,7 +34,6 @@ class Header extends Component<HeaderProps, any> {
       var links =
         <ul id="header-links">
           <li className="active hyperlinked" onClick={this.goHome}>Home</li>
-          <li className="hyperlinked" onClick={this.goRegister}>Log In</li>
           <li className="hyperlinked" onClick={this.goRegister}>Register</li>
         </ul>
       return <div id="header">{material} Dogu {links}</div>;

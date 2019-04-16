@@ -13,6 +13,7 @@ type State = Readonly<{
   loggedIn: boolean,
   uname: string,
   page: string,
+  userType: "Instructor" | "Student" | "Organizer" | "",
   pid: number
 }>;
 type AppProps = Readonly<{}>;
@@ -26,10 +27,12 @@ class App extends Component {
         loggedIn: false,
         uname: "",
         page: "",
+        userType: "",
         pid: 0
       };
       this.loginHandler = this.loginHandler.bind(this);
       this.pageViewHandler = this.pageViewHandler.bind(this);
+      this.userTypeHandler = this.userTypeHandler.bind(this);
   }
   loginHandler(username: string) {
     this.setState({
@@ -44,15 +47,20 @@ class App extends Component {
       pid: pid
     });
   }
+  userTypeHandler(usertype: "Instructor" | "Student" | "Organizer" | "") {
+    this.setState({
+      userType: usertype
+    });
+  }
   render() {
       if (!this.state.loggedIn) {
         if (this.state.page == "register") {
-          return <div><Header pageHandler = {this.pageViewHandler} /><Register pageHandler = {this.pageViewHandler} /></div>;
+          return <div><Header pageHandler = {this.pageViewHandler} /><Register utype = {this.state.userType} pageHandler = {this.pageViewHandler} /></div>;
         }
         else {
           return <div>
             <Header pageHandler = {this.pageViewHandler} />
-            <Login onLogin = {this.loginHandler} />
+            <Login pageHandler = {this.pageViewHandler} onLogin = {this.loginHandler} userTypeHandler = {this.userTypeHandler} />
             </div>;
         }
       }

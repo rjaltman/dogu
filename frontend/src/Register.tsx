@@ -5,7 +5,7 @@ import './css/register.css';
 interface RegisterProps {
     onAuth?: (username: string) => void,
     pageHandler?: (page: string, pid: number) => void,
-    utype? : string;
+    utype? : "Instructor" | "Student" | "Organizer" | "";
 };
 
 type State = Readonly<{
@@ -56,13 +56,19 @@ class Register extends Component<RegisterProps, any> {
       let defaultUsername: string = "";
       let defaultPassword: string = "";
 
+      let defaultPosition: "Instructor" | "Student" | "Organizer" | "" = "";
+
+      if (this.props.utype !== undefined) {
+        defaultPosition = this.props.utype;
+      }
+
       this.state = {
           usernameVal: defaultUsername,
           passwordVal: defaultPassword,
           error: "",
           registering: false,
           passwordVal2: "",
-          positionVal: "Student",
+          positionVal: defaultPosition,
           deptVal: "",
           emailVal: "",
           profilePictureVal: "URL to a profile picture",
