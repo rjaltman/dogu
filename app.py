@@ -136,22 +136,35 @@ def listUniversities():
         for i in projectsToShow:
             key_val[i['id']] = i['name']
         print(key_val)
-        print("----------------Universities----------------")
-        print(projectsToShow)
-        print("----------------Accounts----------------")
-        c.execute("SELECT * FROM account")
-        print(list(c)[0].keys())
-        print("----------------Instructors----------------")
-        c.execute("SELECT * FROM instructor")
-        print(list(c))
-        print("----------------Representatives----------------")
-        c.execute("SELECT * FROM rep")
-        print(list(c))
-        print("----------------Organizations----------------")
-        c.execute("SELECT * FROM organization")
-        print(list(c))
+        # print("----------------Universities----------------")
+        # print(projectsToShow)
+        # print("----------------Accounts----------------")
+        # c.execute("SELECT * FROM account")
+        # print(list(c)[0].keys())
+        # print("----------------Instructors----------------")
+        # c.execute("SELECT * FROM instructor")
+        # print(list(c))
+        # print("----------------Representatives----------------")
+        # c.execute("SELECT * FROM rep")
+        # print(list(c))
+        # print("----------------Organizations----------------")
+        # c.execute("SELECT * FROM organization")
+        # print(list(c))
 
     return jsonify({"success": True, "universities": key_val})
+
+@app.route("/api/listOrgs", methods=["GET"])
+def listOrganizations():
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        # This person is a looky-loo; I guess they get to see everything?
+        c.execute("SELECT * FROM organization")
+        key_val = {}
+        projectsToShow = list(c)
+        for i in projectsToShow:
+            key_val[i['id']] = i['name']
+        print(key_val)
+
+    return jsonify({"success": True, "organizations": key_val})
 
 @app.route("/api/search", methods=["GET"])
 def search():

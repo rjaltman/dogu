@@ -51,7 +51,6 @@
   font-size: 3em;
   padding: 0.5em;
   margin-right: 0.5em;
-  background-color: #245c7f;
   color: #fff;
   border-radius:4em;
   box-shadow: 0px 1px 3px #a8a8a8;
@@ -118,6 +117,22 @@ select {
   background-color: #345c7f;
 }
 
+.instructorBtn {
+  background-color: #5b771c;
+}
+
+.instructorBtn:hover {
+  background-color: #6b771c;
+}
+
+.organizerBtn {
+  background-color: #e57c76;
+}
+
+.organizerBtn:hover {
+  background-color: #f57c76;
+}
+
 .register_student_name_ind input {
   max-width: 12em;
   margin-right: 1em;
@@ -133,4 +148,24 @@ select {
 
 #register_form_parent {
   display: flex;
+}
+
+.instructor {
+  color: #5b771c;
+}
+
+.student-back {
+  background-color: #245c7f;
+}
+
+.instructor-back {
+  background-color: #5b771c;
+}
+
+.organizer {
+  color: #e57c76;
+}
+
+.organizer-back {
+  background-color: #e57c76;
 }
