@@ -65,6 +65,32 @@ def register():
         conn.commit()
     return out
 
+
+@app.route("/api/auth/registerStudent", methods=["POST"])
+def registerStudent():
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    name = request.json.get("name", None)
+    dept = request.json.get("dept", None)
+    contactemail = request.json.get("contactemail", None)
+    position = request.json.get("position", None)
+    university_id = request.json.get("university_id", None)
+    avatar = request.json.get("avatar", None)
+
+    if not (username and password):
+        return jsonify({"success": False, "error": "You must give username, password, and email"})
+
+    with conn.cursor() as c:
+        c.execute("SELECT count(*) FROM account WHERE username = %s", (username, ))
+        if c.fetchone()[0] != 0:
+            return jsonify({"success": False, "error": "That username is already taken"})
+
+        hashedPassword = hashPassword(password)
+        c.execute("INSERT INTO account (username, password, name, dept, contactemail, position, university_id, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (username, hashedPassword,name,dept,contactemail,position,university_id,avatar))
+        out = jsonify({"success": True})
+        conn.commit()
+    return out
+
 @app.route('/api/getProfileInfo', methods=["POST"])
 def getProfileInfo():
     username = request.json.get("username", None)
@@ -158,6 +184,7 @@ def listUniversities():
         projectsToShow = list(c)
         for i in projectsToShow:
             key_val[i['id']] = i['name']
+        conn.commit()
 
     return jsonify({"success": True, "universities": key_val})
 
@@ -170,6 +197,7 @@ def listOrganizations():
         projectsToShow = list(c)
         for i in projectsToShow:
             key_val[i['id']] = i['name']
+        conn.commit()
 
     return jsonify({"success": True, "organizations": key_val})
 

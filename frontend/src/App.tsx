@@ -55,7 +55,7 @@ class App extends Component {
   render() {
       if (!this.state.loggedIn) {
         if (this.state.page == "register") {
-          return <div><Header pageHandler = {this.pageViewHandler} /><Register utype = {this.state.userType} pageHandler = {this.pageViewHandler} /></div>;
+          return <div><Header pageHandler = {this.pageViewHandler} /><Register utype = {this.state.userType} onLogin = {this.loginHandler} pageHandler = {this.pageViewHandler} /></div>;
         }
         else {
           return <div>

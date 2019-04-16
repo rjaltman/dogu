@@ -5,6 +5,7 @@ import './css/register.css';
 interface RegisterProps {
     onAuth?: (username: string) => void,
     pageHandler?: (page: string, pid: number) => void,
+    onLogin?: (username: string) => void,
     utype? : "Instructor" | "Student" | "Organizer" | "";
 };
 
@@ -76,7 +77,7 @@ class Register extends Component<RegisterProps, any> {
           firstVal: "",
           middleVal: "",
           lastVal: "",
-          universityVal: 1,
+          universityVal: -1,
           universityList: [],
           orgsList: []
       };
@@ -94,8 +95,7 @@ class Register extends Component<RegisterProps, any> {
     this.setState({universityVal: event.currentTarget.value});
   }
   onCreateAccount() {
-    if (this.props.pageHandler !== undefined)
-      this.props.pageHandler("create_project",0);
+    this.register();
   }
   onChooseUserType() {
     // Nothing for now, TODO
@@ -110,6 +110,10 @@ class Register extends Component<RegisterProps, any> {
       // var key:number = this.state.universityList[i]['id']
       // var value:number = this.state.universityList[i]['id']
       // var name:string = this.state.universityList[i]['name']
+      if (this.state.universityVal < 0) {
+        // Set default key
+        this.setState({universityVal: key});
+      }
       universities.push(<option key={key} value={key}>{this.state.universityList[key]}</option>);
     }
     return universities;
@@ -149,7 +153,7 @@ class Register extends Component<RegisterProps, any> {
       </div>
     var img = <div className="register_form_field"><input name="profilePictureVal" value={this.state.profilePictureVal} onChange={this.handleChange} /></div>
     var dept = <div className="register_form_field"><input name="deptVal" value={this.state.deptVal} placeholder="Enter Department Name (e.g. Computer Science)" onChange={this.handleChange} /></div>
-    var finish = <button onClick={this.setDefaultImage} className="studentBtn"><i className="material-icons">&#xe147;</i>Sign Up as Student</button>
+    var finish = <button onClick={this.onCreateAccount} className="studentBtn"><i className="material-icons">&#xe147;</i>Sign Up as Student</button>
 
     var register_lhs = <div id="register_lhs">{profile_picture}</div>
 
@@ -282,6 +286,38 @@ class Register extends Component<RegisterProps, any> {
       } else {
           this.setState({orgsList: []})
           console.log(res["error"])
+      }
+  }
+
+  async register() {
+      switch (this.state.positionVal) {
+        case ("" || "Student"): {
+          let data = {username: this.state.usernameVal,
+            password: this.state.passwordVal,
+            name: this.state.firstVal + " " + this.state.lastVal,
+            dept: this.state.deptVal,
+            contactemail: this.state.emailVal,
+            position: this.state.positionVal,
+            university_id: this.state.universityVal,
+            avatar: this.state.profilePictureVal}
+          let res: any = await post("api/auth/registerStudent", data);
+          if(res["success"]) {
+              console.log("You registered");
+
+              // Recognize success, set user as logged in
+              if (this.props.onLogin !== undefined)
+                this.props.onLogin(this.state.usernameVal);
+
+          } else {
+              this.setState({error: res["error"]});
+          }
+        }
+        case "Instructor": {
+          return this.getInstructorRender();
+        }
+        case "Organizer": {
+          return this.getOrganizerRender();
+        }
       }
   }
 
