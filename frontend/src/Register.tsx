@@ -191,7 +191,7 @@ class Register extends Component<RegisterProps, any> {
       </div>
     var img = <div className="register_form_field"><input name="profilePictureVal" value={this.state.profilePictureVal} onChange={this.handleChange} /></div>
     var dept = <div className="register_form_field"><input name="deptVal" value={this.state.deptVal} placeholder="Enter Department Name (e.g. Computer Science)" onChange={this.handleChange} /></div>
-    var finish = <button onClick={this.setDefaultImage} className="organizerBtn"><i className="material-icons">&#xe147;</i>Sign Up as Organizer</button>
+    var finish = <button onClick={this.onCreateAccount} className="organizerBtn"><i className="material-icons">&#xe147;</i>Sign Up as Organizer</button>
 
     var register_lhs = <div id="register_lhs">{profile_picture}</div>
 
@@ -290,53 +290,41 @@ class Register extends Component<RegisterProps, any> {
   }
 
   async register() {
-      switch (this.state.positionVal) {
-        case ("" || "Student"): {
-          let data = {username: this.state.usernameVal,
-            password: this.state.passwordVal,
-            name: this.state.firstVal + " " + this.state.lastVal,
-            dept: this.state.deptVal,
-            contactemail: this.state.emailVal,
-            position: this.state.positionVal,
-            university_id: this.state.universityVal,
-            avatar: this.state.profilePictureVal}
-          let res: any = await post("api/auth/registerStudent", data);
-          if(res["success"]) {
-              console.log("You registered");
+    let data = {username: this.state.usernameVal,
+      password: this.state.passwordVal,
+      name: this.state.firstVal + " " + this.state.lastVal,
+      dept: this.state.deptVal,
+      contactemail: this.state.emailVal,
+      position: this.state.positionVal,
+      university_id: this.state.universityVal,
+      avatar: this.state.profilePictureVal}
+      // Note that university_id doubles as organization_id given the storage mechanism in state here
+    if (this.state.positionVal == "Organizer") {
+      let res: any = await post("api/auth/registerRep", data);
+      if(res["success"]) {
+          console.log("You registered");
 
-              // Recognize success, set user as logged in
-              if (this.props.onLogin !== undefined)
-                this.props.onLogin(this.state.usernameVal);
+          // Recognize success, set user as logged in
+          if (this.props.onLogin !== undefined)
+            this.props.onLogin(this.state.usernameVal);
 
-          } else {
-              this.setState({error: res["error"]});
-          }
-        }
-        case "Instructor": {
-          let data = {username: this.state.usernameVal,
-            password: this.state.passwordVal,
-            name: this.state.firstVal + " " + this.state.lastVal,
-            dept: this.state.deptVal,
-            contactemail: this.state.emailVal,
-            position: this.state.positionVal,
-            university_id: this.state.universityVal,
-            avatar: this.state.profilePictureVal}
-          let res: any = await post("api/auth/registerStudent", data);
-          if(res["success"]) {
-              console.log("You registered");
-
-              // Recognize success, set user as logged in
-              if (this.props.onLogin !== undefined)
-                this.props.onLogin(this.state.usernameVal);
-
-          } else {
-              this.setState({error: res["error"]});
-          }
-        }
-        case "Organizer": {
-          return;
-        }
+      } else {
+          this.setState({error: res["error"]});
       }
+    }
+    else {
+      let res: any = await post("api/auth/registerStudent", data);
+      if(res["success"]) {
+          console.log("You registered");
+
+          // Recognize success, set user as logged in
+          if (this.props.onLogin !== undefined)
+            this.props.onLogin(this.state.usernameVal);
+
+      } else {
+          this.setState({error: res["error"]});
+      }
+    }
   }
 
 }

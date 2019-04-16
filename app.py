@@ -94,6 +94,42 @@ def registerStudent():
         conn.commit()
     return out
 
+@app.route("/api/auth/registerRep", methods=["POST"])
+def registerRep():
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    name = request.json.get("name", None)
+    dept = request.json.get("dept", None)
+    contactemail = request.json.get("contactemail", None)
+    position = request.json.get("position", None)
+    university_id = request.json.get("university_id", None)
+    avatar = request.json.get("avatar", None)
+
+    if not (username and password):
+        return jsonify({"success": False, "error": "You must give username, password, and email"})
+
+    with conn.cursor() as c:
+        c.execute("SELECT count(*) FROM account WHERE username = %s", (username, ))
+        if c.fetchone()[0] != 0:
+            return jsonify({"success": False, "error": "That username is already taken"})
+
+        hashedPassword = hashPassword(password)
+        c.execute("INSERT INTO account (username, password, name, dept, contactemail, position, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s)", (username, hashedPassword,name,dept,contactemail,position,avatar))
+        out = jsonify({"success": True})
+        # This sets the cookie that keeps the user logged in for the rest of the session
+        # You can read the username out of this session variable whenever you want
+        session["username"] = username
+        conn.commit()
+
+    # Commit the account first before going and updating with the ID of the organizer just formed here
+    with conn.cursor() as c:
+        c.execute("SELECT id FROM account WHERE username = %s", (username, ))
+        id = list(c.fetchone())[0]
+        c.execute("INSERT INTO rep (account_id, organization_id) VALUES (%s, %s)", (id, university_id));
+        conn.commit()
+
+    return out
+
 @app.route('/api/getProfileInfo', methods=["POST"])
 def getProfileInfo():
     username = request.json.get("username", None)
@@ -102,13 +138,13 @@ def getProfileInfo():
 
     with conn.cursor() as c:
         c.execute("SELECT username, name, position, avatar FROM account")
-        print(list(c))
+
         c.execute("SELECT username, name, position, avatar FROM account WHERE username = %s", (username, ))
         result = c.fetchone()
         result = list(result)
         if not result:
             return jsonify({"success": False, "error": "There is no account by that username"})
-        print(result)
+
         if not result[1]:
             result[1] = result[0]
         if not result[3]:
