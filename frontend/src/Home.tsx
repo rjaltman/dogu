@@ -86,14 +86,23 @@ class Home extends Component<HomeProps, any> {
       var dash_search = <div id="dash_search">{dash_search_icon} {dash_search_leftside} {dash_search_rightside}</div>
 
       var dash_staytuned_icon = <i className="material-icons large_icon">&#xe03e;</i>;
-      var dash_staytuned_subtitle = <span className="dash_staytuned_subtitle">This section will soon list your current projects, and allow you to jump back in to what you worked on last. Thanks for being patient!</span>;
+      var dash_staytuned_subtitle = <span className="dash_staytuned_subtitle">This section
+        is under construction for instructors and organizers. For instructors, this section will soon let you view all classes, make a new class,
+        and form teams to work on projects. Organizers, you can keep track of your organization's information in this section. Thanks for being patient!</span>;
       var dash_staytuned_text = <div id="dash_staytuned_text"><span className="dash_staytuned_title dash_headline">Stay tuned.</span> {dash_staytuned_subtitle}</div>;
       var dash_staytuned = <div id="dash_staytuned">{dash_staytuned_icon} {dash_staytuned_text}</div>
 
       let projectList = this.state.showingProjects.map((p: Project) => <div className="search_tile" key={p.id} onClick={() => this.projectClick(p.id)}>
                                                             <span className="title">{p.name}</span> <span className="subtitle">{p.description}</span></div>);
 
-      return <div><div id="dash_container">{welcome} {dash_search} {dash_staytuned}</div><br /><div id="search_container"><div id="search_results">{projectList}</div></div></div>;
+      if (this.state.positionVal == "Student") {
+        return <div><div id="dash_container">{welcome} {dash_search}</div><br /><div id="search_container"><div id="search_results">{projectList}</div></div></div>;
+      }
+      else {
+        return <div><div id="dash_container">{welcome} {dash_staytuned}</div></div>;
+      }
+
+
   }
 
   projectClick(id: number) {
