@@ -65,6 +65,29 @@ def register():
         conn.commit()
     return out
 
+@app.route('/api/getProfileInfo', methods=["POST"])
+def getProfileInfo():
+    username = request.json.get("username", None)
+    if not (username):
+        return jsonify({"success": False, "error": "You didn't pass a username."})
+
+    with conn.cursor() as c:
+        c.execute("SELECT username, name, position, avatar FROM account")
+        print(list(c))
+        c.execute("SELECT username, name, position, avatar FROM account WHERE username = %s", (username, ))
+        result = c.fetchone()
+        result = list(result)
+        if not result:
+            return jsonify({"success": False, "error": "There is no account by that username"})
+        print(result)
+        if not result[1]:
+            result[1] = result[0]
+        if not result[3]:
+            result[3] = "https://www.gravatar.com/avatar/?default=mm&size=160"
+        out = jsonify({"success": True, "name": result[1], "position": result[2], "avatar": result[3]})
+        conn.commit()
+    return out
+
 @app.route("/api/createproject", methods=["POST"])
 def createproject():
     name = request.json.get("name", None)
