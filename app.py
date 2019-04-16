@@ -88,6 +88,9 @@ def registerStudent():
         hashedPassword = hashPassword(password)
         c.execute("INSERT INTO account (username, password, name, dept, contactemail, position, university_id, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (username, hashedPassword,name,dept,contactemail,position,university_id,avatar))
         out = jsonify({"success": True})
+        # This sets the cookie that keeps the user logged in for the rest of the session
+        # You can read the username out of this session variable whenever you want
+        session["username"] = username
         conn.commit()
     return out
 
