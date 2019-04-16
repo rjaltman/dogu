@@ -31,6 +31,7 @@ class App extends Component {
         pid: 0
       };
       this.loginHandler = this.loginHandler.bind(this);
+      this.logoutHandler = this.logoutHandler.bind(this);
       this.pageViewHandler = this.pageViewHandler.bind(this);
       this.userTypeHandler = this.userTypeHandler.bind(this);
   }
@@ -52,14 +53,21 @@ class App extends Component {
       userType: usertype
     });
   }
+  logoutHandler() {
+    this.setState({
+      loggedIn: false,
+      uname: "",
+      page: "dashboard_unauthenticated"
+    });
+  }
   render() {
       if (!this.state.loggedIn) {
         if (this.state.page == "register") {
-          return <div><Header pageHandler = {this.pageViewHandler} /><Register utype = {this.state.userType} onLogin = {this.loginHandler} pageHandler = {this.pageViewHandler} /></div>;
+          return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} /><Register utype = {this.state.userType} onLogin = {this.loginHandler} pageHandler = {this.pageViewHandler} /></div>;
         }
         else {
           return <div>
-            <Header pageHandler = {this.pageViewHandler} />
+            <Header pageHandler = {this.pageViewHandler} loggedin = {this.state.loggedIn} />
             <Login pageHandler = {this.pageViewHandler} onLogin = {this.loginHandler} userTypeHandler = {this.userTypeHandler} />
             </div>;
         }
@@ -67,16 +75,16 @@ class App extends Component {
       else {
         switch(this.state.page) {
          case "create_project": {
-            return <div><Header pageHandler = {this.pageViewHandler} /><CreateProject id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><CreateProject id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
          }
          case "search_project": {
-            return <div><Header pageHandler = {this.pageViewHandler} /><Search pageHandler = {this.pageViewHandler} /></div>
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><Search pageHandler = {this.pageViewHandler} /></div>
          }
          case "display_project": {
-            return <div><Header pageHandler = {this.pageViewHandler} /><ProjectDisplay id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><ProjectDisplay id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
          }
          default: {
-           return <div><Header pageHandler = {this.pageViewHandler} /><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></div>;
+           return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></div>;
          }
         }
       }
