@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, session
 from backend.database import conn
+from backend import utils
 from psycopg2.extras import RealDictCursor
 from binascii import hexlify
 from hashlib import scrypt
@@ -75,11 +76,16 @@ def createproject():
     if not (name and description and isinstance(tags, list)):
         return jsonify({"success": False, "error": "You must give a name, a description, and a list of tags"})
 
-    with conn.cursor() as c:
-        c.execute("INSERT INTO project (name, description) VALUES (%s, %s) RETURNING id", (name, description))
-        (id, ) = c.fetchone()
-        c.executemany("INSERT INTO project_tags (tag, project_id) VALUES (%s, %s)", [(t, id) for t in tags])
-        out = jsonify({"success": True})
+
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("INSERT INTO project (name, description) VALUES (%s, %s) "
+                   "RETURNING *"), (name, description))
+        newProject = c.fetchone()
+        if not newProject:
+            raise Exception("Well I have no idea what to do with this")
+        newProjectId = newProject["id"]
+        c.executemany("INSERT INTO project_tags (tag, project_id) VALUES (%s, %s)", [(t, newProjectId) for t in tags])
+        out = jsonify({"success": True, "project": newProject})
         conn.commit()
     return out
 
@@ -162,18 +168,80 @@ def search():
 
     return jsonify({"success": True, "projects": projectsToShow})
 
+@app.route("/api/recommendations", methods=["GET"])
+def getRecommendations():
+    username = session.get('username', None)
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        if not username:
+            c.execute("WITH proj_pref_ct AS ("
+                        "SELECT project_id, count(*) AS ct "
+                        "FROM preferences "
+                        "GROUP BY project_id "
+                        "ORDER BY ct DESC "
+                        "LIMIT 20"
+                    ") "
+                    "SELECT * "
+                    "FROM project "
+                    "WHERE id IN ( "
+                        "SELECT project_id "
+                        "FROM proj_pref_ct "
+                    ")")
+            projectsToShow = list(c)
+        else:
+            #c.execute("SELECT EXISTS (SELECT 1 FROM account WHERE username = %s)", (username, ))
+            #if not all(c.fetchone().values()):
+            #    raise Exception("You have a cookie from a user who doesn't exist!")
+            c.execute(("WITH my_account_id AS ("
+                "SELECT account.id "
+                "FROM account "
+                "WHERE username = %(username)s"
+                "), my_preferences AS ("
+                "SELECT project_id "
+                "FROM preference "
+                "WHERE preference.account_id IN (SELECT * FROM my_account_id)"
+                "), related_tags AS ("
+                "SELECT project_tags.tag "
+                "FROM my_preferences, preference "
+                "INNER JOIN project_tags ON preference.project_id=project_tags.project_id"
+                "), projects_same_tag AS ("
+                "SELECT project_id "
+                "FROM project_tags "
+                "WHERE project_tags.tag IN (SELECT tag FROM related_tags) "
+                "ORDER BY RANDOM() "
+                "LIMIT 20"
+                ")"
+                "SELECT * "
+                "FROM project "
+                "WHERE (status='New') AND id IN ("
+                    "SELECT project_id "
+                    "FROM projects_same_tag "
+                    "EXCEPT "
+                        "(SELECT project_id "  
+                        "FROM preference "
+                        "WHERE preference.account_id IN (SELECT * FROM my_account_id)))"),
+                {"username": username})
+            projectsToShow = list(c)
+            if not(projectsToShow):
+                c.execute("WITH proj_pref_ct AS ("
+                        "SELECT project_id, count(*) AS ct "
+                        "FROM preference "
+                        "GROUP BY project_id "
+                        "ORDER BY ct DESC "
+                        "LIMIT 20"
+                    ") "
+                    "SELECT * "
+                    "FROM project "
+                    "WHERE id IN ( "
+                        "SELECT project_id "
+                        "FROM proj_pref_ct "
+                    ")")
+                projectsToShow = list(c)
+
+    return jsonify({"success": True, "projects": projectsToShow})
+
 @app.route("/api/project/<int:id>", methods=["GET"])
 def getProject(id):
-    with conn.cursor(cursor_factory=RealDictCursor) as c:
-        c.execute("SELECT * FROM project WHERE id = %s", (id, ))
-        project = c.fetchone()
-        if not project:
-            return jsonify({"success": False, "error": "There was no project with that id"})
-        c.execute("SELECT tag FROM project_tags WHERE project_id = %s", (id, ))
-        tags = [t["tag"] for t in c]
-        project["tags"] = tags
-        ret = {"project": project, "success": True}
-        return jsonify(ret)
+    return jsonify({"project": getProjectById(id), "success": True})
 
 @app.route("/api/project/setTags", methods=["POST"])
 def setTags():
@@ -194,6 +262,82 @@ def setTags():
 
 
     return jsonify({"success": True, "project": getProjectById(projectId)})
+
+@app.route("/api/project/preference/delete", methods=["POST"])
+def deleteProjectPreference():
+    projectId = request.json.get("id", None)
+    if projectId == None:
+        return error("You have to pass a project id!")
+    if not "username" in session:
+        return error("You must be logged in!")
+    with conn:
+        with conn.cursor() as c:
+            c.execute("DELETE FROM preference WHERE project_id = %s AND account_id = (SELECT id FROM account WHERE username = %s)", (projectId, session["username"]))
+    utils.compressRankings()
+    return jsonify({"success": True})
+
+@app.route("/api/project/preference", methods=["GET"])
+def getProjectPreferences():
+    if not "username" in session:
+        return error("You must be logged in!")
+    with conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as c:
+            c.execute("SELECT project.* FROM preference INNER JOIN project ON preference.project_id = project.id INNER JOIN account a ON a.id = preference.account_id WHERE a.username = %s ORDER BY preference.ranking ASC", (session["username"], ))
+            projects = c.fetchall()
+            return jsonify({"success": True, "projects": projects})
+
+@app.route("/api/project/preference/set", methods=["POST"])
+def preferenceProject():
+    projectId = request.json.get("id", None)
+    if projectId == None:
+        return error("You have to pass a project id!")
+    if not "username" in session:
+        return error("You must be logged in!")
+    rank = request.json.get("rank", None)
+    if rank == None:
+        rankVal = utils.getLowestRankedProject(session["username"])
+        if rankVal == None:
+            rankVal = 1
+        else:
+            rankVal += 1
+    elif rank <= 0:
+        return error("Your rank must be greater than or equal to 1")
+    elif rank == 1:
+        rankVal = 1
+    else:
+        with conn:
+            with conn.cursor() as c:
+                c.execute("DELETE FROM preference WHERE account_id = (SELECT id FROM account WHERE username = %s) AND project_id = %s", (session["username"], projectId))
+                c.execute("SELECT MAX(s.ranking) FROM (SELECT ranking FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE a.username = %s ORDER BY ranking ASC LIMIT %s) AS s", (session["username"], rank - 1))
+                t = c.fetchone()
+                if t == None:
+                    rankVal = 1
+                else:
+                    rankVal = t[0] + 1
+
+    with conn:
+        with conn.cursor() as c:
+            # Make sure nothing else has this same preference
+            c.execute("SELECT EXISTS(SELECT 1 FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE ranking = %s AND a.username = %s)", 
+                      (rankVal, session["username"]))
+            if c.fetchone()[0]:
+                # If they do, we're going to slide them all back so we can insert it
+                c.execute("UPDATE preference SET ranking = ranking + 1 WHERE ranking >= %s AND account_id = (SELECT id FROM account WHERE username = %s)", 
+                          (rankVal, session["username"]))
+            c.execute(("INSERT INTO preference (ranking, account_id, project_id) "
+                       "VALUES (%s, (SELECT id FROM account WHERE username = %s), %s) "
+                       "ON CONFLICT ON CONSTRAINT project_id_account_id_key DO UPDATE SET ranking = EXCLUDED.ranking"),
+                      (rankVal, session["username"], projectId))
+    utils.compressRankings()
+    with conn:
+        with conn.cursor() as c:
+            c.execute("SELECT ranking FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE a.username = %s AND p.project_id = %s",
+                      (session["username"], projectId))
+            (newRank, ) = c.fetchone()
+            return jsonify({"success": True, "newRank": newRank})
+
+def error(s):
+    return jsonify({"success": False, "error": s})
 
 # These functions should probably be moved into a separate file...
 def generateSalt():
@@ -247,4 +391,11 @@ def getProjectById(id):
             c.execute("SELECT tag FROM project_tags WHERE project_id = %s", (id, ))
             tags = [t["tag"] for t in c]
             project["tags"] = tags
+            if "username" in session:
+                c.execute("SELECT p.ranking FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE project_id = %s AND a.username = %s", 
+                          (id, session["username"]))
+                rankT = c.fetchone()
+                project["ranking"] = rankT["ranking"] if rankT != None else None
+            else:
+                project["ranking"] = None
             return project
