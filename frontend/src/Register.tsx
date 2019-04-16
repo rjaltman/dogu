@@ -116,7 +116,7 @@ class Register extends Component<RegisterProps, any> {
     var first = <div className="register_form_field"><input name="firstVal" value={this.state.firstVal} placeholder="First Name" onChange={this.handleChange} /></div>
     var middle = <div className="register_form_field"><input name="middleVal" value={this.state.middleVal} placeholder="Middle Name" onChange={this.handleChange} /></div>
     var last = <div className="register_form_field"><input name="lastVal" value={this.state.lastVal} placeholder="Last Name" onChange={this.handleChange} /></div>
-    var uname = <div className="register_form_field"><input name="usernameVal" value={this.state.usernameVal} placeholder="University User Name" onChange={this.handleChange} /></div>
+    var uname = <div className="register_form_field"><input name="usernameVal" value={this.state.usernameVal} placeholder="Account User Name" onChange={this.handleChange} /></div>
     var email = <div className="register_form_field"><input name="emailVal" value={this.state.emailVal} placeholder="Account Email Address" onChange={this.handleChange} /></div>
     var pwd = <div className="register_form_field"><input name="passwordVal" type="password" value={this.state.passwordVal} placeholder="Account Password" onChange={this.handleChange} /></div>
     var university = <div className="register_form_field">
@@ -125,38 +125,26 @@ class Register extends Component<RegisterProps, any> {
         </select>
       </div>
     var img = <div className="register_form_field"><input name="profilePictureVal" value={this.state.profilePictureVal} onChange={this.handleChange} /></div>
+    var dept = <div className="register_form_field"><input name="deptVal" value={this.state.deptVal} placeholder="Enter Department Name (e.g. Computer Science)" onChange={this.handleChange} /></div>
     var finish = <button onClick={this.setDefaultImage} className="studentBtn"><i className="material-icons">&#xe147;</i>Sign Up as Student</button>
 
     var register_lhs = <div id="register_lhs">{profile_picture}</div>
 
     var intro_name = <div id="register_student_name_intro"><i className="material-icons">&#xe85e;</i><span className="register_student_name_intro title">What is your name?</span></div>
     var intro_account = <div id="register_student_name_intro"><i className="material-icons">&#xe2c9;</i><span className="register_student_name_intro title">Next, we need some account information.</span></div>
-    var intro_university = <div id="register_student_name_intro"><i className="material-icons">&#xe80c;</i><span className="register_student_name_intro title">What school do you attend?</span></div>
+    var intro_university = <div id="register_student_name_intro"><i className="material-icons">&#xe7f1;</i><span className="register_student_name_intro title">What school do you attend?</span></div>
+    var intro_dept = <div id="register_student_name_intro"><i className="material-icons">&#xe80c;</i><span className="register_student_name_intro title">What do you study?</span></div>
     var intro_img = <div id="register_student_name_intro"><i className="material-icons">&#xe439;</i><span className="register_student_name_intro title">Finally, a URL to a profile photo.</span></div>
 
     var your_name = <div id="register_student_name">{intro_name}<div className="register_student_name_ind">{first}{middle}{last}</div></div>
     var your_acc = <div id="register_student_acc">{intro_account}<div className="register_student_name_ind">{uname}{email}{pwd}</div></div>
     var your_university = <div id="register_student_university">{intro_university}{university}</div>
+    var your_dept = <div id="register_student_university">{intro_dept}{dept}</div>
     var your_img = <div id="register_student_university">{intro_img}{img}</div>
 
-    var register_form = <div id="register_form_parent">{register_lhs}<div id="register_form">{your_name}{your_acc}{your_university}{your_img}{finish}</div></div>
+    var register_form = <div id="register_form_parent">{register_lhs}<div id="register_form">{your_name}{your_acc}{your_university}{your_dept}{your_img}{finish}</div></div>
     var register_container = <div id="register_container"><div id="register_backdrop"/> {top_text}{register_form}</div>
 
-    // let registerForm = <>
-    // <div style={rowFlex}>
-    //   <div style={somePadding}>Username:</div>
-    //   <input name="usernameVal" style={somePadding} onChange={this.handleChange} />
-    // </div>
-    //
-    // <div style={rowFlex}>
-    //   <div style={somePadding}>Password:</div>
-    //   <input name="passwordVal" type="password" style={somePadding} onChange={this.handleChange} />
-    // </div>
-    //
-    // <div style={rowFlex}>
-    //   <div style={somePadding}>Confirm:</div>
-    //   <input name="passwordVal2" type="password" style={somePadding} onChange={this.handleChange} />
-    // </div>
     return register_container;
   }
   getOrganizerRender() {
@@ -164,8 +152,42 @@ class Register extends Component<RegisterProps, any> {
     return registerForm;
   }
   getInstructorRender() {
-    var registerForm = <div></div>
-    return registerForm;
+    var top_icon = <i className="material-icons large_icon">&#xe7fe;</i>;
+    var top_text = <div id="top_text">{top_icon} <span className="title">Sounds good!</span><span className="subtitle">Let's get you signed up as an instructor.</span></div>
+    var profile_picture = <img src={this.state.profilePictureVal} onError={this.setDefaultImage} />
+    var first = <div className="register_form_field"><input name="firstVal" value={this.state.firstVal} placeholder="First Name" onChange={this.handleChange} /></div>
+    var middle = <div className="register_form_field"><input name="middleVal" value={this.state.middleVal} placeholder="Middle Name" onChange={this.handleChange} /></div>
+    var last = <div className="register_form_field"><input name="lastVal" value={this.state.lastVal} placeholder="Last Name" onChange={this.handleChange} /></div>
+    var uname = <div className="register_form_field"><input name="usernameVal" value={this.state.usernameVal} placeholder="Account User Name" onChange={this.handleChange} /></div>
+    var email = <div className="register_form_field"><input name="emailVal" value={this.state.emailVal} placeholder="Account Email Address" onChange={this.handleChange} /></div>
+    var pwd = <div className="register_form_field"><input name="passwordVal" type="password" value={this.state.passwordVal} placeholder="Account Password" onChange={this.handleChange} /></div>
+    var university = <div className="register_form_field">
+        <select name="universityVal" onChange={this.handleSelectChange} value={this.state.universityVal}>
+          {this.getUniversityOptions()}
+        </select>
+      </div>
+    var img = <div className="register_form_field"><input name="profilePictureVal" value={this.state.profilePictureVal} onChange={this.handleChange} /></div>
+    var dept = <div className="register_form_field"><input name="deptVal" value={this.state.deptVal} placeholder="Enter Department Name (e.g. Computer Science)" onChange={this.handleChange} /></div>
+    var finish = <button onClick={this.setDefaultImage} className="studentBtn"><i className="material-icons">&#xe147;</i>Sign Up as Student</button>
+
+    var register_lhs = <div id="register_lhs">{profile_picture}</div>
+
+    var intro_name = <div id="register_student_name_intro"><i className="material-icons">&#xe85e;</i><span className="register_student_name_intro title">What is your name?</span></div>
+    var intro_account = <div id="register_student_name_intro"><i className="material-icons">&#xe2c9;</i><span className="register_student_name_intro title">Next, we need some account information.</span></div>
+    var intro_university = <div id="register_student_name_intro"><i className="material-icons">&#xe7f1;</i><span className="register_student_name_intro title">What school do you attend?</span></div>
+    var intro_dept = <div id="register_student_name_intro"><i className="material-icons">&#xe80c;</i><span className="register_student_name_intro title">What do you study?</span></div>
+    var intro_img = <div id="register_student_name_intro"><i className="material-icons">&#xe439;</i><span className="register_student_name_intro title">Finally, a URL to a profile photo.</span></div>
+
+    var your_name = <div id="register_student_name">{intro_name}<div className="register_student_name_ind">{first}{middle}{last}</div></div>
+    var your_acc = <div id="register_student_acc">{intro_account}<div className="register_student_name_ind">{uname}{email}{pwd}</div></div>
+    var your_university = <div id="register_student_university">{intro_university}{university}</div>
+    var your_dept = <div id="register_student_university">{intro_dept}{dept}</div>
+    var your_img = <div id="register_student_university">{intro_img}{img}</div>
+
+    var register_form = <div id="register_form_parent">{register_lhs}<div id="register_form">{your_name}{your_acc}{your_university}{your_dept}{your_img}{finish}</div></div>
+    var register_container = <div id="register_container"><div id="register_backdrop"/> {top_text}{register_form}</div>
+
+    return register_container;
   }
 
   render() {

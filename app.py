@@ -136,6 +136,20 @@ def listUniversities():
         for i in projectsToShow:
             key_val[i['id']] = i['name']
         print(key_val)
+        print("----------------Universities----------------")
+        print(projectsToShow)
+        print("----------------Accounts----------------")
+        c.execute("SELECT * FROM account")
+        print(list(c)[0].keys())
+        print("----------------Instructors----------------")
+        c.execute("SELECT * FROM instructor")
+        print(list(c))
+        print("----------------Representatives----------------")
+        c.execute("SELECT * FROM rep")
+        print(list(c))
+        print("----------------Organizations----------------")
+        c.execute("SELECT * FROM organization")
+        print(list(c))
 
     return jsonify({"success": True, "universities": key_val})
 
@@ -214,7 +228,7 @@ def getRecommendations():
                     "SELECT project_id "
                     "FROM projects_same_tag "
                     "EXCEPT "
-                        "(SELECT project_id "  
+                        "(SELECT project_id "
                         "FROM preference "
                         "WHERE preference.account_id IN (SELECT * FROM my_account_id)))"),
                 {"username": username})
@@ -316,11 +330,11 @@ def preferenceProject():
     with conn:
         with conn.cursor() as c:
             # Make sure nothing else has this same preference
-            c.execute("SELECT EXISTS(SELECT 1 FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE ranking = %s AND a.username = %s)", 
+            c.execute("SELECT EXISTS(SELECT 1 FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE ranking = %s AND a.username = %s)",
                       (rankVal, session["username"]))
             if c.fetchone()[0]:
                 # If they do, we're going to slide them all back so we can insert it
-                c.execute("UPDATE preference SET ranking = ranking + 1 WHERE ranking >= %s AND account_id = (SELECT id FROM account WHERE username = %s)", 
+                c.execute("UPDATE preference SET ranking = ranking + 1 WHERE ranking >= %s AND account_id = (SELECT id FROM account WHERE username = %s)",
                           (rankVal, session["username"]))
             c.execute(("INSERT INTO preference (ranking, account_id, project_id) "
                        "VALUES (%s, (SELECT id FROM account WHERE username = %s), %s) "
@@ -390,7 +404,7 @@ def getProjectById(id):
             tags = [t["tag"] for t in c]
             project["tags"] = tags
             if "username" in session:
-                c.execute("SELECT p.ranking FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE project_id = %s AND a.username = %s", 
+                c.execute("SELECT p.ranking FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE project_id = %s AND a.username = %s",
                           (id, session["username"]))
                 rankT = c.fetchone()
                 project["ranking"] = rankT["ranking"] if rankT != None else None
