@@ -27,7 +27,7 @@ class App extends Component {
         loggedIn: false,
         uname: "",
         page: "",
-        userType: "",
+        userType: "Student",
         pid: 0
       };
       this.loginHandler = this.loginHandler.bind(this);

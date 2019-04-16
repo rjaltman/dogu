@@ -135,21 +135,6 @@ def listUniversities():
         projectsToShow = list(c)
         for i in projectsToShow:
             key_val[i['id']] = i['name']
-        print(key_val)
-        # print("----------------Universities----------------")
-        # print(projectsToShow)
-        # print("----------------Accounts----------------")
-        # c.execute("SELECT * FROM account")
-        # print(list(c)[0].keys())
-        # print("----------------Instructors----------------")
-        # c.execute("SELECT * FROM instructor")
-        # print(list(c))
-        # print("----------------Representatives----------------")
-        # c.execute("SELECT * FROM rep")
-        # print(list(c))
-        # print("----------------Organizations----------------")
-        # c.execute("SELECT * FROM organization")
-        # print(list(c))
 
     return jsonify({"success": True, "universities": key_val})
 
@@ -162,7 +147,6 @@ def listOrganizations():
         projectsToShow = list(c)
         for i in projectsToShow:
             key_val[i['id']] = i['name']
-        print(key_val)
 
     return jsonify({"success": True, "organizations": key_val})
 
