@@ -89,11 +89,11 @@
   box-shadow: 0px 1px 3px grey;
 }
 
-button {
+#register_form button {
   width: 100%;
 }
 
-button .material-icons {
+#register_form button .material-icons {
   padding-right: 0.5em;
 }
 
