@@ -7,7 +7,9 @@ interface LoginProps {
     username? : string,
     password?: string,
     onAuth?: (username: string) => void,
-    onLogin?: (username: string) => void
+    onLogin?: (username: string) => void,
+    pageHandler?: (page: string, pid: number) => void
+    userTypeHandler?: (usertype: "Instructor" | "Student" | "Organizer" | "") => void
 };
 
 type State = Readonly<{
@@ -19,6 +21,7 @@ type State = Readonly<{
     emailVal: string,
     error: string,
     registering: boolean,
+    overlay: boolean
 }>;
 
 /*
@@ -53,11 +56,45 @@ class Login extends Component<LoginProps, any> {
             passwordVal2: "",
             positionVal: "Student",
             deptVal: "",
-            emailVal: ""
+            emailVal: "",
+            overlay: false
         };
         this.handleChange = handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.handleKeydown = this.handleKeydown.bind(this);
+        this.loginToggle = this.loginToggle.bind(this);
+        this.userRegistration = this.userRegistration.bind(this);
+    }
+
+    loginToggle() {
+      var overlay = document.getElementById("dark_overlay");
+      var login = document.getElementById("dogu_login");
+
+      if ((overlay != null) && (login != null)) {
+        if (this.state.overlay == true) {
+          overlay.style.display = "none";
+          login.style.display = "none";
+          this.setState({
+            overlay: false
+          })
+        }
+        else {
+          overlay.style.display = "block";
+          login.style.display = "flex";
+          this.setState({
+            overlay: true
+          })
+        }
+      }
+    }
+
+    userRegistration(userType: "Instructor" | "Student" | "Organizer" | "") {
+      if (this.props.pageHandler !== undefined) {
+        this.props.pageHandler("register",0);
+      }
+      if (this.props.userTypeHandler !== undefined) {
+        this.props.userTypeHandler(userType);
+      }
     }
 
     render() {
@@ -76,7 +113,7 @@ class Login extends Component<LoginProps, any> {
         }
 
         const columnFlex: React.CSSProperties = {
-            display: "flex",
+
             flexDirection: "column"
         };
 
@@ -89,6 +126,8 @@ class Login extends Component<LoginProps, any> {
             paddingLeft: 20,
             paddingRight: 20
         };
+
+
 
         // This function returns a callback function that you can give to the onClick
         // attribute of a component. See the example of its use below. If there is
@@ -109,7 +148,7 @@ class Login extends Component<LoginProps, any> {
             {registerTab}
         </div>;
 
-        const buttonStyle: React.CSSProperties = Object.assign({}, somePadding, {display: "inline-block", width: "max-content"});
+        const buttonStyle: React.CSSProperties = Object.assign({}, somePadding, {display: "inline-block", width: "max-content", marginRight: 10});
 
         const loginForm = <>
         <div style={rowFlex}>
@@ -120,7 +159,10 @@ class Login extends Component<LoginProps, any> {
           <div style={somePadding}>Password:</div>
           <input name="passwordVal" type="password" style={somePadding} onChange={this.handleChange} />
         </div>
-        <button style={buttonStyle} onClick={this.onSubmit} >Log in</button>
+        <div style={rowFlex}>
+          <button style={buttonStyle} onClick={this.onSubmit} >Log in</button>
+          <button style={buttonStyle} className="cancelBtn" onClick={this.loginToggle} >Cancel</button>
+        </div>
         </>;
 
         let registerForm = <>
@@ -152,8 +194,18 @@ class Login extends Component<LoginProps, any> {
           <span className="subtitle">DOGU is a site where students and organizations can add technical project ideas, in hopes of finding class project teams
           to work on them. Through DOGU, students can find projects to work on from these real-world ideas, and form teams to work with for class assignments.</span>
         </div>
+
+        <div id="home_register_links">
+          <div className="home_register_wedge home_register_wedge_student" onClick={() => this.userRegistration("Student")}><span className="home_register_wedge_text">Create and join projects as a student</span></div>
+          <div className="home_register_wedge home_register_wedge_organizer" onClick={() => this.userRegistration("Organizer")}><span className="home_register_wedge_text">Pitch a project as an organization</span></div>
+          <div className="home_register_wedge home_register_wedge_instructor" onClick={() => this.userRegistration("Instructor")}><span className="home_register_wedge_text">Mentor and make teams as an instructor</span></div>
+          <div className="home_login_wedge" onClick={this.loginToggle}><span className="home_register_wedge_text">Log In to DOGU</span></div>
+        </div>
+
+        <div id="dark_overlay"></div>
+
         <div id="dogu_login" onKeyDown={this.handleKeydown} style={columnFlex}>
-          {tabDiv}
+
           <div style={errorStyle}>{this.state.error}</div>
           {this.state.registering ? registerForm : loginForm}
         </div>
@@ -208,9 +260,15 @@ class Login extends Component<LoginProps, any> {
    */
   handleKeydown<El>(e: React.KeyboardEvent<El>) {
       const ENTER_KEY = 13;
+      const ESC_KEY = 27;
       let keyCode: number = e.which;
       if(keyCode == ENTER_KEY) {
           this.onSubmit();
+      }
+      else if(keyCode == ESC_KEY) {
+        if (this.state.overlay) {
+          this.loginToggle();
+        }
       }
   }
 }

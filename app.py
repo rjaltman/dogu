@@ -60,10 +60,95 @@ def register():
             return jsonify({"success": False, "error": "That username is already taken"})
 
         hashedPassword = hashPassword(password)
-        # TODO: When you change the registration form to actually ask for the university, you had better change this, otherwise things will
-        # act very strange. Also you should remove the fake university I added in migrations/20190319231235_make_fake_university_for_testing_purposes.sql.
-        c.execute("INSERT INTO account (username, password, university_id) VALUES (%s, %s, (SELECT id FROM university LIMIT 1))", (username, hashedPassword))
+        c.execute("INSERT INTO account (username, password, university_id) VALUES (%s, %s, (SELECT id FROM university WHERE name = 'University of Illinois (Urbana-Champaign)'))", (username, hashedPassword))
         out = jsonify({"success": True})
+        conn.commit()
+    return out
+
+
+@app.route("/api/auth/registerStudent", methods=["POST"])
+def registerStudent():
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    name = request.json.get("name", None)
+    dept = request.json.get("dept", None)
+    contactemail = request.json.get("contactemail", None)
+    position = request.json.get("position", None)
+    university_id = request.json.get("university_id", None)
+    avatar = request.json.get("avatar", None)
+
+    if not (username and password):
+        return jsonify({"success": False, "error": "You must give username, password, and email"})
+
+    with conn.cursor() as c:
+        c.execute("SELECT count(*) FROM account WHERE username = %s", (username, ))
+        if c.fetchone()[0] != 0:
+            return jsonify({"success": False, "error": "That username is already taken"})
+
+        hashedPassword = hashPassword(password)
+        c.execute("INSERT INTO account (username, password, name, dept, contactemail, position, university_id, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (username, hashedPassword,name,dept,contactemail,position,university_id,avatar))
+        out = jsonify({"success": True})
+        # This sets the cookie that keeps the user logged in for the rest of the session
+        # You can read the username out of this session variable whenever you want
+        session["username"] = username
+        conn.commit()
+    return out
+
+@app.route("/api/auth/registerRep", methods=["POST"])
+def registerRep():
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    name = request.json.get("name", None)
+    dept = request.json.get("dept", None)
+    contactemail = request.json.get("contactemail", None)
+    position = request.json.get("position", None)
+    university_id = request.json.get("university_id", None)
+    avatar = request.json.get("avatar", None)
+
+    if not (username and password):
+        return jsonify({"success": False, "error": "You must give username, password, and email"})
+
+    with conn.cursor() as c:
+        c.execute("SELECT count(*) FROM account WHERE username = %s", (username, ))
+        if c.fetchone()[0] != 0:
+            return jsonify({"success": False, "error": "That username is already taken"})
+
+        hashedPassword = hashPassword(password)
+        c.execute("INSERT INTO account (username, password, name, dept, contactemail, position, avatar) VALUES (%s, %s, %s, %s, %s, %s, %s)", (username, hashedPassword,name,dept,contactemail,position,avatar))
+        out = jsonify({"success": True})
+        # This sets the cookie that keeps the user logged in for the rest of the session
+        # You can read the username out of this session variable whenever you want
+        session["username"] = username
+        conn.commit()
+
+    # Commit the account first before going and updating with the ID of the organizer just formed here
+    with conn.cursor() as c:
+        c.execute("SELECT id FROM account WHERE username = %s", (username, ))
+        id = list(c.fetchone())[0]
+        c.execute("INSERT INTO rep (account_id, organization_id) VALUES (%s, %s)", (id, university_id));
+        conn.commit()
+
+    return out
+
+@app.route('/api/getProfileInfo', methods=["POST"])
+def getProfileInfo():
+    username = request.json.get("username", None)
+    if not (username):
+        return jsonify({"success": False, "error": "You didn't pass a username."})
+
+    with conn.cursor() as c:
+        c.execute("SELECT username, name, position, avatar FROM account")
+
+        c.execute("SELECT username, name, position, avatar FROM account WHERE username = %s", (username, ))
+        result = c.fetchone()
+        if not result:
+            return jsonify({"success": False, "error": "There is no account by that username"})
+
+        if not result.name:
+            result.name = result.username
+        if not result.avatar:
+            result.avatar = "https://www.gravatar.com/avatar/?default=mm&size=160"
+        out = jsonify({"success": True, "name": result.name, "position": result.position, "avatar": result.avatar})
         conn.commit()
     return out
 
@@ -128,6 +213,32 @@ def deleteproject():
         conn.commit()
     return out
 
+@app.route("/api/listUniversities", methods=["GET"])
+def listUniversities():
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+
+        c.execute("SELECT * FROM university")
+        key_val = {}
+        projectsToShow = list(c)
+        for i in projectsToShow:
+            key_val[i['id']] = i['name']
+        conn.commit()
+
+    return jsonify({"success": True, "universities": key_val})
+
+@app.route("/api/listOrgs", methods=["GET"])
+def listOrganizations():
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+
+        c.execute("SELECT * FROM organization")
+        key_val = {}
+        projectsToShow = list(c)
+        for i in projectsToShow:
+            key_val[i['id']] = i['name']
+        conn.commit()
+
+    return jsonify({"success": True, "organizations": key_val})
+
 @app.route("/api/search", methods=["GET"])
 def search():
     searchTerms = request.args.getlist('q')
@@ -147,7 +258,7 @@ def search():
                        "SELECT university_id FROM account "
                        "WHERE username = %(username)s) "
                        "SELECT * FROM project WHERE "
-                       # "(university_id IS NULL OR (SELECT * FROM myUniversityId) IS NULL OR university_id = (select * from myUniversityId)) AND "
+                       "(university_id IS NULL OR (SELECT * FROM myUniversityId) IS NULL OR university_id = (select * from myUniversityId)) AND "
                        "(concat_ws(' ', name, description) SIMILAR TO %(re)s "
                        "OR EXISTS (SELECT 1 FROM project_tags pt where pt.project_id = id AND pt.tag SIMILAR TO %(re)s))"),
                       {"username": username, "re": searchRe})
@@ -203,7 +314,7 @@ def getRecommendations():
                     "SELECT project_id "
                     "FROM projects_same_tag "
                     "EXCEPT "
-                        "(SELECT project_id "  
+                        "(SELECT project_id "
                         "FROM preference "
                         "WHERE preference.account_id IN (SELECT * FROM my_account_id)))"),
                 {"username": username})
@@ -305,11 +416,11 @@ def preferenceProject():
     with conn:
         with conn.cursor() as c:
             # Make sure nothing else has this same preference
-            c.execute("SELECT EXISTS(SELECT 1 FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE ranking = %s AND a.username = %s)", 
+            c.execute("SELECT EXISTS(SELECT 1 FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE ranking = %s AND a.username = %s)",
                       (rankVal, session["username"]))
             if c.fetchone()[0]:
                 # If they do, we're going to slide them all back so we can insert it
-                c.execute("UPDATE preference SET ranking = ranking + 1 WHERE ranking >= %s AND account_id = (SELECT id FROM account WHERE username = %s)", 
+                c.execute("UPDATE preference SET ranking = ranking + 1 WHERE ranking >= %s AND account_id = (SELECT id FROM account WHERE username = %s)",
                           (rankVal, session["username"]))
             c.execute(("INSERT INTO preference (ranking, account_id, project_id) "
                        "VALUES (%s, (SELECT id FROM account WHERE username = %s), %s) "
@@ -379,7 +490,7 @@ def getProjectById(id):
             tags = [t["tag"] for t in c]
             project["tags"] = tags
             if "username" in session:
-                c.execute("SELECT p.ranking FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE project_id = %s AND a.username = %s", 
+                c.execute("SELECT p.ranking FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE project_id = %s AND a.username = %s",
                           (id, session["username"]))
                 rankT = c.fetchone()
                 project["ranking"] = rankT["ranking"] if rankT != None else None

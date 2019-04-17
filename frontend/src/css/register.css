@@ -1,0 +1,171 @@
+#register_container {
+  background-color: #fffffff7;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-bottom: 3em;
+  border-radius: 1em;
+  box-shadow: 0px 1px 3px #a8a8a8;
+  margin: 0 auto;
+  display: block;
+  width: 50%;
+  height: 100%;
+}
+
+#register_backdrop {
+  background-image: url("https://lh3.googleusercontent.com/EqxodWIIgAIQx7vrVixWAapYnNda9SbiG8CxVYGeDLn3v4G-Sab8Hzfo2erLFWFbV4w0nqrOIPIiMipGQlpsgyjenm25R2csROrya7rFr5wUQSmT6Bknr_LKEVSEmF60acuRaDSBdyh2bmjLNwrqqY8ivs8aceX7P5Bzpo6nEsK17ClSqVyyU51ApXgwlAfsbGqVmH3LKHqwBX-vKef2QUAsOz_E67jDMyPDMe9e46ncOOpzFrB89WqAwI26qGH8TCeSw2sI677U1_68FPANFI44C6v7V_xeWBd7rE5RaLsINvz1QoL8hXgpJcdae_QqqYNAIS4nyySe-16mPgR_gS6umh3IUsc2o2usFpS0aiZCpJpXnYbL0jTDed2Sko698nbu1moN6Dra1ySZDpxK1Y3MBDSt2k4XarruhwCSdilG0XhwaiKjiNFfQTI5wlwqSbP-ZFGEcuhH-3mzDnY7Ljok8R1Xnb5L63SYb0ro2E7fFvk8ZuuHUZgxg1VbiCpEcvU9mk2xWEi3aSt1wEHkjq1tPjxDPcFHNvvylWvv6La2YaSkjqVejrvQwc0tjmoEGntqICfPnv9LyzjqZYbBY59GskLwrs4x29LrANeVh_ILWDSInv7gzAHSjI-n_F6FCufFYWJot4910QdRkfJxAKIXXCMsbtdg=w952-h714-no");
+  height:100%;
+  top:0px;
+  width:100%;
+  left:0px;
+  position:fixed;
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: screen;
+  background-color: #f5f5f5;
+  z-index: -2;
+}
+
+#top_text {
+  color: #245c7f;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  border-bottom: 2px solid silver;
+}
+
+#top_text .title {
+  display: block;
+  font-size: 1.8em;
+  padding: 0.5em;
+  padding-top: 0.2em;
+  padding-bottom:0.3em;
+}
+
+#top_text .subtitle {
+  display: block;
+  padding-bottom: 1em;
+  font-size:1.2em;
+}
+
+#top_text .material-icons {
+  float: left;
+  font-size: 3em;
+  padding: 0.5em;
+  margin-right: 0.5em;
+  color: #fff;
+  border-radius:4em;
+  box-shadow: 0px 1px 3px #a8a8a8;
+}
+
+#register_form {
+  margin-top: 0.5em;
+  display:flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+#register_form img {
+  border-radius: 2em;
+  width: 10em;
+  height: 10em;
+  margin-bottom: 2em;
+  box-shadow: 0px 1px 3px grey;
+}
+
+#register_form input {
+  display: inline-block;
+  float: left;
+}
+
+#register_lhs {
+  padding: 4em;
+  margin: auto 0;
+}
+
+#register_lhs img {
+  border-radius: 2em;
+  width: 10em;
+  height: 10em;
+  box-shadow: 0px 1px 3px grey;
+}
+
+#register_form button {
+  width: 100%;
+}
+
+#register_form button .material-icons {
+  padding-right: 0.5em;
+}
+
+select {
+  padding: 0.4em;
+  width: 25vw;
+  margin-top: 1vw;
+  border-radius: 4px;
+  box-shadow: 1px 1px 3px #e8e8e8;
+  border-color: #e8e8e8;
+  border-style: solid;
+  border-width: 1px;
+  font-family: 'Istok Web', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  background: #f8f8f8;
+}
+
+.studentBtn {
+  background-color: #245c7f;
+}
+
+.studentBtn:hover {
+  background-color: #345c7f;
+}
+
+.instructorBtn {
+  background-color: #5b771c;
+}
+
+.instructorBtn:hover {
+  background-color: #6b771c;
+}
+
+.organizerBtn {
+  background-color: #e57c76;
+}
+
+.organizerBtn:hover {
+  background-color: #f57c76;
+}
+
+.register_student_name_ind input {
+  max-width: 12em;
+  margin-right: 1em;
+}
+
+#register_student_name_intro .title {
+  margin-left: 1em;
+}
+
+#register_student_name_intro {
+  padding-top: 2em;
+}
+
+#register_form_parent {
+  display: flex;
+}
+
+.instructor {
+  color: #5b771c;
+}
+
+.student-back {
+  background-color: #245c7f;
+}
+
+.instructor-back {
+  background-color: #5b771c;
+}
+
+.organizer {
+  color: #e57c76;
+}
+
+.organizer-back {
+  background-color: #e57c76;
+}
