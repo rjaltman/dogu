@@ -8,6 +8,8 @@ import Header from './Header';
 import CreateProject from './CreateProject';
 import ProjectDisplay from './ProjectDisplay';
 import Register from './Register';
+import Enroll from './Enroll';
+import Drop from './Drop';
 
 type State = Readonly<{
   loggedIn: boolean,
@@ -83,8 +85,14 @@ class App extends Component {
          case "display_project": {
             return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><ProjectDisplay id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
          }
+         case "enroll": {
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><Enroll id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
+         }
+         case "drop": {
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><Drop id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
+         }
          default: {
-           return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></div>;
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></div>;
          }
         }
       }

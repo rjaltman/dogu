@@ -54,11 +54,17 @@ class Home extends Component<HomeProps, any> {
       this.projectClick = this.projectClick.bind(this);
       this.setDefaultImage = this.setDefaultImage.bind(this);
       this.onEnrollCourse = this.onEnrollCourse.bind(this);
+      this.onDropCourse = this.onDropCourse.bind(this);
   }
 
   onEnrollCourse() {
     if (this.props.pageHandler !== undefined)
       this.props.pageHandler("enroll", 0);
+  }
+
+  onDropCourse() {
+    if (this.props.pageHandler !== undefined)
+      this.props.pageHandler("drop", 0);
   }
 
   onCreateProject() {
@@ -92,6 +98,9 @@ class Home extends Component<HomeProps, any> {
 
       var dash_search = <div id="dash_search">{dash_search_icon} {dash_search_leftside} {dash_search_rightside}</div>
 
+      var enroll = <div id="enroll"><button onClick={this.onEnrollCourse} className="welcomeBtn">Enroll in Courses</button></div>
+      var drop = <div id="drop"><button onClick={this.onDropCourse} className="welcomeBtn">Drop Courses</button></div>
+
       var dash_staytuned_icon = <i className="material-icons large_icon">&#xe03e;</i>;
       var dash_staytuned_subtitle = <span className="dash_staytuned_subtitle">This section
         is under construction for instructors and organizers. For instructors, this section will soon let you view all classes, make a new class,
@@ -103,10 +112,10 @@ class Home extends Component<HomeProps, any> {
                                                             <span className="title">{p.name}</span> <span className="subtitle">{p.description}</span></div>);
 
       if (this.state.positionVal == "Student") {
-        return <div><div id="dash_container">{welcome} {dash_search}</div><br /><div id="search_container"><div id="search_results">{projectList}</div></div></div>;
+        return <div><div id="dash_container">{welcome} {dash_search} {enroll} {drop} </div><br /><div id="search_container"><div id="search_results">{projectList}</div></div></div>;
       }
       else {
-        return <div><div id="dash_container">{welcome} {dash_staytuned}</div></div>;
+        return <div><div id="dash_container">{welcome} {dash_staytuned} {enroll} {drop} </div></div>;
       }
 
 

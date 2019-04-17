@@ -19,7 +19,7 @@ type Course = {
     groupsizelimit: number
 };
 
-class Enroll extends Component<Props, any> {
+class Drop extends Component<Props, any> {
     readonly state: State = {showingCourses: [] as Course[]}
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 
@@ -40,22 +40,22 @@ class Enroll extends Component<Props, any> {
     }
 
     courseClick(cid: number) {
-        this.addCourse({cid})
+        this.dropCourse({cid})
     }
 
-    async addCourse({cid}: {cid:number}) {
-        let res: any = await post('api/add_course', {cid});
+    async dropCourse({cid}: {cid:number}) {
+        let res: any = await post('api/drop_course', {cid});
 
         if(res["success"]) {
-            console.log("Course added");
-            //show course has been added
+            console.log("Course dropped");
+            //show course has been dropped
         } else {
             console.log("error")
         }
     }
 
     async loadCourses() {
-        let res = await get(`api/courses_to_add`);
+        let res = await get(`api/courses_to_drop`);
         if(res["success"]) {
             this.setState({showingCourses: res["courses"]})
         } else {
@@ -65,4 +65,4 @@ class Enroll extends Component<Props, any> {
     }
 }
 
-export default Enroll;
+export default Drop;
