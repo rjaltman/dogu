@@ -8,6 +8,40 @@
   font-variant-caps: petite-caps;
   letter-spacing: 2px;
   font-size:20px;
+  z-index: 100;
+}
+
+#header-links {
+  margin-left: 20px;
+  display: inline;
+  border-left: 1px solid #c5c5c5;
+  font-variant: normal;
+  letter-spacing: normal;
+  padding:0;
+}
+
+#header-links li {
+  margin-left: 25px;
+  display: inline-block;
+  color: #a5a5a5;
+  font-size: 18px;
+  padding-left: 6px;
+  padding-right: 6px;
+  transition: 0.3s color;
+}
+
+#header-links li:hover {
+  color: #454545;
+}
+
+#header-links .active {
+  color: #b06ea7;
+  border-bottom: #b06ea7 2px solid;
+}
+
+#header-links .active:hover {
+  color: #b06ea7;
+  border-bottom: #b06ea7 2px solid;
 }
 
 .material-icons {
