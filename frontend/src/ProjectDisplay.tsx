@@ -18,8 +18,8 @@ export type Project = {
     organization_id: number,
     startdate: Date,
     status: string,
-    university_id: number, 
-    tags: string[], 
+    university_id: number,
+    tags: string[],
     ranking: null | number
 };
 
@@ -66,20 +66,36 @@ class ProjectDisplay extends Component<Props, any> {
         let preferenceDisplay;
         if(this.state.project.ranking === null) {
             // TODO: This could use some design...
-            preferenceDisplay = <div className="setPrefButton" onClick={() => this.addPreference()}>
-                You didn't give anything
+            preferenceDisplay = <div className="set_pref_area" onClick={() => this.addPreference()}>
+                <span className="set_pref_intro">Interested in this project?</span>
+                <span className="set_pref_subintro">You can add it to your list of preferred projects.</span>
+                <button onClick={() => this.addPreference()}>Add this project</button>
                 </div>
         } else if(this.state.changingPreferences) {
             let projectId = this.state.project.id;
             preferenceDisplay = <div>
-            <PreferenceEditor />
-            <button onClick={() => this.setState({changingPreferences: false}, () => this.getProject(projectId))}>
-                Done
+            <div id="overlay_black"> </div>
+              <div id="preference_overlay">
+                <div className="preference_intro">
+                  <i className="material-icons">&#xe8d6;</i>
+                  <span className="preference_intro_title">Change Project Preferences</span>
+                  <span className="preference_how_to_use">
+                    Use the arrows on the cards below to change the order of your preferences.
+                  </span>
+                </div>
+                <PreferenceEditor />
+                <button onClick={() => this.setState({changingPreferences: false}, () => this.getProject(projectId))}>
+                    Done
                 </button>
+              </div>
             </div>
         } else {
-            preferenceDisplay = <div className="prefDisplay">
-                You ranked this at {this.state.project.ranking}
+            preferenceDisplay = <div className="project_pref_display">
+                <span className="project_pref_ranking">
+                  <i className="material-icons">&#xe801;</i>
+                  #{this.state.project.ranking}
+                </span>
+                <span className="project_pref_ranking_text">This project is ranked #{this.state.project.ranking} on your list.</span>
                 <div className="prefActions">
                 <div onClick={this.changePreferences}>
                 Change preferences
