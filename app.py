@@ -250,6 +250,20 @@ def listOrganizations():
 
     return jsonify({"success": True, "organizations": key_val})
 
+# this is a copy paste job and needs to be improved to detail crn, term, instructor, and other distinguishing features
+@app.route("/api/listCourses", methods=["GET"])
+def listCourses():
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+
+        c.execute("SELECT * FROM course")
+        key_val = {}
+        coursesToShow = list(c)
+        for i in coursesToShow:
+            key_val[i['id']] = i['title']
+        conn.commit()
+
+    return jsonify({"success": True, "courses": key_val})
+
 @app.route("/api/search", methods=["GET"])
 def search():
     searchTerms = request.args.getlist('q')
