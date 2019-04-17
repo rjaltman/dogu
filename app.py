@@ -7,6 +7,8 @@ from hashlib import scrypt
 import secrets
 import json
 from os import environ, path
+from random import shuffle
+from itertools import ifilter
 app = Flask(__name__, static_folder="frontend/build")
 
 
@@ -232,11 +234,11 @@ def preferenceProject():
     with conn:
         with conn.cursor() as c:
             # Make sure nothing else has this same preference
-            c.execute("SELECT EXISTS(SELECT 1 FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE ranking = %s AND a.username = %s)", 
+            c.execute("SELECT EXISTS(SELECT 1 FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE ranking = %s AND a.username = %s)",
                       (rankVal, session["username"]))
             if c.fetchone()[0]:
                 # If they do, we're going to slide them all back so we can insert it
-                c.execute("UPDATE preference SET ranking = ranking + 1 WHERE ranking >= %s AND account_id = (SELECT id FROM account WHERE username = %s)", 
+                c.execute("UPDATE preference SET ranking = ranking + 1 WHERE ranking >= %s AND account_id = (SELECT id FROM account WHERE username = %s)",
                           (rankVal, session["username"]))
             c.execute(("INSERT INTO preference (ranking, account_id, project_id) "
                        "VALUES (%s, (SELECT id FROM account WHERE username = %s), %s) "
@@ -253,7 +255,7 @@ def preferenceProject():
 def error(s):
     return jsonify({"success": False, "error": s})
 
-# These functions should probably be moved into a separate file...
+These functions should probably be moved into a separate file...
 def generateSalt():
     """
     This function generates a cryptographically secure random 2-letter salt
@@ -306,10 +308,175 @@ def getProjectById(id):
             tags = [t["tag"] for t in c]
             project["tags"] = tags
             if "username" in session:
-                c.execute("SELECT p.ranking FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE project_id = %s AND a.username = %s", 
+                c.execute("SELECT p.ranking FROM preference p INNER JOIN account a ON a.id = p.account_id WHERE project_id = %s AND a.username = %s",
                           (id, session["username"]))
                 rankT = c.fetchone()
                 project["ranking"] = rankT["ranking"] if rankT != None else None
             else:
                 project["ranking"] = None
             return project
+
+# calculates single group satisfaction score based on formula in Freiheit & Wood
+# arguments: dictionary of students to preferences, id of group, members of group, max allowed rankings
+# return: score
+def calculateSatisfaction(prefs, projectid, groupmembers, maxrankings):
+    maxpossible = len(groupmembers) * (maxrankings + 1)
+
+    score = 0
+    for m in groupmembers:
+        if projectid in prefs.get(m):
+            rank = prefs.get(m).index(projectid) + 1
+            score += ((((maxrankings - rank) + 1) * (maxrankings - rank)) / 2) + 1
+        else:
+            score += (maxrankings / 2) + 1
+
+    score = score / maxpossible
+    return score
+
+# matches groups for a course.
+# arguments: a list of students, dictionary of students to preferences,
+    # minimum group size, maximum group size, maximum rankings per student
+# return values: a dictionary of projects to a list of assigned students, average satisfaction score
+# this will modify the student list, but as we're just randomizing every time it doesn't really matter
+# TODO: HEAVY EDGE CASE TESTING. Some cases have been noted in TODOs throughout this function. Others probably have yet to be found.
+# This could also be cleaned up a lot.
+def matchGroups(students, prefs, groupsizemin, groupsizemax, maxrankings):
+    # create dictionary of project ids to an empty list
+    # I know there's probably a cleaner way to make this dictionary, but I couldn't figure it out
+    groups = {}
+    for val in prefs.values():
+        for pr in val:
+            if not pr in groups:
+                groups[pr] = []
+
+    # create a shuffled copy of students who are not yet assigned
+    unassigned = students.copy()
+    shuffle(unassigned)
+
+    # initial loop: assign choice if possible, (assigning all to 1st, then to 2nd, etc...)
+    # if not possible (i.e. group is full) keep in unassigned
+    for m in range (0, maxrankings):
+        for i in range (0, len(unassigned)):
+            if len(prefs.get(unassigned[i])) > m:
+                if len(groups.get(prefs.get(unassigned[i])[m])) < groupsizemax:
+                    # there is space, assign student
+                    groups.get(prefs.get(unassigned[i])[m]).append(unassigned[i])
+                    unassigned[i] = -1 # turns out deleting from python lists while iterating sucks, this is my solution
+        unassigned = list(filter(lambda x: x != -1, unassigned))
+
+    # calculate number of remaining spots
+    spotsRemaining = 0
+    for members in groups.values():
+        spotsRemaining += (groupsizemax - len(members))
+
+    # TODO: honestly this is a really big bug that I don't know how to deal with.
+    # basically means that everyone preferenced the same projects.
+    # This should be rare, but needs to be dealt with somehow.
+    # Right now, this will just assign extra students to a non-existent project, give this run a low score, and bail
+    if spotsRemaining < len(unassigned):
+        groups[-1] = unassigned
+        score = 0
+        return groups, score
+
+    # remove underassigned projects, starting with smallest groups and making sure there are enough spots
+    # TODO: order by popularity. Since popularity is not implemented, this could delete projects that maybe shouldn't be.
+    if spotsRemaining > len(unassigned):
+        # don't sue me for this
+        toRemove = []
+        for i in range(0, groupsizemax):
+            if (spotsRemaining - groupsizemax) < len(unassigned):
+                break
+            else:
+                groupsOfSize = {k: v for k, v in groups.items() if len(v) == i}
+                for g in groupsOfSize:
+                    if (spotsRemaining - groupsizemin) < len(unassigned):
+                        break
+                    else:
+                        toRemove.append(g)
+                        for s in groups.get(g):
+                            # TODO: attempt to put student in a different choice
+                            unassigned.append(s)
+
+        for r in toRemove:
+            if r in groups:
+                del groups[r]
+
+    # start the bumping routine with unassigned students
+    # this should also take care of the case where there are full groups,
+    # but to fit all students properly none should be full (such as 6 students to 2 groups of 3-4 members)
+    # for u in unassigned:
+        # TODO
+
+    # randomly assign any remaining unassigned to fill groups
+    # there might be a more student friendly way to do this, but that's going to take some thinking
+    shuffle(unassigned)
+
+    # fill groups to groupsizemin
+    underassignedGroups = {k: v for k, v in groups.items() if len(v) < groupsizemin}
+    for ug in underassignedGroups:
+        spots = groupsizemin - len(groups.get(ug))
+        for i in range(0, spots):
+            if len(unassigned) > 0:
+                groups.get(ug).append(unassigned.pop())
+            else:
+                break
+        if len(unassigned) == 0:
+            break
+
+    # if there are still unassigned students, fill to groupsizemax
+    # this makes sure no groups are huge while others are small
+    if len(unassigned) > 0:
+        while len(unassigned) > 0:
+            openGroups = {k: v for k, v in groups.items() if len(v) < groupsizemax}
+            for og in openGroups:
+                if len(unassigned) > 0:
+                    groups.get(og).append(unassigned.pop())
+                else:
+                    break
+
+    # calculate average satisfaction score
+    # if group is somehow still too small, give it a bad score
+    score = 0
+    for g in groups:
+        if (len(groups.get(g)) >= groupsizemin):
+            score += calculateSatisfaction(prefs, g, groups.get(g), maxrankings)
+    score = (score / len(groups))
+
+    return groups, score
+
+def createGroups(course_id):
+    with conn:
+        with conn.cursor() as c:
+            # TODO: add error checking
+            c.execute("SELECT groupsizemin, groupsizemax, maxrankings FROM course WHERE course_id = %s", (course_id, ))
+            (groupsizemin, groupsizemax, maxrankings) = c.fetchone()
+
+            # list of students (the distinct probably isn't strictly necessary, but lets just make sure)
+            c.execute("SELECT DISTINCT account_id FROM enroll WHERE course_id = %s", (course_id, ))
+            students = list(c)
+
+            # dictionary of students to preferenced projects
+            # the keys are student ids, with the value containing an ordered list
+            # of their prefered project ids, from first to last choice
+            prefs = {}
+            for s in students:
+                c.execute("SELECT project_id FROM preference WHERE account_id = %s ORDER BY ranking ASC", (s, ))
+                prefs[s] = list(c)
+
+            # run matching algorithm to find best satisfaction
+            bestscore = 0
+            finalgroups = {}
+            for i in range (0, 30):
+                (groups, score) = matchGroups(students, prefs, groupsizemin, groupsizemax, maxrankings)
+
+                if score > bestscore:
+                    finalgroups = groups
+
+            # insert finalized groups
+            for g in finalgroups:
+                c.execute("INSERT INTO project_group (project_id, course_id) VALUES (%s, %s) RETURNING id", (g, course_id))
+                (projectgroupid, ) = c.fetchone()
+                for s in finalgroups.get(g):
+                    c.execute("INSERT INTO member (account_id, project_group_id) VALUES (%s, %s)", (s, projectgroupid))
+
+    return None
