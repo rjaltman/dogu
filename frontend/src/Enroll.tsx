@@ -19,54 +19,54 @@ type Course = {
 };
 
 class Enroll extends Component<Props, any> {
-  readonly state: State = {showingCourses: [] as Course[]}
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    readonly state: State = {showingCourses: [] as Course[]}
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 
-  constructor(props: Props) {
-    super(props);
+    constructor(props: Props) {
+        super(props);
 
-    this.handleChange = handleChange.bind(this);
-  }
-
-  componentDidMount() {
-    this.loadCourses();
-  }
-
-  render() {
-    return <div></div>
-  }
-
-  async addCourse(cid: number) {
-    let res: any = await post('api/add_course/${cid}', {});
-
-    if(res["success"]) {
-        console.log("Course added");
-        //show course has been added
-    } else {
-        console.log("error")
+        this.handleChange = handleChange.bind(this);
     }
-  }
 
-  async dropCourse(cid: number) {
-    let res: any = await post('api/drop_course/${cid}', {});
-
-    if(res["success"]) {
-        console.log("Course dropped");
-        //show course has been dropped
-    } else {
-        console.log("error")
+    componentDidMount() {
+        this.loadCourses();
     }
-  }
 
-  async loadCourses() {
-    let res = await get(`api/courses`);
-    if(res["success"]) {
-        this.setState({showingCourses: res["courses"]})
-    } else {
-        this.setState({showingCourses: []})
-        console.log(res["error"])
+    render() {
+        return <div></div>
     }
-}
+
+    async addCourse({cid}: {cid:number}) {
+        let res: any = await post('api/add_course/', {cid});
+
+        if(res["success"]) {
+            console.log("Course added");
+            //show course has been added
+        } else {
+            console.log("error")
+        }
+    }
+
+    async dropCourse({cid}: {cid:number}) {
+        let res: any = await post('api/drop_course/${cid}', {cid});
+
+        if(res["success"]) {
+            console.log("Course dropped");
+            //show course has been dropped
+        } else {
+            console.log("error")
+        }
+    }
+
+    async loadCourses() {
+        let res = await get(`api/courses`);
+        if(res["success"]) {
+            this.setState({showingCourses: res["courses"]})
+        } else {
+            this.setState({showingCourses: []})
+            console.log(res["error"])
+        }
+    }
 }
 
 export default Enroll;

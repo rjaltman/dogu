@@ -349,8 +349,9 @@ def getCourses():
         coursesToShow = list(c)
     return jsonify({"success": True, "courses": coursesToShow})
 
-@app.route("/api/add_course/<int:id>", methods=["GET"])
-def addCourse(id):
+@app.route("/api/add_course", methods=["POST"])
+def addCourse():
+    cid = request.json.get("cid", None)
     username = session.get('username', None)
     with conn.cursor(cursor_factory=RealDictCursor) as c:
         c.execute(("SELECT account.id "
@@ -366,13 +367,14 @@ def addCourse(id):
 
         uid = c.fetchone()["university_id"]
 
-        c.execute("INSERT INTO enroll (account_id, course_id, university_id) VALUES (%s, %s, %s)", (acct_id, id, uid))
+        c.execute("INSERT INTO enroll (account_id, course_id, university_id) VALUES (%s, %s, %s)", (acct_id, cid, uid))
         conn.commit()
             
     return jsonify({"success": True})
 
-@app.route("/api/drop_course/<int:id>", methods=["GET"])
-def dropCourse(id):
+@app.route("/api/drop_course", methods=["POST"])
+def dropCourse():
+    cid = request.json.get("cid", None)
     username = session.get('username', None)
     with conn.cursor(cursor_factory=RealDictCursor) as c:
         c.execute(("SELECT account.id "
@@ -388,7 +390,7 @@ def dropCourse(id):
 
         uid = c.fetchone()["university_id"]
 
-        c.execute("DELETE FROM enroll WHERE ((account_id = %s) AND (course_id = %s) AND (university_id = %s))", (acct_id, id, uid))
+        c.execute("DELETE FROM enroll WHERE ((account_id = %s) AND (course_id = %s) AND (university_id = %s))", (acct_id, cid, uid))
         conn.commit()
             
     return jsonify({"success": True})
