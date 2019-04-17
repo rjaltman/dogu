@@ -40,17 +40,20 @@ class Enroll extends Component<Props, any> {
     }
 
     courseClick(cid: number) {
-        this.addCourse({cid})
+        this.addCourse(cid)
+        this.loadCourses()
     }
 
-    async addCourse({cid}: {cid:number}) {
+    async addCourse(cid: number) {
         let res: any = await post('api/add_course', {cid});
 
         if(res["success"]) {
             console.log("Course added");
             //show course has been added
+            alert("Successfully added " + cid)
         } else {
             console.log("error")
+            alert("Failed to add " + cid)
         }
     }
 

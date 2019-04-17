@@ -40,17 +40,20 @@ class Drop extends Component<Props, any> {
     }
 
     courseClick(cid: number) {
-        this.dropCourse({cid})
+        this.dropCourse(cid)
+        this.loadCourses()
     }
 
-    async dropCourse({cid}: {cid:number}) {
+    async dropCourse(cid: number) {
         let res: any = await post('api/drop_course', {cid});
 
         if(res["success"]) {
             console.log("Course dropped");
             //show course has been dropped
+            alert("Successfully added " + cid)
         } else {
             console.log("error")
+            alert("Failed to add " + cid)
         }
     }
 
