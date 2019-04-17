@@ -153,3 +153,8 @@ button {
   background-color: #e8e8e8;
   color: #333;
 }
+
+#generic_container {
+  padding-top: 5em;
+  display:block;
+}

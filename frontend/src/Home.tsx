@@ -108,14 +108,30 @@ class Home extends Component<HomeProps, any> {
       var dash_staytuned_text = <div id="dash_staytuned_text"><span className="dash_staytuned_title dash_headline">Stay tuned.</span> {dash_staytuned_subtitle}</div>;
       var dash_staytuned = <div id="dash_staytuned">{dash_staytuned_icon} {dash_staytuned_text}</div>
 
-      let projectList = this.state.showingProjects.map((p: Project) => <div className="search_tile" key={p.id} onClick={() => this.projectClick(p.id)}>
+      var projectList_intro =
+        <div id="project_recommendations_intro">
+          <div className="title">Recommendations for you</div>
+          <div className="subtitle">We've picked a few projects you might like, based on your preferences list.</div>
+        </div>
+      var projectList = this.state.showingProjects.map((p: Project) => <div className="search_tile" key={p.id} onClick={() => this.projectClick(p.id)}>
                                                             <span className="title">{p.name}</span> <span className="subtitle">{p.description}</span></div>);
 
+      var account_information = <div id="account_information"></div>
+      var course_enrollment = <div id="course_enrollment">{enroll} {drop}</div>
+      var current_projects = <div id="current_projects"></div>
+      var current_preferences = <div id="current_preferences"></div>
+      var sidebar = <div id="sidebar">{account_information}{course_enrollment}{current_projects}{current_preferences}</div>
+
+      var recommendations_section = <div id="search_container"><div id="search_results">{projectList}</div></div>
+
       if (this.state.positionVal == "Student") {
-        return <div><div id="dash_container">{welcome} {dash_search} {enroll} {drop} </div><br /><div id="search_container"><div id="search_results">{projectList}</div></div></div>;
+        return <div id="dash_main">{sidebar}<div id="dash_container">{welcome} {dash_search} {recommendations_section}</div></div>;
+      }
+      else if (this.state.positionVal == "Instructor"){
+        return <div><div id="dash_container">{welcome} {dash_staytuned} {enroll} {drop} </div></div>;
       }
       else {
-        return <div><div id="dash_container">{welcome} {dash_staytuned} {enroll} {drop} </div></div>;
+        return <div><div id="dash_container">{welcome} {dash_staytuned} </div></div>;
       }
 
 
