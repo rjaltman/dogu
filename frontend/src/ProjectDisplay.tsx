@@ -66,8 +66,10 @@ class ProjectDisplay extends Component<Props, any> {
         let preferenceDisplay;
         if(this.state.project.ranking === null) {
             // TODO: This could use some design...
-            preferenceDisplay = <div className="setPrefButton" onClick={() => this.addPreference()}>
-                You didn't give anything
+            preferenceDisplay = <div className="set_pref_area" onClick={() => this.addPreference()}>
+                <span className="set_pref_intro">Interested in this project?</span>
+                <span className="set_pref_subintro">You can add it to your list of preferred projects.</span>
+                <button onClick={() => this.addPreference()}>Add this project</button>
                 </div>
         } else if(this.state.changingPreferences) {
             let projectId = this.state.project.id;

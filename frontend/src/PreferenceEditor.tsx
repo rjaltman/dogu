@@ -38,6 +38,7 @@ export default class PreferenceEditor extends Component<Props, any> {
                     </div>
                 </div>
             );
+
             return projectDivs;
         }
     }
@@ -60,9 +61,9 @@ export default class PreferenceEditor extends Component<Props, any> {
             newProjects[index] = newProjects[index - 1];
             newProjects[index - 1] = temp;
             this.setState({projects: newProjects});
-                                                                                                    // minus to increase rank
-                                                                                                    // plus one because it's 1-indexed
-                                                                                                    // on the server
+            // minus to increase rank
+            // plus one because it's 1-indexed
+            // on the server
             let res: any = await post("api/project/preference/set", {id: newProjects[index - 1].id, rank: index - 1 + 1});
             if(res["success"]) {
                 await this.getProjects();
