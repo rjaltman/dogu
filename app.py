@@ -143,8 +143,6 @@ def getProfileInfo():
         result = c.fetchone()
         if not result:
             return jsonify({"success": False, "error": "There is no account by that username"})
-        print(result)
-        # result = list(result)
 
         if not result.name:
             result.name = result.username
