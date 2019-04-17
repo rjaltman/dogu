@@ -50,10 +50,10 @@ class Drop extends Component<Props, any> {
         if(res["success"]) {
             console.log("Course dropped");
             //show course has been dropped
-            alert("Successfully added " + cid)
+            alert("Successfully dropped " + cid)
         } else {
             console.log("error")
-            alert("Failed to add " + cid)
+            alert("Failed to drop " + cid)
         }
     }
 

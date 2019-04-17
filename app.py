@@ -384,8 +384,9 @@ def addCourse():
                 "WHERE username = %(username)s"
                 ), {"username": username})
         
-        acct_id = c.fetchone()["id"]
-        uid = c.fetchone()["university_id"]
+        d = c.fetchone()
+        acct_id = d["id"]
+        uid = d["university_id"]
 
         c.execute("SELECT * "
                 "FROM enroll "
@@ -411,8 +412,9 @@ def dropCourse():
                 "WHERE username = %(username)s"
                 ), {"username": username})
         
-        acct_id = c.fetchone()["id"]
-        uid = c.fetchone()["university_id"]
+        d = c.fetchone()
+        acct_id = d["id"]
+        uid = d["university_id"]
 
         c.execute("DELETE FROM enroll WHERE ((account_id = %(acct_id)s) AND (course_id = %(cid)s) AND (university_id = %(uid)s))", {"acct_id":acct_id, "cid":cid, "uid":uid})
         conn.commit()
