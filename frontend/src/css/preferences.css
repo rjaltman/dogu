@@ -1,0 +1,87 @@
+#overlay_black {
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  background-color: #00000063;
+  position: fixed;
+}
+
+#preference_overlay {
+  margin: auto auto;
+  padding: 2em;
+  background-color: #f8f8f8;
+  border-radius: 0.1em;
+  box-shadow: 0px 2px 6px #585858;
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: max-content;
+  left: 0;
+  right: 0;
+  width: fit-content;
+  max-width: 500px;
+}
+
+.preference_item {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  box-shadow: 0px 1px 2px #a8a8a8;
+  margin-bottom: 5px;
+  padding-right: 0.5em;
+  cursor: default;
+}
+
+.preference_item_name {
+  margin: 10px;
+  width: 95%;
+}
+
+.preference_item_arrow_container {
+  display: "flex-vertical";
+}
+
+.preference_item_arrow {
+  /* background-color: #eaeaea; */
+  color: #888;
+  cursor: default;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+}
+
+.preference_item_arrow:hover {
+  color: #555;
+}
+
+.preference_item_number {
+  background-color: #b06ea7;
+  padding: 0.8em;
+  width: 1em;
+  text-align: center;
+  margin-right: 0.3em;
+  box-shadow: 1px 0px 3px #b8b8b8;
+  color: #fff;
+  font-weight: 900;
+}
+
+.preference_intro {
+  margin-bottom: 1.5em;
+}
+
+.preference_intro_title {
+  font-size: 1.5em;
+  color: #9c258c;
+}
+
+.preference_intro .material-icons {
+  font-size: 2em;
+  padding-right: 0.5em;
+  color: #9c258c;
+}
+
+.preference_how_to_use {
+  display: block;
+  padding-top: 1em;
+}

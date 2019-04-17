@@ -24,17 +24,21 @@ export default class PreferenceEditor extends Component<Props, any> {
         if(this.state.projects === null) {
             return <img width="100" src="https://media.giphy.com/media/3o7bu8sRnYpTOG1p8k/source.gif" />
         } else {
-            let projectDivs = this.state.projects.map((p, idx) => 
-                <div style={{display: "flex", alignItems: "center"}} key={idx}>
-                    <div style={{margin: "10px"}}>
-                            { p.name }
-                </div>
-                <div style={{display: "flex-vertical"}}> 
-                    <div onClick={this.increaseRank.bind(this, idx)}>&#11165;</div>
-                    <div onClick={this.decreaseRank.bind(this, idx)}>&#11167;</div> 
-                </div>
+            let projectDivs = this.state.projects.map((p, idx) =>
+                <div className="preference_item" key={idx}>
+                    <div className="preference_item_number">
+                      {idx+1}
+                    </div>
+                    <div className="preference_item_name">
+                      { p.name }
+                    </div>
+                    <div className="preference_item_arrow_container">
+                        <div className="preference_item_arrow" onClick={this.increaseRank.bind(this, idx)}>&#x25B2;</div>
+                        <div className="preference_item_arrow" onClick={this.decreaseRank.bind(this, idx)}>&#x25BC;</div>
+                    </div>
                 </div>
             );
+
             return projectDivs;
         }
     }
@@ -57,9 +61,9 @@ export default class PreferenceEditor extends Component<Props, any> {
             newProjects[index] = newProjects[index - 1];
             newProjects[index - 1] = temp;
             this.setState({projects: newProjects});
-                                                                                                    // minus to increase rank
-                                                                                                    // plus one because it's 1-indexed
-                                                                                                    // on the server
+            // minus to increase rank
+            // plus one because it's 1-indexed
+            // on the server
             let res: any = await post("api/project/preference/set", {id: newProjects[index - 1].id, rank: index - 1 + 1});
             if(res["success"]) {
                 await this.getProjects();
@@ -71,7 +75,7 @@ export default class PreferenceEditor extends Component<Props, any> {
             console.error("WELP");
         }
     }
-    
+
     async decreaseRank(index: number) {
         if(this.state.projects !== null) {
             if(index === this.state.projects.length - 1)
