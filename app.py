@@ -200,7 +200,6 @@ def editProject():
         conn.commit()
     return out
 
-#this should probably do something is this project is a foreign key for something other than tags...
 @app.route("/api/deleteproject", methods=["POST"])
 def deleteproject():
     id = request.json.get("id", None)
@@ -209,6 +208,16 @@ def deleteproject():
         return jsonify({"success": False, "error": "You must specify project id"})
 
     with conn.cursor() as c:
+        c.execute("SELECT * FROM preference WHERE project_id = %s", (id, ))
+        preference = c.fetchone()
+        c.execute("SELECT * FROM approved WHERE project_id = %s", (id, ))
+        approved = c.fetchone()
+        c.execute("SELECT * FROM project_group WHERE project_id = %s", (id, ))
+        group = c.fetchone()
+
+        if preference or approved or group:
+            return jsonify({"success": False, "error": "This project has an attached group or preference that prevent deletion"})
+
         c.execute("DELETE FROM project_tags WHERE project_id = %s", (id, ))
         c.execute("DELETE FROM project WHERE id = %s", (id, ))
         out = jsonify({"success": True})
@@ -436,6 +445,33 @@ def preferenceProject():
             (newRank, ) = c.fetchone()
             return jsonify({"success": True, "newRank": newRank})
 
+@app.route("/api/group/studentGroupListing", methods=["GET"])
+def getGroupListing():
+    courseid = request.json.get("courseid", None)
+
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute("SELECT id FROM project_group WHERE course_id = %s", (courseid, ))
+        groupids = list(c)
+
+        students = []
+        for id in groupids:
+            c.execute("SELECT account.name AS studentName, account.id AS studentId, project.name AS projectName, project.id AS projectId "
+            "FROM project, member, project_group, account "
+            "WHERE (project_group.id = %s AND project_group.project_id = project.id AND member.project_group_id = project_group.id AND member.account_id = account.id)", (id, ))
+            students.extend(list(c))
+
+        return jsonify({"success": True, "listing": students})
+
+@app.route("/api/group/runGroupMatch", methods=["POST"])
+def runGroupMatch():
+    courseid = request.json.get("courseid", None)
+    success = createGroups(courseid)
+
+    if success:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False, "error": "Something went wrong"})
+
 def error(s):
     return jsonify({"success": False, "error": s})
 
@@ -631,13 +667,18 @@ def matchGroups(students, prefs, groupsizemin, groupsizemax, maxrankings):
 def createGroups(course_id):
     with conn:
         with conn.cursor() as c:
-            # TODO: add error checking
             c.execute("SELECT groupsizemin, groupsizemax, maxrankings FROM course WHERE course_id = %s", (course_id, ))
             (groupsizemin, groupsizemax, maxrankings) = c.fetchone()
+
+            if not groupsizemin or not groupsizemax or not maxrankings:
+                return False
 
             # list of students (the distinct probably isn't strictly necessary, but lets just make sure)
             c.execute("SELECT DISTINCT account_id FROM enroll WHERE course_id = %s", (course_id, ))
             students = list(c)
+
+            if len(students) == 0:
+                return False
 
             # dictionary of students to preferenced projects
             # the keys are student ids, with the value containing an ordered list
@@ -663,4 +704,4 @@ def createGroups(course_id):
                 for s in finalgroups.get(g):
                     c.execute("INSERT INTO member (account_id, project_group_id) VALUES (%s, %s)", (s, projectgroupid))
 
-    return None
+    return True
