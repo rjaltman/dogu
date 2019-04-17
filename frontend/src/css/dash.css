@@ -220,7 +220,7 @@
 }
 
 #sidebar {
-  width: 12em;
+  width: 13em;
   padding: 2em;
   background-color: #f8f8f8;
   margin-top: -1.2em;
@@ -228,4 +228,19 @@
   margin-right: 2em;
   position: fixed;
   height: 100%;
+  padding-left: 1em;
+}
+
+.sidebar_header {
+  display: block;
+  margin-bottom: 1em;
+  border-bottom: 1px solid #c5c5c5;
+  width: calc(100% + 2.5em);
+  margin-left: -1em;
+  padding-left: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+.sidebar_section {
+  margin-bottom: 2em;
 }

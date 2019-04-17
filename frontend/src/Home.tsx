@@ -116,10 +116,18 @@ class Home extends Component<HomeProps, any> {
       var projectList = this.state.showingProjects.map((p: Project) => <div className="search_tile" key={p.id} onClick={() => this.projectClick(p.id)}>
                                                             <span className="title">{p.name}</span> <span className="subtitle">{p.description}</span></div>);
 
-      var account_information = <div id="account_information"></div>
-      var course_enrollment = <div id="course_enrollment">{enroll} {drop}</div>
-      var current_projects = <div id="current_projects"></div>
-      var current_preferences = <div id="current_preferences"></div>
+      var account_information_header = <span className="sidebar_header"><i className="material-icons">&#xe416;</i> Account Information</span>
+      var account_information = <div id="account_information" className="sidebar_section">{account_information_header}</div>
+
+      var course_enrollment_header = <span className="sidebar_header"><i className="material-icons">&#xe54b;</i> My Classes</span>
+      var course_enrollment = <div id="course_enrollment" className="sidebar_section">{course_enrollment_header} {enroll} {drop}</div>
+
+      var current_projects_header = <span className="sidebar_header"><i className="material-icons">&#xe431;</i> My Current Projects</span>
+      var current_projects = <div id="current_projects" className="sidebar_section">{current_projects_header}</div>
+
+      var current_preferences_header = <span className="sidebar_header"><i className="material-icons">&#xe85c;</i> Project Preferences</span>
+      var current_preferences = <div id="current_preferences" className="sidebar_section">{current_preferences_header}</div>
+
       var sidebar = <div id="sidebar">{account_information}{course_enrollment}{current_projects}{current_preferences}</div>
 
       var recommendations_section = <div id="search_container"><div id="search_results">{projectList}</div></div>
