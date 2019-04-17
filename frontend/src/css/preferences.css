@@ -16,3 +16,45 @@
   z-index: 10;
   position: absolute;
 }
+
+.preference_item {
+  display: flex;
+  align-items: center;
+  background-color: #f0f0f0;
+  box-shadow: 0px 1px 2px #a8a8a8;
+  margin-bottom: 5px;
+  padding-right: 0.5em;
+  cursor: default;
+}
+
+.preference_item_name {
+  margin: 10px;
+  width: 95%;
+}
+
+.preference_item_arrow_container {
+  display: "flex-vertical";
+}
+
+.preference_item_arrow {
+  /* background-color: #eaeaea; */
+  color: #888;
+  cursor: default;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+}
+
+.preference_item_arrow:hover {
+  color: #555;
+}
+
+.preference_item_number {
+  background-color: #b06ea7;
+  padding: 0.8em;
+  width: 1em;
+  text-align: center;
+  margin-right: 0.3em;
+  box-shadow: 1px 0px 3px #b8b8b8;
+  color: #fff;
+  font-weight: 900;
+}
