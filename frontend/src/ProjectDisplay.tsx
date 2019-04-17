@@ -75,16 +75,27 @@ class ProjectDisplay extends Component<Props, any> {
             let projectId = this.state.project.id;
             preferenceDisplay = <div>
             <div id="overlay_black"> </div>
-            <div id="preference_overlay">
-            <PreferenceEditor />
-            <button onClick={() => this.setState({changingPreferences: false}, () => this.getProject(projectId))}>
-                Done
+              <div id="preference_overlay">
+                <div className="preference_intro">
+                  <i className="material-icons">&#xe8d6;</i>
+                  <span className="preference_intro_title">Change Project Preferences</span>
+                  <span className="preference_how_to_use">
+                    Use the arrows on the cards below to change the order of your preferences.
+                  </span>
+                </div>
+                <PreferenceEditor />
+                <button onClick={() => this.setState({changingPreferences: false}, () => this.getProject(projectId))}>
+                    Done
                 </button>
-            </div>
+              </div>
             </div>
         } else {
-            preferenceDisplay = <div className="prefDisplay">
-                You ranked this at {this.state.project.ranking}
+            preferenceDisplay = <div className="project_pref_display">
+                <span className="project_pref_ranking">
+                  <i className="material-icons">&#xe801;</i>
+                  #{this.state.project.ranking}
+                </span>
+                <span className="project_pref_ranking_text">This project is ranked #{this.state.project.ranking} on your list.</span>
                 <div className="prefActions">
                 <div onClick={this.changePreferences}>
                 Change preferences
