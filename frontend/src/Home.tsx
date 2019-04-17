@@ -53,7 +53,14 @@ class Home extends Component<HomeProps, any> {
       this.onSearchProjectViaButton = this.onSearchProjectViaButton.bind(this);
       this.projectClick = this.projectClick.bind(this);
       this.setDefaultImage = this.setDefaultImage.bind(this);
+      this.onEnrollCourse = this.onEnrollCourse.bind(this);
   }
+
+  onEnrollCourse() {
+    if (this.props.pageHandler !== undefined)
+      this.props.pageHandler("enroll", 0);
+  }
+
   onCreateProject() {
     if (this.props.pageHandler !== undefined)
       this.props.pageHandler("create_project",0);
