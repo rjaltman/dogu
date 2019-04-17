@@ -141,15 +141,16 @@ def getProfileInfo():
 
         c.execute("SELECT username, name, position, avatar FROM account WHERE username = %s", (username, ))
         result = c.fetchone()
-        result = list(result)
         if not result:
             return jsonify({"success": False, "error": "There is no account by that username"})
+        print(result)
+        # result = list(result)
 
-        if not result[1]:
-            result[1] = result[0]
-        if not result[3]:
-            result[3] = "https://www.gravatar.com/avatar/?default=mm&size=160"
-        out = jsonify({"success": True, "name": result[1], "position": result[2], "avatar": result[3]})
+        if not result.name:
+            result.name = result.username
+        if not result.avatar:
+            result.avatar = "https://www.gravatar.com/avatar/?default=mm&size=160"
+        out = jsonify({"success": True, "name": result.name, "position": result.position, "avatar": result.avatar})
         conn.commit()
     return out
 
@@ -217,7 +218,7 @@ def deleteproject():
 @app.route("/api/listUniversities", methods=["GET"])
 def listUniversities():
     with conn.cursor(cursor_factory=RealDictCursor) as c:
-        # This person is a looky-loo; I guess they get to see everything?
+
         c.execute("SELECT * FROM university")
         key_val = {}
         projectsToShow = list(c)
@@ -230,7 +231,7 @@ def listUniversities():
 @app.route("/api/listOrgs", methods=["GET"])
 def listOrganizations():
     with conn.cursor(cursor_factory=RealDictCursor) as c:
-        # This person is a looky-loo; I guess they get to see everything?
+
         c.execute("SELECT * FROM organization")
         key_val = {}
         projectsToShow = list(c)

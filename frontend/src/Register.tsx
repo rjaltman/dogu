@@ -12,13 +12,11 @@ interface RegisterProps {
 type State = Readonly<{
     usernameVal: string,
     passwordVal: string,
-    passwordVal2: string,
     positionVal: "Instructor" | "Student" | "Organizer" | "",
     deptVal: string,
     emailVal: string,
     profilePictureVal: string,
     error: string,
-    registering: boolean,
     firstVal: string,
     middleVal: string,
     lastVal: string,
@@ -68,8 +66,6 @@ class Register extends Component<RegisterProps, any> {
           usernameVal: defaultUsername,
           passwordVal: defaultPassword,
           error: "",
-          registering: false,
-          passwordVal2: "",
           positionVal: defaultPosition,
           deptVal: "",
           emailVal: "",
@@ -110,10 +106,7 @@ class Register extends Component<RegisterProps, any> {
       // var key:number = this.state.universityList[i]['id']
       // var value:number = this.state.universityList[i]['id']
       // var name:string = this.state.universityList[i]['name']
-      if (this.state.universityVal < 0) {
-        // Set default key
-        this.setState({universityVal: key});
-      }
+
       universities.push(<option key={key} value={key}>{this.state.universityList[key]}</option>);
     }
     return universities;
@@ -197,7 +190,7 @@ class Register extends Component<RegisterProps, any> {
 
     var intro_name = <div id="register_student_name_intro"><i className="material-icons">&#xe85e;</i><span className="register_student_name_intro title">What is your name?</span></div>
     var intro_account = <div id="register_student_name_intro"><i className="material-icons">&#xe2c9;</i><span className="register_student_name_intro title">Next, we need some account information.</span></div>
-    var intro_university = <div id="register_student_name_intro"><i className="material-icons">&#xe886;</i><span className="register_student_name_intro title">Who do you represent?</span></div>
+    var intro_university = <div id="register_student_name_intro"><i className="material-icons">&#xe886;</i><span className="register_student_name_intro title">Whom do you represent?</span></div>
     var intro_dept = <div id="register_student_name_intro"><i className="material-icons">&#xeb3f;</i><span className="register_student_name_intro title">What department do you work for?</span></div>
     var intro_img = <div id="register_student_name_intro"><i className="material-icons">&#xe439;</i><span className="register_student_name_intro title">Finally, a URL to a profile photo.</span></div>
 
@@ -272,7 +265,13 @@ class Register extends Component<RegisterProps, any> {
   async loadAllUniversities() {
       let res = await get(`api/listUniversities`);
       if(res["success"]) {
-          this.setState({universityList: res["universities"]})
+          this.setState({ universityList: res["universities"] })
+          if (this.state.universityList != {}) {
+            // Object.keys approach as found at
+            // https://stackoverflow.com/questions/3298477/get-first-key-from-javascript-object
+            this.setState({ universityVal: Object.keys(res["universities"])[0] })
+          }
+
       } else {
           this.setState({universityList: []})
           console.log(res["error"])
@@ -283,6 +282,12 @@ class Register extends Component<RegisterProps, any> {
       let res = await get(`api/listOrgs`);
       if(res["success"]) {
           this.setState({orgsList: res["organizations"]})
+          if (this.state.orgsList != {}) {
+            // Object.keys approach as found at
+            // https://stackoverflow.com/questions/3298477/get-first-key-from-javascript-object
+            this.setState({ universityVal: Object.keys(res["organizations"])[0] })
+          }
+
       } else {
           this.setState({orgsList: []})
           console.log(res["error"])
