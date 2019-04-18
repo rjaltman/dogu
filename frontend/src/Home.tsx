@@ -146,18 +146,21 @@ class Home extends Component<HomeProps, any> {
       var current_preferences_header = <span className="sidebar_header"><i className="material-icons">&#xe85c;</i> Project Preferences</span>
       var current_preferences = <div id="current_preferences" className="sidebar_section">{current_preferences_header}{prefList}</div>
 
-      var sidebar = <div id="sidebar">{account_information}{course_enrollment}{current_projects}{current_preferences}</div>
+
 
       var recommendations_section = <div id="search_container"><div id="search_results">{projectList}</div></div>
 
       if (this.state.positionVal == "Student") {
+        var sidebar = <div id="sidebar">{account_information}{course_enrollment}{current_projects}{current_preferences}</div>
         return <div id="dash_main">{sidebar}<div id="dash_container">{welcome} {dash_search} {recommendations_section}</div></div>;
       }
       else if (this.state.positionVal == "Instructor"){
-        return <div><div id="dash_container">{welcome} {dash_staytuned} {enroll} {drop} </div></div>;
+        var sidebar = <div id="sidebar">{account_information}{course_enrollment}{current_projects}{current_preferences}</div>
+        return <div id="dash_main">{sidebar}<div id="dash_container">{welcome} {dash_staytuned} </div></div>;
       }
       else {
-        return <div><div id="dash_container">{welcome} {dash_staytuned} </div></div>;
+        var sidebar = <div id="sidebar">{account_information}{current_projects}</div>
+        return <div id="dash_main">{sidebar}<div id="dash_container">{welcome} {dash_staytuned} </div></div>;
       }
 
 
