@@ -98,8 +98,8 @@ class Home extends Component<HomeProps, any> {
 
       var dash_search = <div id="dash_search">{dash_search_icon} {dash_search_leftside} {dash_search_rightside}</div>
 
-      var enroll = <div id="enroll"><button onClick={this.onEnrollCourse} className="welcomeBtn">Enroll in Courses</button></div>
-      var drop = <div id="drop"><button onClick={this.onDropCourse} className="welcomeBtn">Drop Courses</button></div>
+      var enroll = <span onClick={this.onEnrollCourse} className="sidebar_element pointer green"><i className="material-icons">&#xe148;</i>Enroll in Courses</span>
+      var drop = <span onClick={this.onDropCourse} className="sidebar_element pointer orange"><i className="material-icons">&#xe15d;</i>Drop Courses</span>
 
       var dash_staytuned_icon = <i className="material-icons large_icon">&#xe03e;</i>;
       var dash_staytuned_subtitle = <span className="dash_staytuned_subtitle">This section

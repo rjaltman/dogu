@@ -233,7 +233,7 @@
 
 .sidebar_header {
   display: block;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
   border-bottom: 1px solid #c5c5c5;
   width: calc(100% + 2.5em);
   margin-left: -1em;
@@ -243,4 +243,28 @@
 
 .sidebar_section {
   margin-bottom: 2em;
+}
+
+.sidebar_element {
+  font-size: 0.9em;
+  display: block;
+  color: #555;
+  padding: 0.5em;
+  padding-left: 1em;
+  margin-left: -1em;
+  width: 100%;
+  padding-right: 2.1em;
+}
+
+.sidebar_element .material-icons {
+  vertical-align: middle;
+  padding-right:0.3em;
+}
+
+.sidebar_element:hover {
+  background-color: #e8e8e8;
+}
+
+.pointer {
+  cursor: pointer;
 }

@@ -159,3 +159,12 @@ button {
   padding-top: 5em;
   display:block;
 }
+
+/* Two classes to override the color of whatever text is present. */
+.orange {
+  color: #e57c76!important;
+}
+
+.green {
+  color: #5b771c!important;
+}
