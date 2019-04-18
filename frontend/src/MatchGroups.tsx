@@ -13,13 +13,17 @@ type Listing = {
   projectId: number
 }
 
+type State = Readonly<{
+  courseId: number,
+  courseList: {[key: number]: string},
+  showingListings: Listing[]
+}>;
+
 const initialState = {
   courseId: -1,
-  courseList: {[key: number]: string},
+  courseList: [],
   showingListings: [] as Listing[]
 }
-
-type State = Readonly<typeof initialState>;
 
 class MatchGroups extends Component<Props, any> {
   readonly state: State = initialState;
@@ -27,7 +31,6 @@ class MatchGroups extends Component<Props, any> {
   constructor(props: Props) {
     super(props);
 
-    this.handleChange = handleChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.getCourseOptions = this.getCourseOptions.bind(this);
     this.onMatchGroups = this.onMatchGroups.bind(this);
@@ -35,8 +38,28 @@ class MatchGroups extends Component<Props, any> {
 
   render() {
     // drop down of courses
+    let university =
+        <select name="courseId" onChange={this.handleSelectChange} value={this.state.courseId}>
+          {this.getCourseOptions()}
+        </select>
+
     // match groups button
-    // display group listing of current course
+    let matchGroups = <button onClick={this.onMatchGroups}>Create Project Groups for Course</button>
+
+    // list groups
+    let groupListing = this.state.showingListings.map(l => <p>{l.studentName}, {l.projectName}</p>);
+
+    return <p>{university} <br /> {matchGroups} <br /> {groupListing}</p>;
+  }
+
+  componentDidMount() {
+    this.loadGroups(this.state.courseId);
+  }
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+      if (this.state.courseId !== prevState.courseId) {
+          this.loadGroups(this.state.courseId);
+      }
   }
 
   handleSelectChange(event: React.FormEvent<HTMLSelectElement>) {
@@ -65,22 +88,32 @@ class MatchGroups extends Component<Props, any> {
       }
   }
 
-  async loadGroups() {
-    let res = await get ("api/group/studentGroupListing", {courseid: this.state.courseId});
+  async loadGroups(courseid: number) {
+    if (courseid != -1) {
+      let res = await get(`api/group/studentGroupListing/${courseid}`);
 
-    if(res["success"]) {
-      this.setState({showingListings: res["listing"]});
-    } else {
-      this.setState({showingListings: []});
-      console.log(res["error"]);
+      if(res["success"]) {
+        this.setState({showingListings: res["listing"]});
+      } else {
+        this.setState({showingListings: []});
+        console.log(res["error"]);
+      }
     }
   }
 
-  async onMatchGroups() {
-    let res = await post ("api/group/runGroupMatch", {courseid: this.state.courseId});
+  onMatchGroups() {
+    if (this.state.courseId != -1) {
+      this.matchGroups();
+    } else {
+      console.log("You must provide a valid course");
+    }
+  }
+
+  async matchGroups() {
+    let res = await post("api/group/runGroupMatch", {courseid: this.state.courseId});
 
     if(res["success"]) {
-      // uhhhhhhh
+      this.loadGroups(this.state.courseId);
     } else {
       console.log(res["error"]);
     }

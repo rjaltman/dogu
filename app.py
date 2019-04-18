@@ -3,7 +3,7 @@ from backend.database import conn
 from backend import utils
 from psycopg2.extras import RealDictCursor
 from binascii import hexlify
-from hashlib import scrypt
+# from hashlib import scrypt
 import secrets
 import json
 from os import environ, path
@@ -459,10 +459,8 @@ def preferenceProject():
             (newRank, ) = c.fetchone()
             return jsonify({"success": True, "newRank": newRank})
 
-@app.route("/api/group/studentGroupListing", methods=["GET"])
-def getGroupListing():
-    courseid = request.json.get("courseid", None)
-
+@app.route("/api/group/studentGroupListing/<int:courseid>", methods=["GET"])
+def getGroupListing(courseid):
     with conn.cursor(cursor_factory=RealDictCursor) as c:
         c.execute("SELECT id FROM project_group WHERE course_id = %s", (courseid, ))
         groupids = list(c)
@@ -489,47 +487,47 @@ def runGroupMatch():
 def error(s):
     return jsonify({"success": False, "error": s})
 
-These functions should probably be moved into a separate file...
-def generateSalt():
-    """
-    This function generates a cryptographically secure random 2-letter salt
-    for password hashing.
-
-    returns: a string, the hash
-    """
-    import secrets
-    import string
-    alphabet = string.ascii_letters + string.digits
-    salt = ''.join(secrets.choice(alphabet) for i in range(2))
-    return salt
-
-def hashPassword(password, salt = None):
-    """
-    This hashes a password, given as a string or a bytes, with the given
-    salt. If no salt is given, a random one is generated.
-
-    returns: the resulting hash, preceded by the salt, as a string
-    """
-    if salt == None:
-        salt = generateSalt().encode("ASCII")
-    elif isinstance(salt, str):
-        salt = salt.encode("ASCII")
-
-    if isinstance(password, str):
-        password = password.encode("ASCII")
-
-    output = scrypt(password, salt=salt, n=2**8, r=128, p=4)
-    return salt.decode("ASCII") + hexlify(output).decode("ASCII")
-
-def checkPasswordCorrect(testPassword, hashedPassword):
-    """
-    This checks if a given test password is
-    hashes to a given hashed password. The hashed password
-    is assumed to be prededed by a 2-letter salt.
-    This is safe against timing attacks.
-    """
-    salt = hashedPassword[:2]
-    return secrets.compare_digest(hashedPassword, hashPassword(testPassword, salt))
+# These functions should probably be moved into a separate file...
+# def generateSalt():
+#     """
+#     This function generates a cryptographically secure random 2-letter salt
+#     for password hashing.
+#
+#     returns: a string, the hash
+#     """
+#     import secrets
+#     import string
+#     alphabet = string.ascii_letters + string.digits
+#     salt = ''.join(secrets.choice(alphabet) for i in range(2))
+#     return salt
+#
+# def hashPassword(password, salt = None):
+#     """
+#     This hashes a password, given as a string or a bytes, with the given
+#     salt. If no salt is given, a random one is generated.
+#
+#     returns: the resulting hash, preceded by the salt, as a string
+#     """
+#     if salt == None:
+#         salt = generateSalt().encode("ASCII")
+#     elif isinstance(salt, str):
+#         salt = salt.encode("ASCII")
+#
+#     if isinstance(password, str):
+#         password = password.encode("ASCII")
+#
+#     output = scrypt(password, salt=salt, n=2**8, r=128, p=4)
+#     return salt.decode("ASCII") + hexlify(output).decode("ASCII")
+#
+# def checkPasswordCorrect(testPassword, hashedPassword):
+#     """
+#     This checks if a given test password is
+#     hashes to a given hashed password. The hashed password
+#     is assumed to be prededed by a 2-letter salt.
+#     This is safe against timing attacks.
+#     """
+#     salt = hashedPassword[:2]
+#     return secrets.compare_digest(hashedPassword, hashPassword(testPassword, salt))
 
 def getProjectById(id):
     with conn:

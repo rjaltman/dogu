@@ -18,8 +18,8 @@ export type Project = {
     organization_id: number,
     startdate: Date,
     status: string,
-    university_id: number, 
-    tags: string[], 
+    university_id: number,
+    tags: string[],
     ranking: null | number
 };
 

@@ -8,6 +8,7 @@ import Header from './Header';
 import CreateProject from './CreateProject';
 import ProjectDisplay from './ProjectDisplay';
 import Register from './Register';
+import MatchGroups from './MatchGroups';
 
 type State = Readonly<{
   loggedIn: boolean,
@@ -24,9 +25,9 @@ class App extends Component {
   constructor(props: AppProps) {
       super(props);
       this.state = {
-        loggedIn: false,
+        loggedIn: true,
         uname: "",
-        page: "",
+        page: "match_groups",
         userType: "Student",
         pid: 0
       };
@@ -82,6 +83,9 @@ class App extends Component {
          }
          case "display_project": {
             return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><ProjectDisplay id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
+         }
+         case "match_groups": {
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><MatchGroups pageHandler = {this.pageViewHandler} /></div>
          }
          default: {
            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></div>;
