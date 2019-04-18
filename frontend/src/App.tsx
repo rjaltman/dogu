@@ -6,10 +6,13 @@ import Home from './Home';
 import Search from './Search';
 import Header from './Header';
 import CreateProject from './CreateProject';
+import CreateCourse from './CreateCourse';
 import ProjectDisplay from './ProjectDisplay';
 import Register from './Register';
+import MatchGroups from './MatchGroups';
 import Enroll from './Enroll';
 import Drop from './Drop';
+
 
 type State = Readonly<{
   loggedIn: boolean,
@@ -79,6 +82,9 @@ class App extends Component {
          case "create_project": {
             return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><CreateProject id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
          }
+         case "create_course": {
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><CreateCourse id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
+         }
          case "search_project": {
             return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><Search pageHandler = {this.pageViewHandler} /></span></div>
          }
@@ -90,6 +96,9 @@ class App extends Component {
          }
          case "drop": {
             return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><Drop id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
+         }
+         case "match_groups": {
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><MatchGroups pageHandler = {this.pageViewHandler} /></span></div>
          }
          default: {
             return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></span></div>;

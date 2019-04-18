@@ -1,0 +1,1 @@
+ALTER TABLE project_group ADD COLUMN project_id INT REFERENCES project(id) ON DELETE RESTRICT;

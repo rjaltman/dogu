@@ -33,7 +33,8 @@ type State = Readonly<{
     profilePictureVal: string,
     positionVal: "Instructor" | "Student" | "Organizer",
     nameVal: string,
-    preferredProjects: PreferredProject[]
+    preferredProjects: PreferredProject[],
+    assignedProjects: PreferredProject[]
 }>;
 
 type Project = {
@@ -58,7 +59,7 @@ type Project = {
  * application.
  */
 class Home extends Component<HomeProps, any> {
-  readonly state: State = {showingProjects: [] as Project[], showingCourses: [] as Course[], preferredProjects: [] as PreferredProject[],
+  readonly state: State = {showingProjects: [] as Project[], showingCourses: [] as Course[], preferredProjects: [] as PreferredProject[], assignedProjects: [] as PreferredProject[],
      profilePictureVal: "", positionVal: "Student", nameVal: ""};
   constructor(props: HomeProps) {
       super(props);
@@ -68,6 +69,8 @@ class Home extends Component<HomeProps, any> {
       this.setDefaultImage = this.setDefaultImage.bind(this);
       this.onEnrollCourse = this.onEnrollCourse.bind(this);
       this.onDropCourse = this.onDropCourse.bind(this);
+      this.onCreateCourse = this.onCreateCourse.bind(this);
+      this.onMatchGroups = this.onMatchGroups.bind(this);
   }
 
   onEnrollCourse() {
@@ -80,10 +83,21 @@ class Home extends Component<HomeProps, any> {
       this.props.pageHandler("drop", 0);
   }
 
+  onCreateCourse() {
+    if (this.props.pageHandler !== undefined)
+      this.props.pageHandler("create_course",0);
+  }
+
   onCreateProject() {
     if (this.props.pageHandler !== undefined)
       this.props.pageHandler("create_project",0);
   }
+
+  onMatchGroups() {
+    if (this.props.pageHandler !== undefined)
+      this.props.pageHandler("match_groups",0);
+  }
+
   onSearchProjectViaButton() {
     if (this.props.pageHandler !== undefined)
       this.props.pageHandler("search_project",0);
@@ -113,6 +127,8 @@ class Home extends Component<HomeProps, any> {
 
       var enroll = <span onClick={this.onEnrollCourse} className="sidebar_element pointer green"><i className="material-icons">&#xe148;</i>Enroll in Courses</span>
       var drop = <span onClick={this.onDropCourse} className="sidebar_element pointer orange"><i className="material-icons">&#xe15d;</i>Drop Courses</span>
+      var formProjectGroups = <span onClick={this.onMatchGroups} className="sidebar_element pointer blue"><i className="material-icons">&#xe3e4;</i>Form Project Groups</span>
+      var courseCreate = <span onClick={this.onCreateCourse} className="sidebar_element pointer green"><i className="material-icons">&#xe148;</i>Create a Course</span>
 
       var dash_staytuned_icon = <i className="material-icons large_icon">&#xe03e;</i>;
       var dash_staytuned_subtitle = <span className="dash_staytuned_subtitle">This section
@@ -138,26 +154,47 @@ class Home extends Component<HomeProps, any> {
       var course_enrollment_header = <span className="sidebar_header"><i className="material-icons">&#xe54b;</i> My Courses</span>
       var course_enrollment = <div id="course_enrollment" className="sidebar_section">{course_enrollment_header} {courseList} {enroll} {drop}</div>
 
+      var courseList_instructor = this.state.showingCourses.map((c: Course) => <span className="sidebar_element" key={c.id}><i className="material-icons">&#xe153;</i>{c.title}</span>);
+
+      var course_enrollment_instructor = <div id="course_enrollment" className="sidebar_section">{course_enrollment_header} {courseList} {formProjectGroups} {courseCreate} </div>
+
       var no_current_projects = <span className="sidebar_element"><i className="material-icons">&#xe0cc;</i> No current projects.</span>
+      var projects_list = this.state.assignedProjects.map((ppp: PreferredProject) => <span className="sidebar_element pointer" key={ppp.id} onClick={() => this.projectClick(ppp.id)}><i className="material-icons">&#xe886;</i>{ppp.name}</span>);
       var current_projects_header = <span className="sidebar_header"><i className="material-icons">&#xe431;</i> My Current Projects</span>
-      var current_projects = <div id="current_projects" className="sidebar_section">{current_projects_header}{no_current_projects}</div>
+
+      if (projects_list) {
+        var current_projects = <div id="current_projects" className="sidebar_section">{current_projects_header}{projects_list}</div>
+      }
+      else {
+        var current_projects = <div id="current_projects" className="sidebar_section">{current_projects_header}{no_current_projects}</div>
+      }
+
 
       var prefList = this.state.preferredProjects.map((pp: PreferredProject) => <span className="sidebar_element pointer" key={pp.id} onClick={() => this.projectClick(pp.id)}><i className="material-icons">&#xe886;</i>{pp.name}</span>);
       var current_preferences_header = <span className="sidebar_header"><i className="material-icons">&#xe85c;</i> Project Preferences</span>
       var current_preferences = <div id="current_preferences" className="sidebar_section">{current_preferences_header}{prefList}</div>
 
-      var sidebar = <div id="sidebar">{account_information}{course_enrollment}{current_projects}{current_preferences}</div>
 
-      var recommendations_section = <div id="search_container"><div id="search_results">{projectList}</div></div>
+      let recommendations_title = <div id="enroll_leadin">
+                          <i className="material-icons">&#xe80e;</i>
+                          <span className="title">Recommended for you</span>
+                          <span className="subtitle">Below are some projects available that you might be interested in. To view a project, simply click
+                          on its tile.</span>
+                          </div>
+
+      var recommendations_section = <div id="search_container">{recommendations_title}<div id="search_results">{projectList}</div></div>
 
       if (this.state.positionVal == "Student") {
+        var sidebar = <div id="sidebar">{account_information}{course_enrollment}{current_projects}{current_preferences}</div>
         return <div id="dash_main">{sidebar}<div id="dash_container">{welcome} {dash_search} {recommendations_section}</div></div>;
       }
       else if (this.state.positionVal == "Instructor"){
-        return <div><div id="dash_container">{welcome} {dash_staytuned} {enroll} {drop} </div></div>;
+        var sidebar = <div id="sidebar">{account_information}{course_enrollment_instructor}{current_projects}</div>
+        return <div id="dash_main">{sidebar}<div id="dash_container">{welcome} {dash_staytuned} </div></div>;
       }
       else {
-        return <div><div id="dash_container">{welcome} {dash_staytuned} </div></div>;
+        var sidebar = <div id="sidebar">{account_information}{current_projects}</div>
+        return <div id="dash_main">{sidebar}<div id="dash_container">{welcome} {dash_staytuned} </div></div>;
       }
 
 
@@ -172,6 +209,7 @@ class Home extends Component<HomeProps, any> {
       this.loadProfileInformation();
       this.loadCourses();
       this.getPreferredProjects();
+      this.getAssignedProjects();
   }
 
   async loadProjects() {
@@ -197,14 +235,27 @@ class Home extends Component<HomeProps, any> {
     }
   }
 
-  // Borrowed from the "drop" code, which lists all of the courses a user is enrolled in.
+  // Borrowed from the "drop" code and merged with instructors, which lists all of the courses a user is enrolled in.
   async loadCourses() {
-      let res = await get(`api/courses_to_drop`);
-      if(res["success"]) {
-          this.setState({showingCourses: res["courses"]})
+      // We can run both calls, since an instructor will never be enrolled in a class,
+      // and a student will never be in the instructor table of a class.
+      let res = await get(`api/courses_of_instructors`);
+      let res1 = await get(`api/courses_to_drop`);
+      if(res["success"] && res1["success"]) {
+          this.setState({showingCourses: res["courses"].concat(res1["courses"])})
       } else {
           this.setState({showingCourses: []})
           console.log(res["error"])
+      }
+  }
+
+  async getAssignedProjects() {
+      let res: any = await get("api/project/studentassigned");
+      if(res["success"]) {
+          this.setState({assignedProjects: res["projects"]});
+          console.log(res["projects"]);
+      } else {
+          console.error(res["error"]);
       }
   }
 
