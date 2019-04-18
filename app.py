@@ -461,15 +461,10 @@ def preferenceProject():
 @app.route("/api/group/studentGroupListing/<int:courseid>", methods=["GET"])
 def getGroupListing(courseid):
     with conn.cursor(cursor_factory=RealDictCursor) as c:
-        c.execute("SELECT id FROM project_group WHERE course_id = %s", (courseid, ))
-        groupids = list(c)
-
-        students = []
-        for id in groupids:
-            c.execute("SELECT account.name AS studentName, account.id AS studentId, project.name AS projectName, project.id AS projectId "
-            "FROM project, member, project_group, account "
-            "WHERE (project_group.id = %s AND project_group.project_id = project.id AND member.project_group_id = project_group.id AND member.account_id = account.id)", (id, ))
-            students.extend(list(c))
+        c.execute("SELECT account.name AS studentName, account.id AS studentId, project.name AS projectName, project.id AS projectId "
+        "FROM project, member, project_group, account "
+        "WHERE (project_group.course_id = %s AND project_group.project_id = project.id AND member.project_group_id = project_group.id AND member.account_id = account.id)", (courseid, ))
+        students = list(c)
 
         return jsonify({"success": True, "listing": students})
 
@@ -678,7 +673,7 @@ def matchGroups(students, prefs, groupsizemin, groupsizemax, maxrankings):
 def createGroups(course_id):
     with conn:
         with conn.cursor() as c:
-            c.execute("SELECT groupsizemin, groupsizemax, maxrankings FROM course WHERE course_id = %s", (course_id, ))
+            c.execute("SELECT groupsizemin, groupsizemax, maxrankings FROM course WHERE id = %s", (course_id, ))
             (groupsizemin, groupsizemax, maxrankings) = c.fetchone()
 
             if not groupsizemin or not groupsizemax or not maxrankings:
