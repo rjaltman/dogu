@@ -7,10 +7,10 @@ interface Props {
 };
 
 type Listing = {
-  studentName: string,
-  studentId: number,
-  projectName: string,
-  projectId: number
+  studentname: string,
+  studentid: number,
+  projectname: string,
+  projectid: number
 }
 
 type State = Readonly<{
@@ -47,7 +47,7 @@ class MatchGroups extends Component<Props, any> {
     let matchGroups = <button onClick={this.onMatchGroups}>Create Project Groups for Course</button>
 
     // list groups
-    let groupListing = this.state.showingListings.map(l => <p>{l.studentName}, {l.projectName}</p>);
+    let groupListing = this.state.showingListings.map(l => <p>{l.studentname}, {l.projectname}</p>);
 
     return <p>{university} <br /> {matchGroups} <br /> {groupListing}</p>;
   }
