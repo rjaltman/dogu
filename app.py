@@ -152,6 +152,36 @@ def getProfileInfo():
         conn.commit()
     return out
 
+@app.route("/api/createcourse", methods=["POST"])
+def createcourse():
+    name = request.json.get("name", None)
+    description = request.json.get("description", None)
+    term = request.json.get("semester", None)
+    crn = request.json.get("crn", None)
+    groupsizemax = request.json.get("groupsizemax", None)
+    groupsizemin = request.json.get("groupsizemin", None)
+    maxrankings = request.json.get("maxrankings", None)
+
+    s_username = session.get('username', None)
+
+    if not (name and term and crn):
+        return jsonify({"success": False, "error": "You must give a name, term, and course code."})
+
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("SELECT university_id FROM account WHERE username = %(username)s"), {"username": s_username})
+        university_id = c.fetchone()["university_id"]
+        c.execute(("INSERT INTO course (crn, term, title, university_id, groupsizemax, groupsizemin, maxrankings) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s) "
+                    "RETURNING *"), (crn, term, name, university_id, groupsizemax, groupsizemin, maxrankings))
+        cid = c.fetchone()["id"]
+        print (cid)
+        print (s_username)
+
+        c.execute(("INSERT INTO instructor (account_id, course_id) VALUES ((SELECT id FROM account WHERE username = %(username)s), %(cid)s)"), {"username": s_username, "cid": cid})
+        out = jsonify({"success": True})
+        conn.commit()
+    return out
+
 @app.route("/api/createproject", methods=["POST"])
 def createproject():
     name = request.json.get("name", None)
@@ -353,6 +383,23 @@ def getCoursesToDrop():
         coursesToShow = list(c)
     return jsonify({"success": True, "courses": coursesToShow})
 
+@app.route("/api/courses_of_instructors", methods=["GET"])
+def getCoursesOfInstructors():
+    username = session.get('username', None)
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("WITH my_acct AS ("
+                "SELECT id, university_id "
+                "FROM account "
+                "WHERE username = %(username)s"
+                ") "
+                "SELECT course.id, course.crn, course.university_id, course.term, course.title, course.groupsizemin "
+                "FROM course "
+                "INNER JOIN my_acct ON my_acct.university_id = course.university_id "
+                "INNER JOIN instructor ON (instructor.course_id = course.id AND instructor.account_id = my_acct.id) "), {"username": username})
+        coursesToShow = list(c)
+        print(coursesToShow)
+    return jsonify({"success": True, "courses": coursesToShow})
+
 @app.route("/api/courses_to_add", methods=["GET"])
 def getCoursesToAdd():
     username = session.get('username', None)
@@ -383,23 +430,23 @@ def addCourse():
                 "FROM account "
                 "WHERE username = %(username)s"
                 ), {"username": username})
-        
+
         d = c.fetchone()
         acct_id = d["id"]
         uid = d["university_id"]
 
         c.execute("SELECT * "
                 "FROM enroll "
-                "WHERE account_id = %(acct_id)s " 
+                "WHERE account_id = %(acct_id)s "
                 "AND course_id = %(cid)s "
-                "AND university_id = %(uid)s", 
+                "AND university_id = %(uid)s",
                 {"acct_id":acct_id, "cid":cid, "uid":uid})
 
         if not (c.fetchone()):
             c.execute("INSERT INTO enroll (account_id, course_id, university_id) VALUES (%(acct_id)s, %(cid)s, %(uid)s)", {"acct_id":acct_id, "cid":cid, "uid":uid})
             conn.commit()
             return jsonify({"success": True})
-            
+
     return jsonify({"success": False})
 
 @app.route("/api/drop_course", methods=["POST"])
@@ -411,14 +458,14 @@ def dropCourse():
                 "FROM account "
                 "WHERE username = %(username)s"
                 ), {"username": username})
-        
+
         d = c.fetchone()
         acct_id = d["id"]
         uid = d["university_id"]
 
         c.execute("DELETE FROM enroll WHERE ((account_id = %(acct_id)s) AND (course_id = %(cid)s) AND (university_id = %(uid)s))", {"acct_id":acct_id, "cid":cid, "uid":uid})
         conn.commit()
-            
+
     return jsonify({"success": True})
 
 @app.route("/api/project/<int:id>", methods=["GET"])

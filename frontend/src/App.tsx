@@ -6,6 +6,7 @@ import Home from './Home';
 import Search from './Search';
 import Header from './Header';
 import CreateProject from './CreateProject';
+import CreateCourse from './CreateCourse';
 import ProjectDisplay from './ProjectDisplay';
 import Register from './Register';
 import Enroll from './Enroll';
@@ -78,6 +79,9 @@ class App extends Component {
         switch(this.state.page) {
          case "create_project": {
             return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><CreateProject id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
+         }
+         case "create_course": {
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><CreateCourse id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
          }
          case "search_project": {
             return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><Search pageHandler = {this.pageViewHandler} /></span></div>

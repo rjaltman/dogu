@@ -68,6 +68,7 @@ class Home extends Component<HomeProps, any> {
       this.setDefaultImage = this.setDefaultImage.bind(this);
       this.onEnrollCourse = this.onEnrollCourse.bind(this);
       this.onDropCourse = this.onDropCourse.bind(this);
+      this.onCreateCourse = this.onCreateCourse.bind(this);
   }
 
   onEnrollCourse() {
@@ -80,10 +81,16 @@ class Home extends Component<HomeProps, any> {
       this.props.pageHandler("drop", 0);
   }
 
+  onCreateCourse() {
+    if (this.props.pageHandler !== undefined)
+      this.props.pageHandler("create_course",0);
+  }
+
   onCreateProject() {
     if (this.props.pageHandler !== undefined)
       this.props.pageHandler("create_project",0);
   }
+
   onSearchProjectViaButton() {
     if (this.props.pageHandler !== undefined)
       this.props.pageHandler("search_project",0);
@@ -113,7 +120,8 @@ class Home extends Component<HomeProps, any> {
 
       var enroll = <span onClick={this.onEnrollCourse} className="sidebar_element pointer green"><i className="material-icons">&#xe148;</i>Enroll in Courses</span>
       var drop = <span onClick={this.onDropCourse} className="sidebar_element pointer orange"><i className="material-icons">&#xe15d;</i>Drop Courses</span>
-      var courseCreate = <span onClick={this.onEnrollCourse} className="sidebar_element pointer green"><i className="material-icons">&#xe148;</i>Create a Course</span>
+      var formProjectGroups = <span onClick={this.onCreateCourse} className="sidebar_element pointer blue"><i className="material-icons">&#xe3e4;</i>Form Project Groups</span>
+      var courseCreate = <span onClick={this.onCreateCourse} className="sidebar_element pointer green"><i className="material-icons">&#xe148;</i>Create a Course</span>
 
       var dash_staytuned_icon = <i className="material-icons large_icon">&#xe03e;</i>;
       var dash_staytuned_subtitle = <span className="dash_staytuned_subtitle">This section
@@ -141,7 +149,7 @@ class Home extends Component<HomeProps, any> {
 
       var courseList_instructor = this.state.showingCourses.map((c: Course) => <span className="sidebar_element" key={c.id}><i className="material-icons">&#xe153;</i>{c.title}</span>);
 
-      var course_enrollment_instructor = <div id="course_enrollment" className="sidebar_section">{course_enrollment_header} {courseList} {courseCreate} </div>
+      var course_enrollment_instructor = <div id="course_enrollment" className="sidebar_section">{course_enrollment_header} {courseList} {formProjectGroups} {courseCreate} </div>
 
       var no_current_projects = <span className="sidebar_element"><i className="material-icons">&#xe0cc;</i> No current projects.</span>
       var current_projects_header = <span className="sidebar_header"><i className="material-icons">&#xe431;</i> My Current Projects</span>
@@ -207,9 +215,10 @@ class Home extends Component<HomeProps, any> {
 
   // Borrowed from the "drop" code, which lists all of the courses a user is enrolled in.
   async loadCourses() {
-      let res = await get(`api/courses_to_drop`);
-      if(res["success"]) {
-          this.setState({showingCourses: res["courses"]})
+      let res = await get(`api/courses_of_instructors`);
+      let res1 = await get(`api/courses_to_drop`);
+      if(res["success"] && res1["success"]) {
+          this.setState({showingCourses: res["courses"].concat(res1["courses"])})
       } else {
           this.setState({showingCourses: []})
           console.log(res["error"])
