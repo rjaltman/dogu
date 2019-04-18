@@ -592,7 +592,7 @@ def preferenceProject():
 @app.route("/api/group/studentGroupListing/<int:courseid>", methods=["GET"])
 def getGroupListing(courseid):
     with conn.cursor(cursor_factory=RealDictCursor) as c:
-        c.execute("SELECT account.name AS studentName, account.id AS studentId, project.name AS projectName, project.id AS projectId "
+        c.execute("SELECT account.name AS studentname, account.id AS studentid, project.name AS projectname, project.id AS projectid "
         "FROM project, member, project_group, account "
         "WHERE (project_group.course_id = %s AND project_group.project_id = project.id AND member.project_group_id = project_group.id AND member.account_id = account.id)", (courseid, ))
         students = list(c)

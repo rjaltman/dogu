@@ -7,10 +7,10 @@ interface Props {
 };
 
 type Listing = {
-  studentName: string,
-  studentId: number,
-  projectName: string,
-  projectId: number
+  studentname: string,
+  studentid: number,
+  projectname: string,
+  projectid: number
 }
 
 type State = Readonly<{
@@ -47,7 +47,7 @@ class MatchGroups extends Component<Props, any> {
     let matchGroups = <button onClick={this.onMatchGroups}>Create Project Groups for Course</button>
 
     // list groups
-    let groupListing = this.state.showingListings.map(l => <p>{l.studentName}, {l.projectName}</p>);
+    let groupListing = this.state.showingListings.map(l => <p>{l.studentname}, {l.projectname}</p>);
 
     // Arrow function from blank with the help of StackOverflow, see: https://stackoverflow.com/questions/29810914/react-js-onclick-cant-pass-value-to-method
     let classTitle = <div id="enroll_leadin">
