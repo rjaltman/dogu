@@ -539,6 +539,18 @@ def getProjectPreferences():
             projects = c.fetchall()
             return jsonify({"success": True, "projects": projects})
 
+@app.route("/api/project/studentassigned", methods=["GET"])
+def getProjectsAssignedToStudents():
+    if not "username" in session:
+        return error("You must be logged in!")
+    with conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as c:
+            c.execute("SELECT DISTINCT project.* FROM project_group INNER JOIN project ON project_group.project_id = project.id "
+                "INNER JOIN member ON project_group.id = member.project_group_id INNER JOIN account a "
+                "ON a.id = member.account_id WHERE a.username = %s", (session["username"], ))
+            projects = c.fetchall()
+            return jsonify({"success": True, "projects": projects})
+
 @app.route("/api/project/preference/set", methods=["POST"])
 def preferenceProject():
     projectId = request.json.get("id", None)
