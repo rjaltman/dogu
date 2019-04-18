@@ -49,6 +49,7 @@
   width: fit-content;
   bottom: 0px;
   height: fit-content;
+  max-height: 10em;
 }
 
 input {
