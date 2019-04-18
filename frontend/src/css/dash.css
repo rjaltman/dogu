@@ -1,5 +1,6 @@
 #dash_container {
-  padding:20px;
+  margin-left: 16em;
+  padding: 1em;
 }
 
 #dash_welcome {
@@ -7,6 +8,7 @@
   color: #b06ea7;
   display: block;
   margin-bottom: 4vw;
+  padding-left: 1em;
 }
 
 #dash_welcome img {
@@ -210,4 +212,139 @@
 .dash_staytuned_subtitle {
   color: #444;
   font-size: 1.2em;
+}
+
+#dash_main {
+  display: flex;
+  flex-direction: row;
+}
+
+#sidebar {
+  width: 13em;
+  padding: 2em;
+  background-color: #f8f8f8;
+  margin-top: -1.2em;
+  box-shadow: -1px -3px 3px inset silver;
+  margin-right: 2em;
+  position: fixed;
+  height: 100%;
+  padding-left: 1em;
+}
+
+.sidebar_header {
+  display: block;
+  margin-bottom: 0.5em;
+  border-bottom: 1px solid #c5c5c5;
+  width: calc(100% + 2.5em);
+  margin-left: -1em;
+  padding-left: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+.sidebar_section {
+  margin-bottom: 2em;
+}
+
+.sidebar_element {
+  font-size: 0.9em;
+  display: block;
+  color: #555;
+  padding: 0.5em;
+  padding-left: 1em;
+  margin-left: -1em;
+  width: 100%;
+  padding-right: 2.1em;
+}
+
+.sidebar_element .material-icons {
+  vertical-align: middle;
+  padding-right:0.3em;
+}
+
+.sidebar_element:hover {
+  background-color: #e8e8e8;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+#enroll_leadin {
+  padding: 1em auto;
+  padding-bottom: 2em;
+  border-bottom: 2px solid #a8a8a8aa;
+  margin-bottom: 2em;
+}
+
+#enroll_leadin .material-icons {
+  color: #5b771c;
+  font-size: 2.5em;
+  float: left;
+  padding-right: 0.5em;
+}
+
+#enroll_leadin .title {
+  font-size: 1.5em;
+  color: #5b771c;
+  display: block;
+}
+
+#add_course_background .material-icons {
+  font-size: 50em;
+  color: #e0e0e0;
+}
+
+#add_course_background {
+  width: 100%;
+  height: 100%;
+  left: 60%;
+  bottom: -30%;
+  position: fixed;
+  z-index: -100;
+  text-shadow: 2vw 1vw 3vw #e8e8e8;
+  vertical-align: bottom;
+}
+
+#course_results {
+  padding-left: 3.5em;
+  display: grid;
+  grid-auto-flow: column;
+}
+
+.course_tile {
+  box-shadow: 0px 1px 3px #cecece;
+  border-left: 3px solid #125773;
+  padding: 1em;
+  background: #f8f8f8;
+  margin: 1em 0;
+  max-width: 60%;
+  width: fit-content;
+  padding-right: 10em;
+  margin-right: 5em;
+  margin-bottom: 5em;
+}
+
+.course_tile .title {
+  display:block;
+  color: #125773;
+  font-size: 1.3em;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.course_tile .title:hover {
+  color: #007e94;
+}
+
+.course_tile button {
+  background-color: #5b771c;
+}
+
+#change_processed_notification {
+  padding: 1em;
+  background-color: #107710;
+  color: #fff;
+  box-shadow: 0px 1px 3px silver;
+  border-radius: 0.2em;
 }
