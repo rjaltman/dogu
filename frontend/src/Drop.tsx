@@ -39,8 +39,8 @@ class Drop extends Component<Props, any> {
         return <div id="search_container"><div id="search_results">{courseList}</div></div>
     }
 
-    courseClick(cid: number) {
-        this.dropCourse(cid)
+    async courseClick(cid: number) {
+        await this.dropCourse(cid)
         this.loadCourses()
     }
 

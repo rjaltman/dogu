@@ -39,8 +39,8 @@ class Enroll extends Component<Props, any> {
         return <div id="search_container"><div id="search_results">{courseList}</div></div>
     }
 
-    courseClick(cid: number) {
-        this.addCourse(cid)
+    async courseClick(cid: number) {
+        await this.addCourse(cid)
         this.loadCourses()
     }
 
