@@ -7,7 +7,8 @@ interface Props {
 }
 
 type State = Readonly<{
-  showingCourses: Course[]
+  showingCourses: Course[],
+  nameOfCourse: string
 }>;
 
 type Course = {
@@ -20,7 +21,7 @@ type Course = {
 };
 
 class Drop extends Component<Props, any> {
-    readonly state: State = {showingCourses: [] as Course[]}
+    readonly state: State = {showingCourses: [] as Course[], nameOfCourse: ""}
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 
     constructor(props: Props) {
@@ -34,23 +35,39 @@ class Drop extends Component<Props, any> {
     }
 
     render() {
-        let courseList = this.state.showingCourses.map((p: Course) => <div className="search_tile" key={p.id} onClick={() => this.courseClick(p.id)}>
-                                                            <span className="title">{p.title}</span> <span className="subtitle">{p.crn}</span></div>);
-        return <div id="search_container"><div id="search_results">{courseList}</div></div>
+      let classTitle = <div id="enroll_leadin">
+                          <i className="material-icons orange">&#xe15c;</i>
+                          <span className="title orange">Drop a course</span>
+                          <span className="subtitle">Below are the courses you are currently enrolled in. To remove a course, simply click
+                          on its tile, or use the "Drop Course" button below.</span>
+                          </div>
+
+        let courseBg = <div id="add_course_background">
+                            <i className="material-icons">&#xe80c;</i>
+                          </div>
+
+        let courseInfo = <span></span>
+        if (this.state.nameOfCourse != "") {
+          courseInfo = <div id="change_processed_notification"><i className="material-icons">&#xe877;</i> Successfully dropped course <i>{this.state.nameOfCourse}</i>.</div>
+        }
+
+        let courseList = this.state.showingCourses.map((p: Course) => <div className="search_tile" key={p.id} onClick={() => this.courseClick(p.id, p.title)}>
+                                                            <span className="title">{p.title}</span> <span className="subtitle">{p.crn}</span><button>Drop Course</button></div>);
+        return <div id="search_container">{courseBg}{classTitle}{courseInfo}<div id="search_results">{courseList}</div></div>
     }
 
-    async courseClick(cid: number) {
-        await this.dropCourse(cid)
+    async courseClick(cid: number, title: string) {
+        await this.dropCourse(cid, title)
         this.loadCourses()
     }
 
-    async dropCourse(cid: number) {
+    async dropCourse(cid: number, title: string) {
         let res: any = await post('api/drop_course', {cid});
 
         if(res["success"]) {
             console.log("Course dropped");
             //show course has been dropped
-            alert("Successfully dropped " + cid)
+            this.setState({nameOfCourse: title});
         } else {
             console.log("error")
             alert("Failed to drop " + cid)
