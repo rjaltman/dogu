@@ -113,6 +113,7 @@ class Home extends Component<HomeProps, any> {
 
       var enroll = <span onClick={this.onEnrollCourse} className="sidebar_element pointer green"><i className="material-icons">&#xe148;</i>Enroll in Courses</span>
       var drop = <span onClick={this.onDropCourse} className="sidebar_element pointer orange"><i className="material-icons">&#xe15d;</i>Drop Courses</span>
+      var courseCreate = <span onClick={this.onEnrollCourse} className="sidebar_element pointer green"><i className="material-icons">&#xe148;</i>Create a Course</span>
 
       var dash_staytuned_icon = <i className="material-icons large_icon">&#xe03e;</i>;
       var dash_staytuned_subtitle = <span className="dash_staytuned_subtitle">This section
@@ -138,6 +139,10 @@ class Home extends Component<HomeProps, any> {
       var course_enrollment_header = <span className="sidebar_header"><i className="material-icons">&#xe54b;</i> My Courses</span>
       var course_enrollment = <div id="course_enrollment" className="sidebar_section">{course_enrollment_header} {courseList} {enroll} {drop}</div>
 
+      var courseList_instructor = this.state.showingCourses.map((c: Course) => <span className="sidebar_element" key={c.id}><i className="material-icons">&#xe153;</i>{c.title}</span>);
+
+      var course_enrollment_instructor = <div id="course_enrollment" className="sidebar_section">{course_enrollment_header} {courseList} {courseCreate} </div>
+
       var no_current_projects = <span className="sidebar_element"><i className="material-icons">&#xe0cc;</i> No current projects.</span>
       var current_projects_header = <span className="sidebar_header"><i className="material-icons">&#xe431;</i> My Current Projects</span>
       var current_projects = <div id="current_projects" className="sidebar_section">{current_projects_header}{no_current_projects}</div>
@@ -155,7 +160,7 @@ class Home extends Component<HomeProps, any> {
         return <div id="dash_main">{sidebar}<div id="dash_container">{welcome} {dash_search} {recommendations_section}</div></div>;
       }
       else if (this.state.positionVal == "Instructor"){
-        var sidebar = <div id="sidebar">{account_information}{course_enrollment}{current_projects}{current_preferences}</div>
+        var sidebar = <div id="sidebar">{account_information}{course_enrollment_instructor}{current_projects}</div>
         return <div id="dash_main">{sidebar}<div id="dash_container">{welcome} {dash_staytuned} </div></div>;
       }
       else {
