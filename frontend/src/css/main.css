@@ -49,6 +49,7 @@
   width: fit-content;
   bottom: 0px;
   height: fit-content;
+  max-height: 10em;
 }
 
 input {
@@ -152,4 +153,22 @@ button {
 .cancelBtn {
   background-color: #e8e8e8;
   color: #333;
+}
+
+#generic_container {
+  padding-top: 5em;
+  display:block;
+}
+
+/* Three classes to override the color of whatever text is present. */
+.orange {
+  color: #e57c76!important;
+}
+
+.green {
+  color: #5b771c!important;
+}
+
+.blue {
+  color: #125773!important;
 }

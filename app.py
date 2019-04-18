@@ -3,7 +3,7 @@ from backend.database import conn
 from backend import utils
 from psycopg2.extras import RealDictCursor
 from binascii import hexlify
-# from hashlib import scrypt
+from hashlib import scrypt
 import secrets
 import json
 from os import environ, path
@@ -126,7 +126,7 @@ def registerRep():
     with conn.cursor() as c:
         c.execute("SELECT id FROM account WHERE username = %s", (username, ))
         id = list(c.fetchone())[0]
-        c.execute("INSERT INTO rep (account_id, organization_id) VALUES (%s, %s)", (id, university_id));
+        c.execute("INSERT INTO rep (account_id, organization_id) VALUES (%s, %s)", (id, university_id))
         conn.commit()
 
     return out
@@ -150,6 +150,36 @@ def getProfileInfo():
         if not result.avatar:
             result.avatar = "https://www.gravatar.com/avatar/?default=mm&size=160"
         out = jsonify({"success": True, "name": result.name, "position": result.position, "avatar": result.avatar})
+        conn.commit()
+    return out
+
+@app.route("/api/createcourse", methods=["POST"])
+def createcourse():
+    name = request.json.get("name", None)
+    description = request.json.get("description", None)
+    term = request.json.get("semester", None)
+    crn = request.json.get("crn", None)
+    groupsizemax = request.json.get("groupsizemax", None)
+    groupsizemin = request.json.get("groupsizemin", None)
+    maxrankings = request.json.get("maxrankings", None)
+
+    s_username = session.get('username', None)
+
+    if not (name and term and crn):
+        return jsonify({"success": False, "error": "You must give a name, term, and course code."})
+
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("SELECT university_id FROM account WHERE username = %(username)s"), {"username": s_username})
+        university_id = c.fetchone()["university_id"]
+        c.execute(("INSERT INTO course (crn, term, title, university_id, groupsizemax, groupsizemin, maxrankings) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s) "
+                    "RETURNING *"), (crn, term, name, university_id, groupsizemax, groupsizemin, maxrankings))
+        cid = c.fetchone()["id"]
+        print (cid)
+        print (s_username)
+
+        c.execute(("INSERT INTO instructor (account_id, course_id) VALUES ((SELECT id FROM account WHERE username = %(username)s), %(cid)s)"), {"username": s_username, "cid": cid})
+        out = jsonify({"success": True})
         conn.commit()
     return out
 
@@ -361,6 +391,107 @@ def getRecommendations():
 
     return jsonify({"success": True, "projects": projectsToShow})
 
+@app.route("/api/courses_to_drop", methods=["GET"])
+def getCoursesToDrop():
+    username = session.get('username', None)
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("WITH my_acct AS ("
+                "SELECT id, university_id "
+                "FROM account "
+                "WHERE username = %(username)s"
+                ") "
+                "SELECT course.id, course.crn, course.university_id, course.term, course.title, course.groupsizemin "
+                "FROM course "
+                "INNER JOIN my_acct ON my_acct.university_id = course.university_id "
+                "INNER JOIN enroll ON (enroll.course_id = course.id AND enroll.university_id = course.university_id AND enroll.account_id = my_acct.id) "), {"username": username})
+        coursesToShow = list(c)
+    return jsonify({"success": True, "courses": coursesToShow})
+
+@app.route("/api/courses_of_instructors", methods=["GET"])
+def getCoursesOfInstructors():
+    username = session.get('username', None)
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("WITH my_acct AS ("
+                "SELECT id, university_id "
+                "FROM account "
+                "WHERE username = %(username)s"
+                ") "
+                "SELECT course.id, course.crn, course.university_id, course.term, course.title, course.groupsizemin "
+                "FROM course "
+                "INNER JOIN my_acct ON my_acct.university_id = course.university_id "
+                "INNER JOIN instructor ON (instructor.course_id = course.id AND instructor.account_id = my_acct.id) "), {"username": username})
+        coursesToShow = list(c)
+
+    return jsonify({"success": True, "courses": coursesToShow})
+
+@app.route("/api/courses_to_add", methods=["GET"])
+def getCoursesToAdd():
+    username = session.get('username', None)
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("WITH my_acct AS ("
+                "SELECT id, university_id "
+                "FROM account "
+                "WHERE username = %(username)s"
+                "), ctd AS ("
+                "SELECT course.id AS id, course.crn AS crn, course.university_id AS university_id, course.term AS term, course.title AS title, course.groupsizemin AS groupsizemin "
+                "FROM course "
+                "INNER JOIN my_acct ON my_acct.university_id = course.university_id "
+                "INNER JOIN enroll ON (enroll.course_id = course.id AND enroll.university_id = course.university_id AND enroll.account_id = my_acct.id) "
+                ") "
+                "SELECT course.id AS id, course.crn AS crn, course.university_id AS university_id, course.term AS term, course.title AS title, course.groupsizemin AS groupsizemin "
+                "FROM course "
+                "INNER JOIN my_acct ON my_acct.university_id = course.university_id "
+                "EXCEPT (SELECT * FROM ctd)"), {"username": username})
+        coursesToShow = list(c)
+    return jsonify({"success": True, "courses": coursesToShow})
+
+@app.route("/api/add_course", methods=["POST"])
+def addCourse():
+    cid = request.json.get("cid", None)
+    username = session.get('username', None)
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("SELECT account.id, university_id "
+                "FROM account "
+                "WHERE username = %(username)s"
+                ), {"username": username})
+
+        d = c.fetchone()
+        acct_id = d["id"]
+        uid = d["university_id"]
+
+        c.execute("SELECT * "
+                "FROM enroll "
+                "WHERE account_id = %(acct_id)s "
+                "AND course_id = %(cid)s "
+                "AND university_id = %(uid)s",
+                {"acct_id":acct_id, "cid":cid, "uid":uid})
+
+        if not (c.fetchone()):
+            c.execute("INSERT INTO enroll (account_id, course_id, university_id) VALUES (%(acct_id)s, %(cid)s, %(uid)s)", {"acct_id":acct_id, "cid":cid, "uid":uid})
+            conn.commit()
+            return jsonify({"success": True})
+
+    return jsonify({"success": False})
+
+@app.route("/api/drop_course", methods=["POST"])
+def dropCourse():
+    cid = request.json.get("cid", None)
+    username = session.get('username', None)
+    with conn.cursor(cursor_factory=RealDictCursor) as c:
+        c.execute(("SELECT account.id, university_id "
+                "FROM account "
+                "WHERE username = %(username)s"
+                ), {"username": username})
+
+        d = c.fetchone()
+        acct_id = d["id"]
+        uid = d["university_id"]
+
+        c.execute("DELETE FROM enroll WHERE ((account_id = %(acct_id)s) AND (course_id = %(cid)s) AND (university_id = %(uid)s))", {"acct_id":acct_id, "cid":cid, "uid":uid})
+        conn.commit()
+
+    return jsonify({"success": True})
+
 @app.route("/api/project/<int:id>", methods=["GET"])
 def getProject(id):
     return jsonify({"project": getProjectById(id), "success": True})
@@ -482,46 +613,46 @@ def error(s):
     return jsonify({"success": False, "error": s})
 
 # These functions should probably be moved into a separate file...
-# def generateSalt():
-#     """
-#     This function generates a cryptographically secure random 2-letter salt
-#     for password hashing.
-#
-#     returns: a string, the hash
-#     """
-#     import secrets
-#     import string
-#     alphabet = string.ascii_letters + string.digits
-#     salt = ''.join(secrets.choice(alphabet) for i in range(2))
-#     return salt
-#
-# def hashPassword(password, salt = None):
-#     """
-#     This hashes a password, given as a string or a bytes, with the given
-#     salt. If no salt is given, a random one is generated.
-#
-#     returns: the resulting hash, preceded by the salt, as a string
-#     """
-#     if salt == None:
-#         salt = generateSalt().encode("ASCII")
-#     elif isinstance(salt, str):
-#         salt = salt.encode("ASCII")
-#
-#     if isinstance(password, str):
-#         password = password.encode("ASCII")
-#
-#     output = scrypt(password, salt=salt, n=2**8, r=128, p=4)
-#     return salt.decode("ASCII") + hexlify(output).decode("ASCII")
-#
-# def checkPasswordCorrect(testPassword, hashedPassword):
-#     """
-#     This checks if a given test password is
-#     hashes to a given hashed password. The hashed password
-#     is assumed to be prededed by a 2-letter salt.
-#     This is safe against timing attacks.
-#     """
-#     salt = hashedPassword[:2]
-#     return secrets.compare_digest(hashedPassword, hashPassword(testPassword, salt))
+def generateSalt():
+    """
+    This function generates a cryptographically secure random 2-letter salt
+    for password hashing.
+
+    returns: a string, the hash
+    """
+    import secrets
+    import string
+    alphabet = string.ascii_letters + string.digits
+    salt = ''.join(secrets.choice(alphabet) for i in range(2))
+    return salt
+
+def hashPassword(password, salt = None):
+    """
+    This hashes a password, given as a string or a bytes, with the given
+    salt. If no salt is given, a random one is generated.
+
+    returns: the resulting hash, preceded by the salt, as a string
+    """
+    if salt == None:
+        salt = generateSalt().encode("ASCII")
+    elif isinstance(salt, str):
+        salt = salt.encode("ASCII")
+
+    if isinstance(password, str):
+        password = password.encode("ASCII")
+
+    output = scrypt(password, salt=salt, n=2**8, r=128, p=4)
+    return salt.decode("ASCII") + hexlify(output).decode("ASCII")
+
+def checkPasswordCorrect(testPassword, hashedPassword):
+    """
+    This checks if a given test password is
+    hashes to a given hashed password. The hashed password
+    is assumed to be prededed by a 2-letter salt.
+    This is safe against timing attacks.
+    """
+    salt = hashedPassword[:2]
+    return secrets.compare_digest(hashedPassword, hashPassword(testPassword, salt))
 
 def getProjectById(id):
     with conn:

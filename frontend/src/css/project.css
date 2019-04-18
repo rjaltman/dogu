@@ -15,7 +15,7 @@
 
 #project_actions {
   padding: 1.5em;
-  margin-top: 4vw;
+  margin-top: 2em;
   box-shadow: 0px -2px 2px silver;
   display: flex;
   flex-wrap: wrap;
@@ -180,6 +180,22 @@
   box-shadow: 0px 1px 3px silver;
 }
 
+#create_project_form .number {
+  margin: 2px;
+  padding: 0.6em 20px 0.6em 0.6em;
+  flex: 0 1 10%;
+  border: none;
+  background: #f2f2f2;
+  box-shadow: 0px 1px 3px silver;
+}
+
+#create_project_form .to {
+  margin-left: 2em;
+  margin-right: 2em;
+  vertical-align: middle;
+  padding-top: 0.6em;
+}
+
 #create_project_form button {
   font-size: 1em;
   display: block;
@@ -249,3 +265,51 @@
     transition: background-color 0.1s
 }
 
+.set_pref_area {
+  padding: 1.5em;
+  margin-top: 1em;
+  box-shadow: 0px 0px 3px silver;
+  background-color: #e57c7614;
+  width: fit-content;
+}
+
+.set_pref_intro {
+  display: block;
+  font-weight: 500;
+  font-size: 1.3em;
+  color: #e57c76;
+  padding-bottom:0.2em;
+}
+
+.set_pref_subintro {
+  display: block;
+}
+
+.project_pref_display {
+  padding: 1.5em;
+  margin-top: 1em;
+  box-shadow: 0px 0px 3px silver;
+  background-color: #1394130f;
+  width: fit-content;
+}
+
+.project_pref_ranking {
+  color: #139413;
+  font-size: 1.5em;
+  font-weight:600;
+  display:block;
+  padding-bottom:0.2em;
+}
+
+.project_pref_ranking_text {
+  display: block;
+  padding-left:0.2em;
+  padding-top:0.5em;
+  padding-bottom:0.5em;
+}
+
+.project_pref_ranking .material-icons {
+  vertical-align: middle;
+  font-size: 1.6em;
+  margin-top: -0.05em;
+}

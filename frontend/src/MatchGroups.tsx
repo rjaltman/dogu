@@ -49,7 +49,20 @@ class MatchGroups extends Component<Props, any> {
     // list groups
     let groupListing = this.state.showingListings.map(l => <p>{l.studentName}, {l.projectName}</p>);
 
-    return <p>{university} <br /> {matchGroups} <br /> {groupListing}</p>;
+    // Arrow function from blank with the help of StackOverflow, see: https://stackoverflow.com/questions/29810914/react-js-onclick-cant-pass-value-to-method
+    let classTitle = <div id="enroll_leadin">
+                        <i className="material-icons blue">&#xe3e4;</i>
+                        <span className="title blue">Match Students to Groups</span>
+                        <span className="subtitle">Below are the courses currently eligible for student assignment to projects. The process is based on the
+                        Freiheit-Wood paper cited in the application's documentation. To start the process, select a project from the dropdown and run
+                        with the "Create Project Groups for Course" button.</span>
+                        </div>
+
+      let courseBg = <div id="add_course_background">
+                          <i className="material-icons">&#xe80c;</i>
+                        </div>
+
+    return <div id="search_container">{courseBg}{classTitle}<div id="match_groups_container"><p>{university} <br /> {matchGroups} <br /> {groupListing}</p></div></div>;
   }
 
   componentDidMount() {

@@ -6,9 +6,13 @@ import Home from './Home';
 import Search from './Search';
 import Header from './Header';
 import CreateProject from './CreateProject';
+import CreateCourse from './CreateCourse';
 import ProjectDisplay from './ProjectDisplay';
 import Register from './Register';
 import MatchGroups from './MatchGroups';
+import Enroll from './Enroll';
+import Drop from './Drop';
+
 
 type State = Readonly<{
   loggedIn: boolean,
@@ -25,9 +29,9 @@ class App extends Component {
   constructor(props: AppProps) {
       super(props);
       this.state = {
-        loggedIn: true,
+        loggedIn: false,
         uname: "",
-        page: "match_groups",
+        page: "",
         userType: "Student",
         pid: 0
       };
@@ -64,31 +68,40 @@ class App extends Component {
   render() {
       if (!this.state.loggedIn) {
         if (this.state.page == "register") {
-          return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} /><Register utype = {this.state.userType} onLogin = {this.loginHandler} pageHandler = {this.pageViewHandler} /></div>;
+          return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} /><span id="generic_container"><Register utype = {this.state.userType} onLogin = {this.loginHandler} pageHandler = {this.pageViewHandler} /></span></div>;
         }
         else {
           return <div>
             <Header pageHandler = {this.pageViewHandler} loggedin = {this.state.loggedIn} />
-            <Login pageHandler = {this.pageViewHandler} onLogin = {this.loginHandler} userTypeHandler = {this.userTypeHandler} />
+            <span id="generic_container"><Login pageHandler = {this.pageViewHandler} onLogin = {this.loginHandler} userTypeHandler = {this.userTypeHandler} /></span>
             </div>;
         }
       }
       else {
         switch(this.state.page) {
          case "create_project": {
-            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><CreateProject id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><CreateProject id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
+         }
+         case "create_course": {
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><CreateCourse id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
          }
          case "search_project": {
-            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><Search pageHandler = {this.pageViewHandler} /></div>
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><Search pageHandler = {this.pageViewHandler} /></span></div>
          }
          case "display_project": {
-            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><ProjectDisplay id={this.state.pid} pageHandler = {this.pageViewHandler} /></div>
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><ProjectDisplay id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
+         }
+         case "enroll": {
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><Enroll id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
+         }
+         case "drop": {
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><Drop id={this.state.pid} pageHandler = {this.pageViewHandler} /></span></div>
          }
          case "match_groups": {
-            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><MatchGroups pageHandler = {this.pageViewHandler} /></div>
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><MatchGroups pageHandler = {this.pageViewHandler} /></span></div>
          }
          default: {
-           return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></div>;
+            return <div><Header pageHandler = {this.pageViewHandler} currentPage = {this.state.page} loggedin = {this.state.loggedIn} logoutHandler = {this.logoutHandler} /><span id="generic_container"><Home username = {this.state.uname} pageHandler = {this.pageViewHandler} /></span></div>;
          }
         }
       }
