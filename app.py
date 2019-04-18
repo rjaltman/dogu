@@ -8,7 +8,6 @@ import secrets
 import json
 from os import environ, path
 from random import shuffle
-from itertools import ifilter
 app = Flask(__name__, static_folder="frontend/build")
 
 

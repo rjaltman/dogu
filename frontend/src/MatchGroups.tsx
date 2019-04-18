@@ -54,6 +54,7 @@ class MatchGroups extends Component<Props, any> {
 
   componentDidMount() {
     this.loadGroups(this.state.courseId);
+    this.loadAllCourses();
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
