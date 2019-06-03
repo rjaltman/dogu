@@ -1,0 +1,12 @@
+DELETE FROM review;
+DELETE FROM project_group;
+DELETE FROM member;
+DELETE FROM enroll;
+DELETE FROM instructor;
+DELETE FROM rep;
+DELETE FROM preference;
+DELETE FROM project_tags;
+DELETE FROM organization;
+DELETE FROM approved;
+DELETE FROM project;
+DELETE FROM course;
