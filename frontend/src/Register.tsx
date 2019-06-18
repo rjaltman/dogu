@@ -21,6 +21,7 @@ type State = Readonly<{
     middleVal: string,
     lastVal: string,
     universityVal: number,
+    orgVal: number,
     universityList: {[key: number]: string}
     orgsList: {[key: number]: string}
 }>;
@@ -74,6 +75,7 @@ class Register extends Component<RegisterProps, any> {
           middleVal: "",
           lastVal: "",
           universityVal: -1,
+          orgVal: -1,
           universityList: [],
           orgsList: []
       };
@@ -267,11 +269,10 @@ class Register extends Component<RegisterProps, any> {
       if(res["success"]) {
           this.setState({ universityList: res["universities"] })
           if (this.state.universityList != {}) {
-            // Object.keys approach as found at
-            // https://stackoverflow.com/questions/3298477/get-first-key-from-javascript-object
-            this.setState({ universityVal: Object.keys(res["universities"])[0] })
+              // Object.keys approach as found at
+              // https://stackoverflow.com/questions/3298477/get-first-key-from-javascript-object
+              this.setState({ universityVal: Object.keys(res["universities"])[0] })
           }
-
       } else {
           this.setState({universityList: []})
           console.log(res["error"])
@@ -283,11 +284,10 @@ class Register extends Component<RegisterProps, any> {
       if(res["success"]) {
           this.setState({orgsList: res["organizations"]})
           if (this.state.orgsList != {}) {
-            // Object.keys approach as found at
-            // https://stackoverflow.com/questions/3298477/get-first-key-from-javascript-object
-            this.setState({ universityVal: Object.keys(res["organizations"])[0] })
+              // Object.keys approach as found at
+              // https://stackoverflow.com/questions/3298477/get-first-key-from-javascript-object
+              this.setState({ orgVal: Object.keys(res["organizations"])[0] })
           }
-
       } else {
           this.setState({orgsList: []})
           console.log(res["error"])
@@ -301,7 +301,8 @@ class Register extends Component<RegisterProps, any> {
       dept: this.state.deptVal,
       contactemail: this.state.emailVal,
       position: this.state.positionVal,
-      university_id: this.state.universityVal,
+      university_id: this.state.universityVal, 
+      org_id: this.state.orgVal, // We can have both of these because the server just won't look if it doesn't need to
       avatar: this.state.profilePictureVal}
       // Note that university_id doubles as organization_id given the storage mechanism in state here
     if (this.state.positionVal == "Organizer") {

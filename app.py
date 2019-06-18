@@ -103,7 +103,7 @@ def registerRep():
     dept = request.json.get("dept", None)
     contactemail = request.json.get("contactemail", None)
     position = request.json.get("position", None)
-    university_id = request.json.get("university_id", None)
+    org_id = request.json.get("org_id", None)
     avatar = request.json.get("avatar", None)
 
     if not (username and password):
@@ -126,7 +126,7 @@ def registerRep():
     with conn.cursor() as c:
         c.execute("SELECT id FROM account WHERE username = %s", (username, ))
         id = list(c.fetchone())[0]
-        c.execute("INSERT INTO rep (account_id, organization_id) VALUES (%s, %s)", (id, university_id))
+        c.execute("INSERT INTO rep (account_id, organization_id) VALUES (%s, %s)", (id, org_id))
         conn.commit()
 
     return out
