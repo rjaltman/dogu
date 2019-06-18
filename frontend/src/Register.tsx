@@ -49,7 +49,6 @@ class Register extends Component<RegisterProps, any> {
       this.getStudentRender = this.getStudentRender.bind(this);
       this.getInstructorRender = this.getInstructorRender.bind(this);
       this.getOrganizerRender = this.getOrganizerRender.bind(this);
-      this.setDefaultImage = this.setDefaultImage.bind(this);
       this.handleSelectChange = this.handleSelectChange.bind(this);
       this.getUniversityOptions = this.getUniversityOptions.bind(this);
 
@@ -70,7 +69,7 @@ class Register extends Component<RegisterProps, any> {
           positionVal: defaultPosition,
           deptVal: "",
           emailVal: "",
-          profilePictureVal: "URL to a profile picture",
+          profilePictureVal: "https://www.gravatar.com/avatar/?default=mm&size=160", 
           firstVal: "",
           middleVal: "",
           lastVal: "",
@@ -80,11 +79,7 @@ class Register extends Component<RegisterProps, any> {
           orgsList: []
       };
   }
-  setDefaultImage() {
-    this.setState({
-      profilePictureVal: "https://www.gravatar.com/avatar/?default=mm&size=160"
-    });
-  }
+
   componentDidMount() {
       this.loadAllUniversities();
       this.loadAllOrgs();
@@ -134,7 +129,7 @@ class Register extends Component<RegisterProps, any> {
   getStudentRender() {
     var top_icon = <i className="material-icons large_icon student-back">&#xe7fe;</i>;
     var top_text = <div id="top_text">{top_icon} <span className="title">Hey there!</span><span className="subtitle">Let's get you signed up as a student.</span></div>
-    var profile_picture = <img src={this.state.profilePictureVal} onError={this.setDefaultImage} />
+    var profile_picture = <img src={this.state.profilePictureVal} />
     var first = <div className="register_form_field"><input name="firstVal" value={this.state.firstVal} placeholder="First Name" onChange={this.handleChange} /></div>
     var middle = <div className="register_form_field"><input name="middleVal" value={this.state.middleVal} placeholder="Middle Name" onChange={this.handleChange} /></div>
     var last = <div className="register_form_field"><input name="lastVal" value={this.state.lastVal} placeholder="Last Name" onChange={this.handleChange} /></div>
@@ -172,7 +167,7 @@ class Register extends Component<RegisterProps, any> {
   getOrganizerRender() {
     var top_icon = <i className="material-icons large_icon organizer-back">&#xe7fe;</i>;
     var top_text = <div id="top_text">{top_icon} <span className="title organizer">Hey there!</span><span className="subtitle organizer">Let's get you signed up as an organizer.</span></div>
-    var profile_picture = <img src={this.state.profilePictureVal} onError={this.setDefaultImage} />
+    var profile_picture = <img src={this.state.profilePictureVal} />
     var first = <div className="register_form_field"><input name="firstVal" value={this.state.firstVal} placeholder="First Name" onChange={this.handleChange} /></div>
     var middle = <div className="register_form_field"><input name="middleVal" value={this.state.middleVal} placeholder="Middle Name" onChange={this.handleChange} /></div>
     var last = <div className="register_form_field"><input name="lastVal" value={this.state.lastVal} placeholder="Last Name" onChange={this.handleChange} /></div>
@@ -210,7 +205,7 @@ class Register extends Component<RegisterProps, any> {
   getInstructorRender() {
     var top_icon = <i className="material-icons large_icon instructor-back">&#xe7fe;</i>;
     var top_text = <div id="top_text">{top_icon} <span className="title instructor">Hey there!</span><span className="subtitle instructor">Let's get you signed up as an instructor.</span></div>
-    var profile_picture = <img src={this.state.profilePictureVal} onError={this.setDefaultImage} />
+    var profile_picture = <img src={this.state.profilePictureVal} />
     var first = <div className="register_form_field"><input name="firstVal" value={this.state.firstVal} placeholder="First Name" onChange={this.handleChange} /></div>
     var middle = <div className="register_form_field"><input name="middleVal" value={this.state.middleVal} placeholder="Middle Name" onChange={this.handleChange} /></div>
     var last = <div className="register_form_field"><input name="lastVal" value={this.state.lastVal} placeholder="Last Name" onChange={this.handleChange} /></div>
